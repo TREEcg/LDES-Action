@@ -1,0 +1,25 @@
+name: data
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch: {}
+  push:
+    paths:
+      - .github/workflows/flat.yml
+      - ./process.js
+jobs:
+  scheduled:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup deno
+        uses: denoland/setup-deno@main
+        with:
+          deno-version: v1.x
+      - name: Check out repo
+        uses: actions/checkout@v2
+      - name: Fetch data
+        uses: githubocto/flat@v3
+        with:
+          http_url: https://graph.irail.be/sncb/connections/feed
+          postprocess: ./process.js
+          downloaded_filename: update.jsonld
