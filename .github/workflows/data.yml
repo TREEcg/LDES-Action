@@ -1,4 +1,4 @@
-name: data
+name: fetch and store data
 on:
   schedule:
     - cron: "*/5 * * * *"
@@ -16,9 +16,8 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16'
-      - name: Install dependencies
-        run: npm install
-      - name: Fetch data
-      - run: |
+      - name: npm install, build and start
+        run: |
+          npm install
           npm run build
           npm run start
