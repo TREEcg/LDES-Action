@@ -1,5 +1,6 @@
-import { readJSON, writeJSON } from 'https://deno.land/x/flat@0.0.13/mod.ts'
-import { ensureDir } from 'https://deno.land/std@0.105.0/fs/ensure_dir.ts'
+// THIS FILE IS CURRENTLY UNUSED
+import {readJSON, writeJSON} from 'https://deno.land/x/flat@0.0.13/mod.ts'
+import {ensureDir} from 'https://deno.land/std@0.105.0/fs/ensure_dir.ts'
 
 // Read the downloaded_filename JSON-LD
 const filename = Deno.args[0];

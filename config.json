@@ -1,0 +1,4 @@
+{
+  "data_source": "https://smartdata.dev-vlaanderen.be/base/gemeente",
+  "output_dir": "gemeenten"
+}
