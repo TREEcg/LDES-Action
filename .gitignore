@@ -4,6 +4,9 @@
 # VS Code
 .vscode/
 
+# transpiled JavaScript files
+lib/
+
 # Logs
 logs
 *.log

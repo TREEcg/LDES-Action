@@ -1,5 +1,6 @@
 import {newEngine} from '@treecg/actor-init-ldes-client';
 import * as fs from 'fs/promises';
+import {existsSync, mkdirSync} from 'fs';
 import {IConfig} from "./config";
 
 export const fetchData = async (config: IConfig): Promise<void> => {
@@ -20,6 +21,9 @@ export const fetchData = async (config: IConfig): Promise<void> => {
             })
             .on('end', async () => {
                 const now = new Date().toISOString();
+                if (!existsSync(config.output_dir)) {
+                    mkdirSync(config.output_dir);
+                }
                 await fs.writeFile(`${config.output_dir}/${now}.json`, JSON.stringify(members));
             });
 
