@@ -1,3 +1,4 @@
+// SOURCE: https://github.com/githubocto/flat/blob/main/src/git.ts
 import * as core from '@actions/core'
 import {exec} from '@actions/exec'
 import {execSync} from 'child_process'
