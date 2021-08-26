@@ -30,7 +30,7 @@ export const runPostScript = async () => {
     // these should already be staged, in main.ts
     core.info(`Committing "${msg}"`);
     core.debug(meta);
-    await exec('git', ['commit', '-m', msg + '\nCreated/changed files:\n' + body]);
+    await exec('git', ['commit', '-m', msg + '\nCreated/changed files:\n- ' + body]);
     await exec('git', ['push']);
     core.info(`Pushed!`);
     core.exportVariable('HAS_RUN_POST_JOB', 'true');
