@@ -1,0 +1,12 @@
+on: [ push ]
+
+jobs:
+  data_fetcher:
+    runs-on: ubuntu-latest
+    name: Test if action works
+    steps:
+      - name: Fetch and write data
+        uses: TREEcg/gh-action-republish-ldes@v1
+        with:
+          url: 'https://smartdata.dev-vlaanderen.be/base/gemeente'
+          storage: 'output'
