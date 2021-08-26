@@ -4,7 +4,7 @@ import {exec} from '@actions/exec'
 import {execSync} from 'child_process'
 import {diff} from './git'
 import {getConfig, IConfig} from "./config";
-import {fetchData} from "./data";
+import {Data} from "./data";
 import {runPostScript} from "./post";
 
 async function run(): Promise<void> {
@@ -19,8 +19,10 @@ async function run(): Promise<void> {
     ]);
     core.endGroup();
 
-    core.startGroup('Fetch data');
-    await fetchData(config);
+    core.startGroup('Fetch and write data');
+    const data_fetcher = new Data(config);
+    await data_fetcher.fetchData();
+    await data_fetcher.writeData();
     core.endGroup();
 
     if (config.postprocess) {
@@ -78,5 +80,5 @@ run()
         await runPostScript();
     })
     .catch(error => {
-    core.setFailed('Workflow failed! ' + error.message);
-});
+        core.setFailed('Workflow failed! ' + error.message);
+    });
