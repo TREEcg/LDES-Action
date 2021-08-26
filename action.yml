@@ -9,7 +9,7 @@ inputs:
     required: true
   postprocess:
     description: 'Relative path to postprocessing file which you can use to refragment the fetched data'
-      required: false
+    required: false
 outputs:
   delta_bytes: # size of changed data
     description: 'The overall number of bytes changed in the output data this run (current size - previous size)'
