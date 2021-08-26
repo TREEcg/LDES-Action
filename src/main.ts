@@ -3,13 +3,16 @@ import * as core from '@actions/core'
 import {exec} from '@actions/exec'
 import {execSync} from 'child_process'
 import {diff} from './git'
-import {getConfig, IConfig} from "./config";
+import {IConfig} from "./config";
 import {Data} from "./data";
 import {runPostScript} from "./post";
+// @ts-ignore
+import * as rawConfig from '../config.json';
+
 
 async function run(): Promise<void> {
     core.startGroup('Configuration');
-    const config: IConfig = await getConfig();
+    const config: IConfig = rawConfig;
     const username = 'flat-data';
     await exec('git', ['config', 'user.name', username]);
     await exec('git', [
@@ -37,8 +40,8 @@ async function run(): Promise<void> {
     }
 
     core.startGroup('File changes');
-    const newUnstagedFiles = await execSync('git ls-files --others --exclude-standard').toString();
-    const modifiedUnstagedFiles = await execSync('git ls-files -m').toString();
+    const newUnstagedFiles = execSync('git ls-files --others --exclude-standard').toString();
+    const modifiedUnstagedFiles = execSync('git ls-files -m').toString();
     const editedFilenames = [
         ...newUnstagedFiles.split('\n'),
         ...modifiedUnstagedFiles.split('\n'),
@@ -58,7 +61,7 @@ async function run(): Promise<void> {
         core.debug(`git adding ${filename}…`);
         await exec('git', ['add', filename]);
         const bytes = await diff(filename);
-        editedFiles.push({'name': filename, 'deltaBytes': bytes, 'source': config.data_source});
+        editedFiles.push({'name': filename, 'deltaBytes': bytes, 'source': config.url});
     }
     core.endGroup();
 

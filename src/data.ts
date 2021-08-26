@@ -26,7 +26,7 @@ export class Data {
                 };
 
                 let LDESClient = newEngine();
-                let eventStreamSync = LDESClient.createReadStream(this.config.data_source, options);
+                let eventStreamSync = LDESClient.createReadStream(this.config.url, options);
                 eventStreamSync
                     .on('data', (data) => {
                         let obj = JSON.parse(data);
@@ -51,10 +51,10 @@ export class Data {
             try {
                 const now = new Date().toISOString();
                 // create necessary directories where data will be stored
-                if (!existsSync(this.config.output_dir)) {
-                    mkdirSync(this.config.output_dir);
+                if (!existsSync(this.config.storage)) {
+                    mkdirSync(this.config.storage);
                 }
-                mkdirSync(`${this.config.output_dir}/${now}`);
+                mkdirSync(`${this.config.storage}/${now}`);
 
                 // split members into multiple files, each containing no more than 500 members
                 const file_size = 500;
@@ -67,7 +67,7 @@ export class Data {
                 await Promise.all(chunks.map((chunk, index) => {
                     // files are named data<number>.json, where <number> is a 5-digit number representing the chunk index
                     const file_num = String(index).padStart(5, '0');
-                    fs.writeFile(`${this.config.output_dir}/${now}/data${file_num}.json`, JSON.stringify(chunk));
+                    fs.writeFile(`${this.config.storage}/${now}/data${file_num}.json`, JSON.stringify(chunk));
                 }));
 
                 return resolve();

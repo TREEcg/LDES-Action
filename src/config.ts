@@ -1,8 +1,8 @@
 import fs from "fs/promises";
 
 export interface IConfig {
-    data_source: string,    // HTTP(S) data source
-    output_dir: string,     // directory where data will be written
+    url: string,    // HTTP(S) data source
+    storage: string,     // directory where data will be written
     postprocess?: string    // path to postprocessing script, if necessary
 }
 
