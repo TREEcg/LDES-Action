@@ -1,5 +1,6 @@
-#!/bin/bash
+#!/bin/sh -l
 
+node -v
 # run main
 node ./dist/index.js
 # run post
