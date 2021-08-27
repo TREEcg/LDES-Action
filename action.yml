@@ -14,5 +14,15 @@ outputs:
   delta_bytes: # size of changed data
     description: 'The overall number of bytes changed in the output data this run (current size - previous size)'
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: 'composite'
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+    - name: Run main script
+      run: node ./dist/index.js
+      shell: sh
+    - name: Run post script
+      run: node ./dist/post/index.js
+      shell: sh
