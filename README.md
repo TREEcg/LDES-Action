@@ -36,6 +36,8 @@ jobs:
           storage: 'output'
 ```
 
+The `scheduled` job will fetch the dataset, split it into multiple json files and write these files to a new directory inside `storage`, which will be named after the date when we performed the fetch.
+
 ## Inputs
 
 ### `url`
