@@ -52,15 +52,12 @@ async function diffSize(file: GitStatus): Promise<number> {
 		case 'M': {
 			const stat = statSync(file.path);
 			core.debug(
-				`Calculating diff for ${JSON.stringify(file)}, with size ${
-					stat.size
-				}b`
+				`Calculating diff for ${JSON.stringify(file)}, with size ${stat.size}b`
 			);
 
 			// get old size and compare
 			const oldSize = await getHeadSize(file.path);
-			const delta =
-				oldSize === undefined ? stat.size : stat.size - oldSize;
+			const delta = oldSize === undefined ? stat.size : stat.size - oldSize;
 			core.debug(
 				` ==> ${file.path} modified: old ${oldSize}, new ${stat.size}, delta ${delta}b `
 			);
@@ -69,9 +66,7 @@ async function diffSize(file: GitStatus): Promise<number> {
 		case 'A': {
 			const stat = statSync(file.path);
 			core.debug(
-				`Calculating diff for ${JSON.stringify(file)}, with size ${
-					stat.size
-				}b`
+				`Calculating diff for ${JSON.stringify(file)}, with size ${stat.size}b`
 			);
 
 			core.debug(` ==> ${file.path} added: delta ${stat.size}b`);
