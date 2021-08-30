@@ -52,12 +52,12 @@ const run = async () => {
     // these should already be staged, in main.ts
     core.info(`Committing "${msg}"`);
     core.debug(meta);
-    await exec_1.exec('git', [
+    await (0, exec_1.exec)('git', [
         'commit',
         '-m',
         msg + '\nCreated/changed files:\n- ' + body,
     ]);
-    await exec_1.exec('git', ['push']);
+    await (0, exec_1.exec)('git', ['push']);
     core.info(`Pushed!`);
     core.exportVariable('HAS_RUN_POST_JOB', 'true');
     core.endGroup();

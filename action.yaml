@@ -1,0 +1,19 @@
+name: 'Hello World'
+description: 'Greet someone and record the time'
+inputs:
+  url:
+    description: 'URL to LDES or tree:Collection dataset'
+    required: true
+  storage:
+    description: 'Relative path to directory where the fetched data will be stored'
+    required: true
+  postprocess:
+    description: 'Relative path to postprocessing file which you can use to refragment the fetched data'
+    required: false
+outputs:
+  delta_bytes: # size of changed data
+    description: 'The overall number of bytes changed in the output data this run (current size - previous size)'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
+  post: 'dist/post/index.js'

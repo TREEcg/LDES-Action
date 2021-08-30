@@ -1,12 +1,12 @@
 {
-  "name": "gh-action-republish-ldes",
+  "name": "republish-ldes",
   "version": "1.0.0",
-  "description": "Republishes a Linked Data Event Stream or tree:Collection on github pages using a github action",
-  "main": "run.js\t",
+  "description": "",
+  "main": "run.js",
   "scripts": {
     "start": "node ./lib/main.js",
     "build": "tsc",
-    "package": "ncc build lib/main.js",
+    "package": "ncc build --source-map --target es2020 lib/main.js",
     "package-post": "ncc build --target es2020 lib/post.js -o dist/post",
     "dist": "npm run build && npm run package && npm run package-post",
     "format": "prettier --write **/*.ts",
@@ -14,14 +14,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TREEcg/gh-action-republish-ldes.git"
+    "url": "git+https://github.com/ArnoTroch/republish-ldes.git"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/TREEcg/gh-action-republish-ldes/issues"
+    "url": "https://github.com/ArnoTroch/republish-ldes/issues"
   },
-  "homepage": "https://github.com/TREEcg/gh-action-republish-ldes#readme",
+  "homepage": "https://github.com/ArnoTroch/republish-ldes#readme",
   "dependencies": {
     "@actions/core": "^1.5.0",
     "@actions/exec": "^1.1.0",
