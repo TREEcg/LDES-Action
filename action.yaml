@@ -14,33 +14,6 @@ outputs:
   delta_bytes: # size of changed data
     description: 'The overall number of bytes changed in the output data this run (current size - previous size)'
 runs:
-  using: 'composite'
-  steps:
-    - name: Setup Node
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'
-    - name: Print node version
-      run: node -v
-      shell: sh
-    - run: cd ${{ github.action_path }}
-      shell: sh
-    - name: Debug - print current dir
-      run: pwd && ls -a
-      shell: sh
-    - name: Install dependencies
-      run: npm install
-      shell: sh
-    - name: Transpile TypeScript
-      run: npm run build
-      shell: sh
-    - name: Run main script
-      run: node lib/main.js
-      shell: sh
-      env:
-        INPUT_URL: ${{ inputs.url }}
-        INPUT_STORAGE: ${{ inputs.storage }}
-        INPUT_POSTPROCESS: ${{ inputs.postprocess }}
-    - name: Run post script
-      run: node lib/post.js
-      shell: sh
+  using: 'node12'
+  main: 'dist/index.js'
+  post: 'dist/post/index.js'
