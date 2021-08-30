@@ -23,8 +23,8 @@ runs:
     - name: Print node version
       run: node -v
       shell: sh
-    run: cd ${{ github.action_path }}
-    shell: sh
+    - run: cd ${{ github.action_path }}
+      shell: sh
     - name: Debug - print current dir
       run: pwd && ls -a
       shell: sh
