@@ -7,6 +7,8 @@ export class Data {
 	// constant file names
 	private readonly FETCHES_INDEX = 'fetches';
 	private readonly DATA_FILE = 'data';
+	// amount of objects we save per file;
+	private readonly FILE_SIZE = 500;
 
 	private readonly config: IConfig;
 	private readonly members: { [key: string]: object };
@@ -73,16 +75,24 @@ export class Data {
 	public async writeData(): Promise<void> {
 		return new Promise<void>(async (resolve, reject) => {
 			try {
+				const member_values = Object.values(this.members);
+				if (member_values.length === 0) {
+					// if there are no members, we are done
+					return resolve();
+				}
+
+				// make directory where we will store newly fetched data
 				const now = new Date().toISOString();
 				mkdirSync(`${this.config.storage}/${now}`);
 
-				// split members into multiple files, each containing no more than 500 members
-				const file_size = 500;
-				const member_values = Object.values(this.members);
+				// split members into multiple files
 				const chunks = Array.from(
-					new Array(Math.ceil(member_values.length / file_size)),
+					new Array(Math.ceil(member_values.length / this.FILE_SIZE)),
 					(_, i) =>
-						member_values.slice(i * file_size, i * file_size + file_size)
+						member_values.slice(
+							i * this.FILE_SIZE,
+							i * this.FILE_SIZE + this.FILE_SIZE
+						)
 				);
 
 				// write all chunks to a file
