@@ -23,8 +23,10 @@ runs:
     - name: Print node version
       run: node -v
       shell: sh
+    run: cd ${{ github.action_path }}
+    shell: sh
     - name: Debug - print current dir
-      run: ls -a
+      run: pwd && ls -a
       shell: sh
     - name: Install dependencies
       run: npm install
