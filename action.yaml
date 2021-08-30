@@ -23,6 +23,9 @@ runs:
     - name: Print node version
       run: node -v
       shell: sh
+    - name: Debug - print current dir
+      run: ls -a
+      shell: sh
     - name: Install dependencies
       run: npm install
       shell: sh
