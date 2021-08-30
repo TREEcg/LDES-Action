@@ -8,7 +8,7 @@ inputs:
     description: 'Output directory name where the fetched data will be stored'
     required: true
   postprocess:
-    description: 'Javascript postprocessing file'
+    description: 'JavaScript postprocessing file'
     required: false
 outputs:
   delta_bytes: # size of changed data
