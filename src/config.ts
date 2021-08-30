@@ -11,6 +11,7 @@ export function getConfig(): IConfig {
 	const keys = ['url', 'storage', 'postprocess'];
 	keys.forEach((k) => {
 		const v = core.getInput(k); // getInput always returns a string
+		core.info(k + ': ' + v);
 		if (v) {
 			raw[k] = v;
 		}

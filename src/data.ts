@@ -1,5 +1,5 @@
 import { newEngine } from '@treecg/actor-init-ldes-client';
-import * as fs from 'fs/promises';
+import fs from 'fs';
 import { existsSync, mkdirSync } from 'fs';
 import { IConfig } from './config';
 
@@ -73,7 +73,7 @@ export class Data {
 					chunks.map((chunk, index) => {
 						// files are named data<number>.json, where <number> is a 5-digit number representing the chunk index
 						const file_num = String(index).padStart(5, '0');
-						fs.writeFile(
+						fs.promises.writeFile(
 							`${this.config.storage}/${now}/data${file_num}.json`,
 							JSON.stringify(chunk)
 						);

@@ -9,6 +9,7 @@ import { Data } from './data';
 const run = async (): Promise<void> => {
 	core.startGroup('Configuration');
 	const config: IConfig = getConfig();
+	core.info(config.url + ' - ' + config.storage);
 	const username = 'flat-data';
 	await exec('git', ['config', 'user.name', username]);
 	await exec('git', [
@@ -30,6 +31,7 @@ const run = async (): Promise<void> => {
 		try {
 			core.info("TODO (doesn't run anything yet)");
 		} catch (error) {
+			// @ts-ignore
 			core.setFailed(error);
 		}
 		core.endGroup();
