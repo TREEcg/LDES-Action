@@ -4,8 +4,7 @@ import { existsSync, mkdirSync } from 'fs';
 import { IConfig } from './config';
 
 export class Data {
-	// constant file names
-	private readonly FETCHES_INDEX = 'fetches';
+	// name of files where data will be stored
 	private readonly DATA_FILE = 'data';
 	// amount of objects we save per file;
 	private readonly FILE_SIZE = 500;
@@ -24,14 +23,13 @@ export class Data {
 		}
 
 		// load previous fetch times if they exist
-		if (existsSync(`${this.config.storage}/fetches.json`)) {
-			this.fetches = JSON.parse(
-				fs.readFileSync(`${this.config.storage}/fetches.json`, 'utf-8')
-			);
-			this.fetches.sort();
-		} else {
-			this.fetches = [];
-		}
+		const fetch_times = fs.readdirSync(this.config.storage);
+		const fetch_dates = fetch_times
+			.map((dir) => new Date(dir))
+			// @ts-ignore
+			.filter((date) => !isNaN(date));
+		this.fetches = fetch_dates.map((date) => date.toISOString());
+		this.fetches.sort();
 	}
 
 	/**
@@ -106,13 +104,6 @@ export class Data {
 							JSON.stringify(chunk)
 						);
 					})
-				);
-
-				// update the fetches index
-				this.fetches.push(now);
-				await fs.promises.writeFile(
-					`${this.config.storage}/${this.FETCHES_INDEX}.json`,
-					JSON.stringify(this.fetches)
 				);
 
 				return resolve();
