@@ -1,9 +1,13 @@
 # gh-action-republish-ldes
-gh-action-republish-ldes is a GitHub Action that replicates a Linked Data Event Stream or tree:Collection and 
-republishes it on GitHub Pages.
+
+`gh-action-republish-ldes` is a GitHub Action that replicates a
+[Linked Data Event Stream](https://w3id.org/ldes/specification)
+or [tree:Collection](https://w3id.org/tree/specification) and republishes it on GitHub Pages.
 
 ## Usage
+
 Create a `.github/workflows/data.yaml` file in the repository where you want to fetch data. An example:
+
 ```yaml
 # data.yaml
 
@@ -26,7 +30,7 @@ jobs:
       # Check out the repository so it can read the files inside of it and do other operations
       - name: Check out repo
         uses: actions/checkout@v2
-      # Fetch the dataset, write the data to json files and push the files to the repo
+      # Fetch dataset, write data to json, push data to the repo and setup GitHub Pages
       - name: Fetch and write data
         uses: TREEcg/gh-action-republish-ldes@development
         with:
@@ -36,7 +40,11 @@ jobs:
           storage: 'output'
 ```
 
-The `scheduled` job will fetch the dataset, split it into multiple json files and write these files to a new directory inside `storage`, which will be named after the date when we performed the fetch.
+The `TREEcg/gh-action-republish-ldes` action will perform the following operations:
+1. fetch data from the provided `url`
+2. split and store the fetched data across json files in the `storage` directory
+3. commit and push all of the data to your repo
+4. deploy the data to GitHub Pages on branch `gh_pages_branch` (if not provided, the default branch is `gh-pages`).
 
 ## Inputs
 
@@ -56,7 +64,6 @@ Path to a JavaScript file for postprocessing the data in `storage`. *(not implem
 
 Branch where GitHub Pages will be deployed. The branch will be created if it doesn't exist yet.\
 Default: `'gh-pages'`
-
 
 ## Outputs
 
