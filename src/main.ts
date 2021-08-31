@@ -9,7 +9,6 @@ import { Data } from './data';
 const run = async (): Promise<void> => {
 	core.startGroup('Configuration');
 	const config: IConfig = getConfig();
-	core.info(config.url + ' - ' + config.storage);
 	const username = 'flat-data';
 	await exec('git', ['config', 'user.name', username]);
 	await exec('git', [

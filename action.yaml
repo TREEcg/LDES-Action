@@ -8,12 +8,34 @@ inputs:
     description: 'Output directory name where the fetched data will be stored'
     required: true
   postprocess:
-    description: 'JavaScript postprocessing file'
+    description: 'JavaScript postprocessing file (should be in the root of the project)'
     required: false
+  gh_pages_branch:
+    description: 'Branch that will be used to deploy to GitHub Pages'
+    required: false
+    default: 'gh-pages'
 outputs:
   delta_bytes: # size of changed data
     description: 'The overall number of bytes changed in the output data this run (current size - previous size)'
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
-  post: 'dist/post/index.js'
+  using: 'composite'
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: '12'
+    - name: Run main script
+      run: node ${{ github.action_path }}/dist/index.js
+      shell: bash
+      env:
+        INPUT_URL: ${{ inputs.url }}
+        INPUT_STORAGE: ${{ inputs.storage }}
+        INPUT_POSTPROCESS: ${{ inputs.postprocess }}
+    - name: Run post script
+      run: node ${{ github.action_path }}/dist/post/index.js
+      shell: bash
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@4.1.4
+      with:
+        branch: ${{ inputs.gh_pages_branch }}
+        folder: ${{ inputs.storage }}
