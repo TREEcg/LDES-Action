@@ -14,6 +14,19 @@ outputs:
   delta_bytes: # size of changed data
     description: 'The overall number of bytes changed in the output data this run (current size - previous size)'
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
-  post: 'dist/post/index.js'
+  using: 'composite'
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: '12'
+    - name: Run main script
+      run: node ${{ github.action_path }}/dist/index.js
+      shell: bash
+      env:
+        INPUT_URL: ${{ inputs.url }}
+        INPUT_STORAGE: ${{ inputs.storage }}
+        INPUT_POSTPROCESS: ${{ inputs.postprocess }}
+    - name: Run post script
+      run: node ${{ github.action_path }}/dist/post/index.js
+      shell: bash
