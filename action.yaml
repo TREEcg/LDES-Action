@@ -31,6 +31,7 @@ runs:
       run: node ${{ github.action_path }}/dist/post/index.js
       shell: bash
     - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
+      uses: JamesIves/github-pages-deploy-action@4.1.4
       with:
-        publish_dir: ${{ inputs.storage }}
+        branch: gh-pages
+        folder: ${{ inputs.storage }}
