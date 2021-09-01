@@ -39,3 +39,4 @@ runs:
       with:
         branch: ${{ inputs.gh_pages_branch }}
         folder: ${{ inputs.storage }}
+        clean: false
