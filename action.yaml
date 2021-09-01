@@ -34,6 +34,9 @@ runs:
     - name: Run post script
       run: node ${{ github.action_path }}/dist/post/index.js
       shell: bash
+      env:
+        INPUT_URL: ${{ inputs.url }}
+        INPUT_STORAGE: ${{ inputs.storage }}
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@4.1.4
       with:
