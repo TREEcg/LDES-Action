@@ -7,8 +7,6 @@ import * as N3 from 'n3';
 export class Data {
 	// name of files where data will be stored
 	private readonly DATA_FILE = 'data';
-	// amount of objects we save per file;
-	private readonly FILE_SIZE = 500;
 
 	private readonly config: IConfig;
 	private readonly store: N3.Store;
@@ -97,11 +95,11 @@ export class Data {
 				// split quads into multiple chunks containing 'this.FILE_SIZE' different subjects
 				const subjects = this.store.getSubjects(null, null, null);
 				const chunks = Array.from(
-					new Array(Math.ceil(subjects.length / this.FILE_SIZE)),
+					new Array(Math.ceil(subjects.length / this.config.max_members)),
 					(_, i) =>
 						subjects.slice(
-							i * this.FILE_SIZE,
-							i * this.FILE_SIZE + this.FILE_SIZE
+							i * this.config.max_members,
+							i * this.config.max_members + this.config.max_members
 						)
 				);
 

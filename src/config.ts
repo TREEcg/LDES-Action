@@ -3,20 +3,19 @@ import * as core from '@actions/core';
 export interface IConfig {
 	url: string; // HTTP(S) data source
 	storage: string; // directory where data will be written
-	postprocess?: string; // path to postprocessing script, if necessary
+	predicate?: string; // path to postprocessing script, if necessary
+	max_members: number; // max amount of members per data file
 	gh_pages_branch: string; // branch used for deploying to GitHub Pages
 }
 
-export function getConfig(): IConfig {
-	const raw: any = {};
-	const keys = ['url', 'storage', 'postprocess', 'gh_pages_branch'];
-	keys.forEach((k) => {
-		const v = core.getInput(k); // getInput always returns a string
-		core.info(`${k}: ${v}`);
-		if (v) {
-			raw[k] = v;
-		}
-	});
-	core.debug(`Raw config: ${JSON.stringify(raw)}`);
-	return raw as IConfig;
-}
+export const getConfig = (): IConfig => {
+	return {
+		url: core.getInput('url'),
+		storage: core.getInput('storage'),
+		predicate: core.getInput('predicate')
+			? core.getInput('predicate')
+			: undefined,
+		max_members: parseInt(core.getInput('max_members')),
+		gh_pages_branch: core.getInput('gh_pages_branch'),
+	};
+};

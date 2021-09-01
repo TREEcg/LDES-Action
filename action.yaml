@@ -7,9 +7,13 @@ inputs:
   storage:
     description: 'Output directory name where the fetched data will be stored'
     required: true
-  postprocess:
-    description: 'Javascript postprocessing file (should be in the root of the project)'
+  predicate:
+    description: 'URI of predicate used for fragmenting (sorting) the members'
     required: false
+  max_members:
+    description: 'Maximum number of members stored per data file'
+    required: false
+    default: '500'
   gh_pages_branch:
     description: 'Branch that will be used to deploy to GitHub Pages'
     required: false
