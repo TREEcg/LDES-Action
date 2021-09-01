@@ -2,20 +2,21 @@ import { newEngine } from '@treecg/actor-init-ldes-client';
 import fs from 'fs';
 import { existsSync, mkdirSync } from 'fs';
 import { IConfig } from './config';
-import * as N3 from 'n3';
+import { DataFactory, Store, Parser, Writer, Quad_Subject } from 'n3';
+import namedNode = DataFactory.namedNode;
 
 export class Data {
 	// name of files where data will be stored
 	private readonly DATA_FILE = 'data';
 
 	private readonly config: IConfig;
-	private readonly store: N3.Store;
+	private readonly store: Store;
 	private readonly fetches: Array<string>;
 	private fetch_time: string | undefined;
 
 	public constructor(config: IConfig) {
 		this.config = config;
-		this.store = new N3.Store();
+		this.store = new Store();
 
 		// create necessary directories where data will be stored
 		if (!existsSync(this.config.storage)) {
@@ -53,7 +54,7 @@ export class Data {
 					this.config.url,
 					options
 				);
-				const parser = new N3.Parser({ format: 'text/turtle' });
+				const parser = new Parser({ format: 'text/turtle' });
 
 				// read quads and add them to triple store
 				// @ts-ignore
@@ -92,8 +93,36 @@ export class Data {
 				// make directory where we will store newly fetched data
 				mkdirSync(`${this.config.storage}/${this.fetch_time}`);
 
-				// split quads into multiple chunks containing 'this.FILE_SIZE' different subjects
-				const subjects = this.store.getSubjects(null, null, null);
+				let subjects: Array<Quad_Subject>;
+
+				// if predicate was provided, sort the quads using this predicate
+				if (this.config.predicate) {
+					const quads = this.store.getQuads(
+						null,
+						namedNode(this.config.predicate),
+						null,
+						null
+					);
+					quads.sort((q1, q2) =>
+						q1.object.value < q2.object.value
+							? -1
+							: q1.object.value > q2.object.value
+							? 1
+							: 0
+					);
+
+					// this removes duplicate subjects
+					let temp: Map<string, Quad_Subject> = new Map(
+						quads.map((quad) => [quad.subject.value, quad.subject])
+					);
+					subjects = Array.from(temp, ([_, subject]) => subject);
+				} else {
+					subjects = this.store.getSubjects(null, null, null);
+				}
+
+				console.log('subjects length:', subjects.length);
+
+				// split quads into multiple chunks containing 'this.config.max_members' members
 				const chunks = Array.from(
 					new Array(Math.ceil(subjects.length / this.config.max_members)),
 					(_, i) =>
@@ -106,7 +135,7 @@ export class Data {
 				// write each chunk to its own file
 				await Promise.all(
 					chunks.map((chunk, index) => {
-						let writer = new N3.Writer();
+						let writer = new Writer();
 						chunk.forEach((subject) =>
 							writer.addQuads(this.store.getQuads(subject, null, null, null))
 						);
