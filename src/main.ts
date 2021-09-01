@@ -11,6 +11,12 @@ const run = async (): Promise<void> => {
 	const config: IConfig = getConfig();
 	core.info('max_members type:');
 	core.info(typeof config.max_members);
+	core.info('config:');
+	core.info(`- url: ${config.url}`)
+	core.info(`- storage: ${config.storage}`)
+	core.info(`- predicate: ${config.predicate}`)
+	core.info(`- max_members: ${config.max_members}`)
+	core.info(`- gh_pages_branch: ${config.gh_pages_branch}`)
 	const username = 'flat-data';
 	await exec('git', ['config', 'user.name', username]);
 	await exec('git', [
