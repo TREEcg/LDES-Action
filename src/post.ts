@@ -1,6 +1,28 @@
 // SOURCE: https://github.com/githubocto/flat/blob/main/src/post.ts
 import * as core from '@actions/core';
 import { exec } from '@actions/exec';
+import { IConfig, getConfig } from './config';
+import fs from 'fs';
+
+/**
+ * create an html string containing an index to the different data files
+ * @param config action config (we need this to get the 'storage' directory)
+ */
+const buildIndex = (config: IConfig) => {
+	let body = '<ul>';
+	let fetches = fs.readdirSync(config.storage);
+	for (let fetch of fetches) {
+		body += `<li>${fetch}<ul>`;
+		const files = fs.readdirSync(`${config.storage}/${fetch}`);
+		for (let file of files) {
+			body += `<li><a href="${fetch}/${file}">${file}</a></li>`;
+		}
+		body += '</ul></li>';
+	}
+	body += '</ul>';
+
+	return `<!DOCTYPE html><html lang="en"><head><title>Index</title></head><body><h2>Index</h2>${body}</body></html>`;
+};
 
 const run = async () => {
 	core.startGroup('Post cleanup script');
@@ -36,6 +58,12 @@ const run = async () => {
 	core.info(`Pushed!`);
 	core.exportVariable('HAS_RUN_POST_JOB', 'true');
 
+	core.endGroup();
+
+	core.startGroup('Creating index.html');
+	const config: IConfig = getConfig();
+	const index = buildIndex(config);
+	await fs.promises.writeFile(`${config.storage}/index.html`, index);
 	core.endGroup();
 };
 

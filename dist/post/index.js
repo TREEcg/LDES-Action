@@ -2,7 +2,7 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 95:
+/***/ 88:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
@@ -26,9 +26,76 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getConfig = void 0;
+const core = __importStar(__nccwpck_require__(186));
+function getConfig() {
+    const raw = {};
+    const keys = ['url', 'storage', 'postprocess', 'gh_pages_branch'];
+    keys.forEach((k) => {
+        const v = core.getInput(k); // getInput always returns a string
+        core.info(`${k}: ${v}`);
+        if (v) {
+            raw[k] = v;
+        }
+    });
+    core.debug(`Raw config: ${JSON.stringify(raw)}`);
+    return raw;
+}
+exports.getConfig = getConfig;
+
+
+/***/ }),
+
+/***/ 95:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
 // SOURCE: https://github.com/githubocto/flat/blob/main/src/post.ts
 const core = __importStar(__nccwpck_require__(186));
 const exec_1 = __nccwpck_require__(514);
+const config_1 = __nccwpck_require__(88);
+const fs_1 = __importDefault(__nccwpck_require__(747));
+/**
+ * create an html string containing an index to the different data files
+ * @param config action config (we need this to get the 'storage' directory)
+ */
+const buildIndex = (config) => {
+    let body = '<ul>';
+    let fetches = fs_1.default.readdirSync(config.storage);
+    for (let fetch of fetches) {
+        body += `<li>${fetch}<ul>`;
+        const files = fs_1.default.readdirSync(`${config.storage}/${fetch}`);
+        for (let file of files) {
+            body += `<li><a href="${fetch}/${file}">${file}</a></li>`;
+        }
+        body += '</ul></li>';
+    }
+    body += '</ul>';
+    return `<!DOCTYPE html><html lang="en"><head><title>Index</title></head><body><h2>Index</h2>${body}</body></html>`;
+};
 const run = async () => {
     core.startGroup('Post cleanup script');
     if (process.env.HAS_RUN_POST_JOB) {
@@ -58,6 +125,11 @@ const run = async () => {
     await (0, exec_1.exec)('git', ['push']);
     core.info(`Pushed!`);
     core.exportVariable('HAS_RUN_POST_JOB', 'true');
+    core.endGroup();
+    core.startGroup('Creating index.html');
+    const config = (0, config_1.getConfig)();
+    const index = buildIndex(config);
+    await fs_1.default.promises.writeFile(`${config.storage}/index.html`, index);
     core.endGroup();
 };
 run().catch((error) => {
