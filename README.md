@@ -27,14 +27,14 @@ jobs:
   scheduled:
     runs-on: ubuntu-latest
     steps:
-      # Check out the repository so it can read the files inside of it and do other operations
+      # Check out the repository, so it can read the files inside it and do other operations
       - name: Check out repo
         uses: actions/checkout@v2
-      # Fetch dataset, write data to json, push data to the repo and setup GitHub Pages
+      # Fetch, fragment and write data + deploy to GitHub Pages
       - name: Fetch and write data
         uses: TREEcg/gh-action-republish-ldes@development
         with:
-          # url you want to fetch
+          # url you want to fetch data from
           url: 'https://smartdata.dev-vlaanderen.be/base/gemeente'
           # output directory name 
           storage: 'output'
@@ -42,9 +42,10 @@ jobs:
 
 The `TREEcg/gh-action-republish-ldes` action will perform the following operations:
 1. fetch data from the provided `url`
-2. split and store the fetched data across json files in the `storage` directory
-3. commit and push all of the data to your repo
-4. deploy the data to GitHub Pages on branch `gh_pages_branch` (if not provided, the default branch is `gh-pages`).
+2. if `predicate` input was provided, refragment data 
+3. split and store the data as [Turtle](https://www.w3.org/TR/turtle) files in the `storage` directory
+4. commit and push all of the data to your repo
+5. deploy the data to GitHub Pages on branch `gh_pages_branch` (if not provided, the default branch is `'gh-pages'`).
 
 ## Inputs
 
@@ -56,14 +57,19 @@ URL to a LDES or tree:Collection dataset from which you want to fetch data.
 
 Name of the output directory where the fetched data will be stored.
 
-### `postprocess` (optional)
+### `predicate` (optional)
 
-Path to a JavaScript file for postprocessing the data in `storage`. *(not implemented yet)*
+URI of a predicate, used for fragmenting (sorting) the members. This predicate should be present in each member.
+
+### `max_members` (optional)
+
+Maximum amount of members stored per data file.\
+**Default:** `500`
 
 ### `gh_pages_branch` (optional)
 
 Branch where GitHub Pages will be deployed. The branch will be created if it doesn't exist yet.\
-Default: `'gh-pages'`
+**Default:** `'gh-pages'`
 
 ## Outputs
 
