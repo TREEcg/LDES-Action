@@ -1,8 +1,8 @@
 {
-  "name": "republish-ldes",
+  "name": "gh-action-republish-ldes",
   "version": "1.0.0",
   "description": "",
-  "main": "run.js",
+  "main": "lib/main.js",
   "scripts": {
     "start": "node ./lib/main.js",
     "build": "tsc",
@@ -14,15 +14,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ArnoTroch/republish-ldes.git"
+    "url": "git+https://github.com/TREEcg/gh-action-republish-ldes.git"
   },
   "keywords": [],
-  "author": "",
+  "contributors": [
+    "Arno Troch",
+    "Kasper Zutterman <kasperzutterman1999@gmail.com> (https://www.kasperzutterman.com/)"
+  ],
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ArnoTroch/republish-ldes/issues"
+    "url": "https://github.com/TREEcg/gh-action-republish-ldes/issues"
   },
-  "homepage": "https://github.com/ArnoTroch/republish-ldes#readme",
+  "homepage": "https://github.com/TREEcg/gh-action-republish-ldes#readme",
   "dependencies": {
     "@actions/core": "^1.5.0",
     "@actions/exec": "^1.1.0",
