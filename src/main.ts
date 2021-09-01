@@ -9,6 +9,8 @@ import { Data } from './data';
 const run = async (): Promise<void> => {
 	core.startGroup('Configuration');
 	const config: IConfig = getConfig();
+	core.info('max_members type:');
+	core.info(typeof config.max_members);
 	const username = 'flat-data';
 	await exec('git', ['config', 'user.name', username]);
 	await exec('git', [
