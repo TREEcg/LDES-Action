@@ -37,8 +37,6 @@ const run = async () => {
         return;
     }
     const files = JSON.parse(process.env.FILES || '[]');
-    core.info('files');
-    core.info(JSON.stringify(files));
     // Don't want to commit if there aren't any files changed!
     if (!files.length) {
         core.info('No changes to commit');

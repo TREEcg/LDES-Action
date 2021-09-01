@@ -2,6 +2,7 @@ import { newEngine } from '@treecg/actor-init-ldes-client';
 import fs from 'fs';
 import { existsSync, mkdirSync } from 'fs';
 import { IConfig } from './config';
+import * as N3 from 'n3';
 
 export class Data {
 	// name of files where data will be stored
@@ -10,19 +11,21 @@ export class Data {
 	private readonly FILE_SIZE = 500;
 
 	private readonly config: IConfig;
-	private readonly members: { [key: string]: object };
+	private readonly store: N3.Store;
 	private readonly fetches: Array<string>;
+	private fetch_time: string | undefined;
 
 	public constructor(config: IConfig) {
 		this.config = config;
-		this.members = {};
+		this.store = new N3.Store();
 
 		// create necessary directories where data will be stored
 		if (!existsSync(this.config.storage)) {
 			mkdirSync(this.config.storage);
 		}
 
-		// load previous fetch times if they exist
+		// load previous fetch times if they exist. We will use the most recent fetch time
+		// to only fetch data that was added after this time.
 		const fetch_times = fs.readdirSync(this.config.storage);
 		const fetch_dates = fetch_times
 			.map((dir) => new Date(dir))
@@ -41,6 +44,7 @@ export class Data {
 				let options = {
 					emitMemberOnce: true,
 					disablePolling: true,
+					mimeType: 'text/turtle',
 					// only fetch data added after latest fetch
 					fromTime:
 						this.fetches.length > 0 ? new Date(this.fetches[0]) : undefined,
@@ -51,15 +55,24 @@ export class Data {
 					this.config.url,
 					options
 				);
+				const parser = new N3.Parser({ format: 'text/turtle' });
 
-				eventStreamSync
-					.on('data', (data) => {
-						let obj = JSON.parse(data);
-						this.members[obj['@id']] = obj;
-					})
-					.on('end', async () => {
+				// read quads and add them to triple store
+				// @ts-ignore
+				parser.parse(eventStreamSync, (err, quad, prefs) => {
+					if (err) {
+						return reject(err);
+					}
+					if (prefs) {
+						console.log('prefixes:', prefs);
+					}
+					if (quad) {
+						this.store.addQuad(quad);
+					} else {
+						this.fetch_time = new Date().toISOString();
 						return resolve();
-					});
+					}
+				});
 			} catch (e) {
 				console.error(e);
 				return reject(e);
@@ -73,36 +86,44 @@ export class Data {
 	public async writeData(): Promise<void> {
 		return new Promise<void>(async (resolve, reject) => {
 			try {
-				const member_values = Object.values(this.members);
-				if (member_values.length === 0) {
-					// if there are no members, we are done
+				if (this.store.countQuads(null, null, null, null) === 0) {
+					// if there is no data, we are done
 					return resolve();
 				}
 
 				// make directory where we will store newly fetched data
-				const now = new Date().toISOString();
-				mkdirSync(`${this.config.storage}/${now}`);
+				mkdirSync(`${this.config.storage}/${this.fetch_time}`);
 
-				// split members into multiple files
+				// split quads into multiple chunks containing 'this.FILE_SIZE' different subjects
+				const subjects = this.store.getSubjects(null, null, null);
 				const chunks = Array.from(
-					new Array(Math.ceil(member_values.length / this.FILE_SIZE)),
+					new Array(Math.ceil(subjects.length / this.FILE_SIZE)),
 					(_, i) =>
-						member_values.slice(
+						subjects.slice(
 							i * this.FILE_SIZE,
 							i * this.FILE_SIZE + this.FILE_SIZE
 						)
 				);
 
-				// write all chunks to a file
+				// write each chunk to its own file
 				await Promise.all(
 					chunks.map((chunk, index) => {
-						// files are named data<number>.json, where <number> is a 5-digit number
-						// representing the chunk index
-						const file_num = String(index).padStart(5, '0');
-						fs.promises.writeFile(
-							`${this.config.storage}/${now}/${this.DATA_FILE}${file_num}.json`,
-							JSON.stringify(chunk)
+						let writer = new N3.Writer();
+						chunk.forEach((subject) =>
+							writer.addQuads(this.store.getQuads(subject, null, null, null))
 						);
+						writer.end((err, result) => {
+							if (err) {
+								return reject(err);
+							}
+							// files are named <this.DATA_FILE><number>.ttl, where <number> is a 5-digit number
+							// representing the chunk index
+							const file_num = String(index).padStart(5, '0');
+							fs.promises.writeFile(
+								`${this.config.storage}/${this.fetch_time}/${this.DATA_FILE}${file_num}.ttl`,
+								result
+							);
+						});
 					})
 				);
 

@@ -24,18 +24,6 @@ const run = async (): Promise<void> => {
 	await data_fetcher.writeData();
 	core.endGroup();
 
-	if (config.postprocess) {
-		core.startGroup('Postprocess');
-		core.debug(`Invoking ${config.postprocess}…`);
-		try {
-			core.info("TODO (doesn't run anything yet)");
-		} catch (error) {
-			// @ts-ignore
-			core.setFailed(error);
-		}
-		core.endGroup();
-	}
-
 	core.startGroup('File changes');
 	const newUnstagedFiles = execSync(
 		'git ls-files --others --exclude-standard'

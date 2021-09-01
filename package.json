@@ -18,7 +18,7 @@
   },
   "keywords": [],
   "contributors": [
-    "Arno Troch",
+    "Arno Troch <arnot2k@gmail.com>",
     "Kasper Zutterman <kasperzutterman1999@gmail.com> (https://www.kasperzutterman.com/)"
   ],
   "license": "ISC",
@@ -29,7 +29,8 @@
   "dependencies": {
     "@actions/core": "^1.5.0",
     "@actions/exec": "^1.1.0",
-    "@treecg/actor-init-ldes-client": "2.3.5"
+    "@treecg/actor-init-ldes-client": "2.3.5",
+    "n3": "^1.11.1"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.29.2",
