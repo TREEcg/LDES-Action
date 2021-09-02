@@ -10,10 +10,6 @@ inputs:
   postprocess:
     description: 'Javascript postprocessing file (should be in the root of the project)'
     required: false
-  gh_pages_branch:
-    description: 'Branch that will be used to deploy to GitHub Pages'
-    required: false
-    default: 'gh-pages'
   gh_pages_url:
     description: 'URL to the GitHub Pages repository'
     required: false
@@ -39,9 +35,3 @@ runs:
     - name: Run post script
       run: node ${{ github.action_path }}/dist/post/index.js
       shell: bash
-    - name: Deploy to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@4.1.4
-      with:
-        branch: ${{ inputs.gh_pages_branch }}
-        folder: ${{ inputs.storage }}
-        clean: false
