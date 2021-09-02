@@ -28,11 +28,6 @@ runs:
       uses: actions/setup-node@v2
       with:
         node-version: '12'
-    - name: Test gh_pages_url
-      run: echo ${{ inputs.gh_pages_url }}
-      shell: bash
-      env:
-        INPUT_URL: ${{ inputs.gh_pages_url }}
     - name: Run main script
       run: node ${{ github.action_path }}/dist/index.js
       shell: bash
@@ -40,6 +35,7 @@ runs:
         INPUT_URL: ${{ inputs.url }}
         INPUT_STORAGE: ${{ inputs.storage }}
         INPUT_POSTPROCESS: ${{ inputs.postprocess }}
+        INPUT_GH_PAGRS_URL: ${{ inputs.gh_pages_url }}
     - name: Run post script
       run: node ${{ github.action_path }}/dist/post/index.js
       shell: bash
