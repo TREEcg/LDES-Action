@@ -17,7 +17,7 @@ inputs:
   gh_pages_url:
     description: 'URL to the GitHub Pages repository'
     required: false
-    default: 'https://${{ github.actor }}.github.io/${{ github.repository }}/'
+    default: 'https://${{ github.repository_owner }}.github.io/${{ github.repository.name }}/'
 outputs:
   delta_bytes: # size of changed data
     description: 'The overall number of bytes changed in the output data this run (current size - previous size)'
