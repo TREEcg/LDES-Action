@@ -5,11 +5,12 @@ export interface IConfig {
 	storage: string; // directory where data will be written
 	postprocess?: string; // path to postprocessing script, if necessary
 	gh_pages_branch: string; // branch used for deploying to GitHub Pages
+	gh_pages_url: string; // URL of the GitHub Pages deployment
 }
 
 export function getConfig(): IConfig {
 	const raw: any = {};
-	const keys = ['url', 'storage', 'postprocess', 'gh_pages_branch'];
+	const keys = ['url', 'storage', 'postprocess', 'gh_pages_branch', 'gh_pages_url'];
 	keys.forEach((k) => {
 		const v = core.getInput(k); // getInput always returns a string
 		core.info(`${k}: ${v}`);
