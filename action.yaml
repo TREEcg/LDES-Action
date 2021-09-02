@@ -28,6 +28,11 @@ runs:
       uses: actions/setup-node@v2
       with:
         node-version: '12'
+    - name: Test gh_pages_url
+      run: echo INPUT_URL
+      shell: bash
+      env:
+        INPUT_URL: ${{ inputs.gh_pages_url }}
     - name: Run main script
       run: node ${{ github.action_path }}/dist/index.js
       shell: bash
@@ -38,11 +43,6 @@ runs:
     - name: Run post script
       run: node ${{ github.action_path }}/dist/post/index.js
       shell: bash
-    - name: Test gh_pages_url
-      run: echo INPUT_URL
-      shell: bash
-      env:
-        INPUT_URL: ${{ inputs.gh_pages_url }}
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@4.1.4
       with:
