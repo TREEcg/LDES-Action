@@ -67,10 +67,6 @@ const run = async (): Promise<void> => {
 	core.info('process.env.FILES');
 	core.info(JSON.stringify(process.env.FILES));
 	core.endGroup();
-
-	core.startGroup('Logging config variables');
-	core.info(JSON.stringify(config));
-	core.endGroup();
 };
 
 run().catch((error) => {
