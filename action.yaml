@@ -14,6 +14,10 @@ inputs:
     description: 'Branch that will be used to deploy to GitHub Pages'
     required: false
     default: 'gh-pages'
+  gh_pages_url:
+    description: 'URL to the GitHub Pages repository'
+    required: false
+    default: https://${{GITHUB_ACTOR}}.github.io/${{GITHUB_REPOSITORY}}/
 outputs:
   delta_bytes: # size of changed data
     description: 'The overall number of bytes changed in the output data this run (current size - previous size)'
@@ -34,6 +38,11 @@ runs:
     - name: Run post script
       run: node ${{ github.action_path }}/dist/post/index.js
       shell: bash
+    - name: Test gh_pages_url
+      run: cat INPUT_URL
+      shell: bash
+      env:
+        INPUT_URL: ${{ inputs.gh_pages_url }}
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@4.1.4
       with:
