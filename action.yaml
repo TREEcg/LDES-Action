@@ -39,7 +39,7 @@ runs:
       run: node ${{ github.action_path }}/dist/post/index.js
       shell: bash
     - name: Test gh_pages_url
-      run: cat INPUT_URL
+      run: echo INPUT_URL
       shell: bash
       env:
         INPUT_URL: ${{ inputs.gh_pages_url }}
