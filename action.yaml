@@ -14,6 +14,10 @@ inputs:
     description: 'Branch that will be used to deploy to GitHub Pages'
     required: false
     default: 'gh-pages'
+  gh_pages_url:
+    description: 'URL to the GitHub Pages repository'
+    required: false
+    default: 'https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/'
 outputs:
   delta_bytes: # size of changed data
     description: 'The overall number of bytes changed in the output data this run (current size - previous size)'
@@ -31,6 +35,7 @@ runs:
         INPUT_URL: ${{ inputs.url }}
         INPUT_STORAGE: ${{ inputs.storage }}
         INPUT_POSTPROCESS: ${{ inputs.postprocess }}
+        INPUT_GH_PAGRS_URL: ${{ inputs.gh_pages_url }}
     - name: Run post script
       run: node ${{ github.action_path }}/dist/post/index.js
       shell: bash
