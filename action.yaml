@@ -29,7 +29,7 @@ runs:
       with:
         node-version: '12'
     - name: Test gh_pages_url
-      run: echo INPUT_URL
+      run: echo ${{ inputs.gh_pages_url }}
       shell: bash
       env:
         INPUT_URL: ${{ inputs.gh_pages_url }}
