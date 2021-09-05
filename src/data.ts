@@ -4,6 +4,8 @@ import { existsSync, mkdirSync } from 'fs';
 import { IConfig } from './config';
 import * as N3 from 'n3';
 
+import date from "./utils/date";
+
 export class Data {
 	// name of files where data will be stored
 	private readonly DATA_FILE = 'data';
@@ -92,7 +94,10 @@ export class Data {
 				}
 
 				// make directory where we will store newly fetched data
-				mkdirSync(`${this.config.storage}/${this.fetch_time}`);
+				let basicISODate = date.dateToBasicISODate(new Date());
+				console.log(`${this.config.storage}/${basicISODate}`)
+				mkdirSync(`${this.config.storage}/${basicISODate}`);
+
 
 				// split quads into multiple chunks containing 'this.FILE_SIZE' different subjects
 				const subjects = this.store.getSubjects(null, null, null);
@@ -120,7 +125,7 @@ export class Data {
 							// representing the chunk index
 							const file_num = String(index).padStart(5, '0');
 							fs.promises.writeFile(
-								`${this.config.storage}/${this.fetch_time}/${this.DATA_FILE}${file_num}.ttl`,
+								`${this.config.storage}/${basicISODate}/${this.DATA_FILE}${file_num}.ttl`,
 								result
 							);
 						});

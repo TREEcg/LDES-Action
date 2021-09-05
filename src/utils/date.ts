@@ -3,7 +3,7 @@ import { formatISO } from 'date-fns'
 class date {
     
     dateToBasicISODate(date: Date) {
-        return formatISO(date, { format: 'basic' });
+        return formatISO(date, { format: 'basic' }).slice(0, -6);
     }
 
     /*
