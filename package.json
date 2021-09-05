@@ -10,7 +10,7 @@
     "package-post": "ncc build --target es2020 lib/post.js -o dist/post",
     "dist": "npm run build && npm run package && npm run package-post",
     "format": "prettier --write **/*.ts",
-    "test": "npm run build && cross-env INPUT_URL=\"https://smartdata.dev-vlaanderen.be/base/gemeente\" INPUT_STORAGE=\"output\" npm run start"
+    "test": "npm run build && env-cmd npm run start"
   },
   "repository": {
     "type": "git",
