@@ -27,9 +27,11 @@ class FragmentStrategyVersion implements IFragmentStrategy {
 
             // check if file not exists
             if (!fs.existsSync(`${config.storage}/${reference}/${basicISODate}.nt`)) {
-                // make file where we will store newly fetched data
-                let res = this.quadArratToNTriples(quadArr);
-                fs.writeFileSync(`${config.storage}/${reference}/${basicISODate}.nt`, res);
+                // make file where we will store newly fetched data     
+                const writer = new N3.Writer({ format: 'N-Triples' });
+                let serialised = writer.quadsToString(quadArr);
+
+                fs.writeFileSync(`${config.storage}/${reference}/${basicISODate}.nt`, serialised);
             }
 
         });
@@ -38,28 +40,6 @@ class FragmentStrategyVersion implements IFragmentStrategy {
     find(data: RDF.Quad[], predicate: string): any {
         const found = data.find(element => element.predicate.value === predicate);
         return (found === undefined) ? null : found.object.value;
-    }
-
-    /*
-    private toNtriples(data: RDF.Quad[]): string {
-        const writer = new N3.Writer({ format: 'N-Triples' });
-
-        data.forEach(quad => writer.addQuad(quad));
-        let res: string = '';
-        console.log(writer.end())
-        writer.end((result: string) => {res = result; console.log(result)});
-        return  res;
-        
-
-    }
-    */
-
-    private quadArratToNTriples(data: RDF.Quad[]): any {
-        let res: string = '';
-        data.forEach(quad => {
-            res += `${quad.subject.value} <${quad.predicate.value}> ${quad.object.value} . \n`
-        });
-        return res;
     }
 
 }
