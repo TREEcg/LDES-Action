@@ -8,7 +8,7 @@ const N3 = require('n3');
  * Concrete Strategies implement the algorithm while following the base Strategy
  * interface. The interface makes them interchangeable in the Context.
  */
-class FragmentStrategyVersion implements IFragmentStrategy {
+class VersionFragmentStrategy implements IFragmentStrategy {
 
     fragment(data: RDF.Quad[][], config: { storage: any }): void {
         data.forEach(quadArr => {
@@ -44,4 +44,4 @@ class FragmentStrategyVersion implements IFragmentStrategy {
 
 }
 
-export default FragmentStrategyVersion;
+export default VersionFragmentStrategy;

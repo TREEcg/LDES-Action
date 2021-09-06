@@ -8,7 +8,8 @@ import date from "./utils/date";
 import type * as RDF from 'rdf-js';
 import { getDummyData } from './dummyData';
 import FragmentContext from './fragmentStrategy/FragmentContext';
-import FragmentStrategyVersion from './fragmentStrategy/FragmentStrategyVersion';
+import VersionFragmentStrategy from './fragmentStrategy/VersionFragmentStrategy';
+import IFragmentStrategy from './fragmentStrategy/IFragmentStrategy';
 
 export class Data {
 	// name of files where data will be stored
@@ -20,6 +21,7 @@ export class Data {
 	private readonly store: N3.Store;
 	private readonly fetches: Array<string>;
 	private fetch_time: string | undefined;
+	private fragmentContext: FragmentContext;
 
 	private dummyData: RDF.Quad[][] = [];
 
@@ -42,7 +44,30 @@ export class Data {
 		this.fetches = fetch_dates.map((date) => date.toISOString());
 		this.fetches.sort();
 
+		this.fragmentContext = new FragmentContext(new VersionFragmentStrategy());
+		this.setFragmentationStrategy();
+
 		this.dummyData = getDummyData();
+	}
+
+	/**
+	 * set the fragmentation strategy
+	 */
+	private setFragmentationStrategy(): void {
+		let strategy: IFragmentStrategy;
+		switch (this.config.fragmentation_strategy) {
+			case "version": {
+				strategy = new VersionFragmentStrategy();
+				break;
+			}
+			default: {
+				strategy = new VersionFragmentStrategy();
+				break;
+			}
+		}
+
+		this.fragmentContext.setStrategy(strategy);
+
 	}
 
 	/**
@@ -65,6 +90,10 @@ export class Data {
 					this.config.url,
 					options
 				);
+
+				// @ Here should come the RDF.Quad[][] implementation when it is finished in the library!
+				// It should replace the current N3 Parser implementation.
+
 				const parser = new N3.Parser({ format: 'text/turtle' });
 
 				// read quads and add them to triple store
@@ -143,8 +172,8 @@ export class Data {
 
 				return resolve();
 				*/
-				let fragmentContext = new FragmentContext(new FragmentStrategyVersion());
-				fragmentContext.fragment(this.dummyData, this.config);
+				//let fragmentContext = new FragmentContext(new VersionFragmentStrategy());
+				this.fragmentContext.fragment(this.dummyData, this.config);
 				return resolve();
 			} catch (e) {
 				console.error(e);
