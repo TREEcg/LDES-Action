@@ -8,11 +8,13 @@ export interface IConfig {
 	gh_pages_url: string; // URL of the GitHub Pages deployment
 	git_username: string; // GitHub username that makes the commits
 	git_email: string; // GitHub email that makes the commits
+	fragmentation_strategy: string; // fragmentation strategy
+	fragmentation_page_size: number; // page size for fragmentation
 }
 
 export function getConfig(): IConfig {
 	const raw: any = {};
-	const keys = ['url', 'storage', 'postprocess', 'gh_pages_branch', 'gh_pages_url', 'git_username', 'git_email'];
+	const keys = ['url', 'storage', 'postprocess', 'gh_pages_branch', 'gh_pages_url', 'git_username', 'git_email', 'fragmentation_strategy', 'fragmentation_page_size'];
 	keys.forEach((k) => {
 		const v = core.getInput(k); // getInput always returns a string
 		core.info(`${k}: ${v}`);
