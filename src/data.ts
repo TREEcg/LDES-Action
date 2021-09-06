@@ -5,6 +5,10 @@ import { IConfig } from './config';
 import * as N3 from 'n3';
 
 import date from "./utils/date";
+import type * as RDF from 'rdf-js';
+import { getDummyData } from './dummyData';
+import FragmentContext from './fragmentStrategy/FragmentContext';
+import FragmentStrategyVersion from './fragmentStrategy/FragmentStrategyVersion';
 
 export class Data {
 	// name of files where data will be stored
@@ -16,6 +20,8 @@ export class Data {
 	private readonly store: N3.Store;
 	private readonly fetches: Array<string>;
 	private fetch_time: string | undefined;
+
+	private dummyData: RDF.Quad[][] = [];
 
 	public constructor(config: IConfig) {
 		this.config = config;
@@ -35,6 +41,8 @@ export class Data {
 			.filter((date) => !isNaN(date));
 		this.fetches = fetch_dates.map((date) => date.toISOString());
 		this.fetches.sort();
+
+		this.dummyData = getDummyData();
 	}
 
 	/**
@@ -88,6 +96,7 @@ export class Data {
 	public async writeData(): Promise<void> {
 		return new Promise<void>(async (resolve, reject) => {
 			try {
+				/*
 				if (this.store.countQuads(null, null, null, null) === 0) {
 					// if there is no data, we are done
 					return resolve();
@@ -132,6 +141,10 @@ export class Data {
 					})
 				);
 
+				return resolve();
+				*/
+				let fragmentContext = new FragmentContext(new FragmentStrategyVersion());
+				fragmentContext.fragment(this.dummyData, this.config);
 				return resolve();
 			} catch (e) {
 				console.error(e);
