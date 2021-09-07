@@ -56,10 +56,6 @@ URL to a LDES or tree:Collection dataset from which you want to fetch data.
 
 Name of the output directory where the fetched data will be stored.
 
-### `postprocess` (optional)
-
-Path to a JavaScript file for postprocessing the data in `storage`. *(not implemented yet)*
-
 ### `gh_pages_branch` (optional)
 
 Branch where GitHub Pages will be deployed. The branch will be created if it doesn't exist yet.\
