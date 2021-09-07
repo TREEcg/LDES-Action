@@ -6,6 +6,7 @@ import * as N3 from 'n3';
 
 import date from "./utils/date";
 import type * as RDF from 'rdf-js';
+import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import { getDummyData } from './dummyData';
 import FragmentContext from './fragmentStrategy/FragmentContext';
 import VersionFragmentStrategy from './fragmentStrategy/VersionFragmentStrategy';
@@ -177,13 +178,48 @@ export class Data {
 
 				return resolve();
 				*/
-				//let fragmentContext = new FragmentContext(new VersionFragmentStrategy());
-				this.fragmentContext.fragment(this.dummyData, this.config);
+				let respapedData: RDF.Quad[][] = this.reshapeData();
+				this.fragmentContext.fragment(respapedData, this.config);
+
+				//this.fragmentContext.fragment(this.dummyData, this.config);
 				return resolve();
 			} catch (e) {
 				console.error(e);
 				return reject(e);
 			}
 		});
+	}
+
+	// This code should be deprecatable when issue https://github.com/TREEcg/event-stream-client/issues/22 is fixed
+	private reshapeData(): RDF.Quad[][] {
+		let reshapedData: RDF.Quad[][] = [];
+
+		let uniqueSubjects = this.store.getSubjects(null, null, null);
+		console.log(uniqueSubjects[0].value);
+
+		uniqueSubjects.forEach((subject) => {
+			let subjectQuads = this.store.getQuads(subject, null, null, null);
+
+			// N3.Quad to RDF.Quad
+			
+			let reshapedSubjectQuads: RDF.Quad[] = [];
+			subjectQuads.forEach((_quad) => {
+				let quadSubject = _quad.subject;
+				let quadPredicate = _quad.predicate;
+				let quadObject = _quad.object;
+				let quadGraph = _quad.graph;
+
+				let reshapedQuad = quad(quadSubject, quadPredicate,	quadObject,	quadGraph);
+
+				reshapedSubjectQuads.push(reshapedQuad);
+			});
+
+			reshapedData.push(reshapedSubjectQuads);
+			
+			//console.log(subjectQuads);
+			//console.log(reshapedSubjectQuads);
+		});
+
+		return reshapedData;
 	}
 }
