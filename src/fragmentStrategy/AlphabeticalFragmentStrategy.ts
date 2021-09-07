@@ -28,11 +28,12 @@ class AlphabeticalFragmentStrategy implements IFragmentStrategy {
 
         pages.forEach((page, index) => { 
             // make file where we will store newly fetched data     
-            const writer = new N3.Writer({ format: 'N-Triples' });
+            //const writer = new N3.Writer({ format: 'N-Triples' });
+            const writer = new N3.Writer({ format: 'Turtle' });
             let serialised = writer.quadsToString(page);
 
             const fileName = String(index).padStart(5, '0');
-            fs.writeFileSync(`${config.storage}/${fileName}.nt`, serialised);
+            fs.writeFileSync(`${config.storage}/${fileName}.ttl`, serialised);
         });
         /*
         data.forEach(quadArr => {
