@@ -131,57 +131,12 @@ export class Data {
 	public async writeData(): Promise<void> {
 		return new Promise<void>(async (resolve, reject) => {
 			try {
-				/*
-				if (this.store.countQuads(null, null, null, null) === 0) {
-					// if there is no data, we are done
-					return resolve();
-				}
-
-				// make directory where we will store newly fetched data
-				let basicISODate = date.dateToBasicISODate(new Date());
-				console.log(`${this.config.storage}/${basicISODate}`)
-				mkdirSync(`${this.config.storage}/${basicISODate}`);
-
-
-				// split quads into multiple chunks containing 'this.FILE_SIZE' different subjects
-				const subjects = this.store.getSubjects(null, null, null);
-				const chunks = Array.from(
-					new Array(Math.ceil(subjects.length / this.FILE_SIZE)),
-					(_, i) =>
-						subjects.slice(
-							i * this.FILE_SIZE,
-							i * this.FILE_SIZE + this.FILE_SIZE
-						)
-				);
-
-				// write each chunk to its own file
-				await Promise.all(
-					chunks.map((chunk, index) => {
-						let writer = new N3.Writer();
-						chunk.forEach((subject) =>
-							writer.addQuads(this.store.getQuads(subject, null, null, null))
-						);
-						writer.end((err, result) => {
-							if (err) {
-								return reject(err);
-							}
-							// files are named <this.DATA_FILE><number>.ttl, where <number> is a 5-digit number
-							// representing the chunk index
-							const file_num = String(index).padStart(5, '0');
-							fs.promises.writeFile(
-								`${this.config.storage}/${basicISODate}/${this.DATA_FILE}${file_num}.ttl`,
-								result
-							);
-						});
-					})
-				);
-
-				return resolve();
-				*/
+				// reshape data to RDF.Quad[][] format
 				let respapedData: RDF.Quad[][] = this.reshapeData();
+
+				// fragment data & write to files
 				this.fragmentContext.fragment(respapedData, this.config);
 
-				//this.fragmentContext.fragment(this.dummyData, this.config);
 				return resolve();
 			} catch (e) {
 				console.error(e);
