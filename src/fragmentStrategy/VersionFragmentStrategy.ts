@@ -20,7 +20,7 @@ class VersionFragmentStrategy implements IFragmentStrategy {
 
             // check if directory does not exist
             if (!fs.existsSync(`${config.storage}/${reference}`)) {
-                console.log('Directory not existing!');
+                //console.log('Directory not existing!');
                 // make directory where we will store newly fetched data
                 fs.mkdirSync(`${config.storage}/${reference}`);
             }
