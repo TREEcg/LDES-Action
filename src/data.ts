@@ -10,6 +10,7 @@ import { getDummyData } from './dummyData';
 import FragmentContext from './fragmentStrategy/FragmentContext';
 import VersionFragmentStrategy from './fragmentStrategy/VersionFragmentStrategy';
 import IFragmentStrategy from './fragmentStrategy/IFragmentStrategy';
+import AlphabeticalFragmentStrategy from './fragmentStrategy/AlphabeticalFragmentStrategy';
 
 export class Data {
 	// name of files where data will be stored
@@ -56,6 +57,10 @@ export class Data {
 	private setFragmentationStrategy(): void {
 		let strategy: IFragmentStrategy;
 		switch (this.config.fragmentation_strategy) {
+			case "alphabetical": {
+				strategy = new AlphabeticalFragmentStrategy();
+				break;
+			}
 			case "version": {
 				strategy = new VersionFragmentStrategy();
 				break;
