@@ -7,7 +7,6 @@ import * as N3 from 'n3';
 import date from "./utils/date";
 import type * as RDF from 'rdf-js';
 import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
-import { getDummyData } from './dummyData';
 import FragmentContext from './fragmentStrategy/FragmentContext';
 import VersionFragmentStrategy from './fragmentStrategy/VersionFragmentStrategy';
 import IFragmentStrategy from './fragmentStrategy/IFragmentStrategy';
@@ -24,8 +23,6 @@ export class Data {
 	private readonly fetches: Array<string>;
 	private fetch_time: string | undefined;
 	private fragmentContext: FragmentContext;
-
-	private dummyData: RDF.Quad[][] = [];
 
 	public constructor(config: IConfig) {
 		this.config = config;
@@ -49,7 +46,6 @@ export class Data {
 		this.fragmentContext = new FragmentContext(new VersionFragmentStrategy());
 		this.setFragmentationStrategy();
 
-		this.dummyData = getDummyData();
 	}
 
 	/**
