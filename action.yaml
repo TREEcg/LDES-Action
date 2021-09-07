@@ -47,7 +47,7 @@ runs:
         INPUT_URL: ${{ inputs.url }}
         INPUT_STORAGE: ${{ inputs.storage }}
         INPUT_POSTPROCESS: ${{ inputs.postprocess }}
-        INPUT_GH_PAGRS_URL: ${{ inputs.gh_pages_url }}
+        INPUT_GH_PAGES_URL: ${{ inputs.gh_pages_url }}
         INPUT_GIT_USERNAME: ${{ inputs.git_username }}
         INPUT_GIT_EMAIL: ${{ inputs.git_email }}
         INPUT_FRAGMENTATION_STRATEGY: ${{ inputs.fragmentation_strategy }}
