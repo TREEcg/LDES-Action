@@ -9,13 +9,8 @@ import { Data } from './data';
 const run = async (): Promise<void> => {
 	core.startGroup('Configuration');
 	const config: IConfig = getConfig();
-	const username = 'flat-data';
-	await exec('git', ['config', 'user.name', username]);
-	await exec('git', [
-		'config',
-		'user.email',
-		`${username}@users.noreply.github.com`,
-	]);
+	await exec('git', ['config', 'user.name', config.git_username]);
+	await exec('git', ['config', 'user.email', `${config.git_email}`]);
 	core.endGroup();
 
 	core.startGroup('Fetch and write data');

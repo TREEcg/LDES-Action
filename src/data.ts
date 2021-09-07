@@ -4,6 +4,15 @@ import { existsSync, mkdirSync } from 'fs';
 import { IConfig } from './config';
 import * as N3 from 'n3';
 
+import date from "./utils/date";
+import type * as RDF from 'rdf-js';
+import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
+import { getDummyData } from './dummyData';
+import FragmentContext from './fragmentStrategy/FragmentContext';
+import VersionFragmentStrategy from './fragmentStrategy/VersionFragmentStrategy';
+import IFragmentStrategy from './fragmentStrategy/IFragmentStrategy';
+import AlphabeticalFragmentStrategy from './fragmentStrategy/AlphabeticalFragmentStrategy';
+
 export class Data {
 	// name of files where data will be stored
 	private readonly DATA_FILE = 'data';
@@ -14,6 +23,9 @@ export class Data {
 	private readonly store: N3.Store;
 	private readonly fetches: Array<string>;
 	private fetch_time: string | undefined;
+	private fragmentContext: FragmentContext;
+
+	private dummyData: RDF.Quad[][] = [];
 
 	public constructor(config: IConfig) {
 		this.config = config;
@@ -33,6 +45,35 @@ export class Data {
 			.filter((date) => !isNaN(date));
 		this.fetches = fetch_dates.map((date) => date.toISOString());
 		this.fetches.sort();
+
+		this.fragmentContext = new FragmentContext(new VersionFragmentStrategy());
+		this.setFragmentationStrategy();
+
+		this.dummyData = getDummyData();
+	}
+
+	/**
+	 * set the fragmentation strategy
+	 */
+	private setFragmentationStrategy(): void {
+		let strategy: IFragmentStrategy;
+		switch (this.config.fragmentation_strategy) {
+			case "alphabetical": {
+				strategy = new AlphabeticalFragmentStrategy();
+				break;
+			}
+			case "version": {
+				strategy = new VersionFragmentStrategy();
+				break;
+			}
+			default: {
+				strategy = new VersionFragmentStrategy();
+				break;
+			}
+		}
+
+		this.fragmentContext.setStrategy(strategy);
+
 	}
 
 	/**
@@ -55,6 +96,10 @@ export class Data {
 					this.config.url,
 					options
 				);
+
+				// @ Here should come the RDF.Quad[][] implementation when it is finished in the library!
+				// It should replace the current N3 Parser implementation.
+
 				const parser = new N3.Parser({ format: 'text/turtle' });
 
 				// read quads and add them to triple store
@@ -86,13 +131,17 @@ export class Data {
 	public async writeData(): Promise<void> {
 		return new Promise<void>(async (resolve, reject) => {
 			try {
+				/*
 				if (this.store.countQuads(null, null, null, null) === 0) {
 					// if there is no data, we are done
 					return resolve();
 				}
 
 				// make directory where we will store newly fetched data
-				mkdirSync(`${this.config.storage}/${this.fetch_time}`);
+				let basicISODate = date.dateToBasicISODate(new Date());
+				console.log(`${this.config.storage}/${basicISODate}`)
+				mkdirSync(`${this.config.storage}/${basicISODate}`);
+
 
 				// split quads into multiple chunks containing 'this.FILE_SIZE' different subjects
 				const subjects = this.store.getSubjects(null, null, null);
@@ -120,7 +169,7 @@ export class Data {
 							// representing the chunk index
 							const file_num = String(index).padStart(5, '0');
 							fs.promises.writeFile(
-								`${this.config.storage}/${this.fetch_time}/${this.DATA_FILE}${file_num}.ttl`,
+								`${this.config.storage}/${basicISODate}/${this.DATA_FILE}${file_num}.ttl`,
 								result
 							);
 						});
@@ -128,10 +177,49 @@ export class Data {
 				);
 
 				return resolve();
+				*/
+				let respapedData: RDF.Quad[][] = this.reshapeData();
+				this.fragmentContext.fragment(respapedData, this.config);
+
+				//this.fragmentContext.fragment(this.dummyData, this.config);
+				return resolve();
 			} catch (e) {
 				console.error(e);
 				return reject(e);
 			}
 		});
+	}
+
+	// This code should be deprecatable when issue https://github.com/TREEcg/event-stream-client/issues/22 is fixed
+	private reshapeData(): RDF.Quad[][] {
+		let reshapedData: RDF.Quad[][] = [];
+
+		let uniqueSubjects = this.store.getSubjects(null, null, null);
+		console.log(uniqueSubjects[0].value);
+
+		uniqueSubjects.forEach((subject) => {
+			let subjectQuads = this.store.getQuads(subject, null, null, null);
+
+			// N3.Quad to RDF.Quad
+			
+			let reshapedSubjectQuads: RDF.Quad[] = [];
+			subjectQuads.forEach((_quad) => {
+				let quadSubject = _quad.subject;
+				let quadPredicate = _quad.predicate;
+				let quadObject = _quad.object;
+				let quadGraph = _quad.graph;
+
+				let reshapedQuad = quad(quadSubject, quadPredicate,	quadObject,	quadGraph);
+
+				reshapedSubjectQuads.push(reshapedQuad);
+			});
+
+			reshapedData.push(reshapedSubjectQuads);
+			
+			//console.log(subjectQuads);
+			//console.log(reshapedSubjectQuads);
+		});
+
+		return reshapedData;
 	}
 }
