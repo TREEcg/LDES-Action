@@ -26,12 +26,12 @@ class VersionFragmentStrategy implements IFragmentStrategy {
             }
 
             // check if file not exists
-            if (!fs.existsSync(`${config.storage}/${reference}/${basicISODate}.nt`)) {
+            if (!fs.existsSync(`${config.storage}/${reference}/${basicISODate}.turtle`)) {
                 // make file where we will store newly fetched data     
                 const writer = new N3.Writer({ format: 'N-Triples' });
                 let serialised = writer.quadsToString(quadArr);
 
-                fs.writeFileSync(`${config.storage}/${reference}/${basicISODate}.nt`, serialised);
+                fs.writeFileSync(`${config.storage}/${reference}/${basicISODate}.turtle`, serialised);
             }
 
         });

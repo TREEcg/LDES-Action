@@ -64,7 +64,7 @@ class AlphabeticalFragmentStrategy implements IFragmentStrategy {
     getFileLocation(index: number, config: IConfig): string {
         // file location
         const fileName = String(index).padStart(5, '0');
-        return `${config.storage}/${fileName}.ttl`;
+        return `${config.storage}/${fileName}.turtle`;
     }
 
     createHypermedia(data: RDF.Quad[], config: IConfig, fileLocation: string, nextPage: string | null, previousPage: string | null): RDF.Quad[] {
