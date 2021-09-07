@@ -56,14 +56,20 @@ URL to a LDES or tree:Collection dataset from which you want to fetch data.
 
 Name of the output directory where the fetched data will be stored.
 
-### `postprocess` (optional)
+### `gh_pages_url` (optional)
 
-Path to a JavaScript file for postprocessing the data in `storage`. *(not implemented yet)*
+URL where GitHub Pages will be deployed.
+Default: `http(s)://<username>.github.io/<repository> or http(s)://<organization>.github.io/<repository>`
 
-### `gh_pages_branch` (optional)
+### `fragmentation_strategy` (optional)
 
-Branch where GitHub Pages will be deployed. The branch will be created if it doesn't exist yet.\
-Default: `'gh-pages'`
+Fragmentation strategy that will be deployed.
+Default: `version`
+
+### `fragmentation_page_size` (optional)
+
+Amount of RDF objects that will be on a single page.
+Default: `'50'`
 
 ## Outputs
 
