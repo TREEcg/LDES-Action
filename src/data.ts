@@ -13,10 +13,6 @@ import IFragmentStrategy from './fragmentStrategy/IFragmentStrategy';
 import AlphabeticalFragmentStrategy from './fragmentStrategy/AlphabeticalFragmentStrategy';
 
 export class Data {
-	// name of files where data will be stored
-	private readonly DATA_FILE = 'data';
-	// amount of objects we save per file;
-	private readonly FILE_SIZE = 500;
 
 	private readonly config: IConfig;
 	private readonly store: N3.Store;
