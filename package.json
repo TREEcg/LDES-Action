@@ -1,5 +1,5 @@
 {
-  "name": "gh-action-republish-ldes",
+  "name": "ldes-action",
   "version": "1.0.0",
   "description": "",
   "main": "lib/main.js",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TREEcg/gh-action-republish-ldes.git"
+    "url": "git+https://github.com/TREEcg/LDES-Action.git"
   },
   "keywords": [],
   "contributors": [
@@ -23,9 +23,9 @@
   ],
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/TREEcg/gh-action-republish-ldes/issues"
+    "url": "https://github.com/TREEcg/LDES-Action/issues"
   },
-  "homepage": "https://github.com/TREEcg/gh-action-republish-ldes#readme",
+  "homepage": "https://github.com/TREEcg/LDES-Action#readme",
   "dependencies": {
     "@actions/core": "^1.5.0",
     "@actions/exec": "^1.1.0",
