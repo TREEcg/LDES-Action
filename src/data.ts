@@ -16,8 +16,6 @@ export class Data {
 
 	private readonly config: IConfig;
 	private readonly store: N3.Store;
-	private readonly fetches: Array<string>;
-	private fetch_time: string | undefined;
 	private fragmentContext: FragmentContext;
 
 	public constructor(config: IConfig) {
@@ -28,16 +26,6 @@ export class Data {
 		if (!existsSync(this.config.storage)) {
 			mkdirSync(this.config.storage);
 		}
-
-		// load previous fetch times if they exist. We will use the most recent fetch time
-		// to only fetch data that was added after this time.
-		const fetch_times = fs.readdirSync(this.config.storage);
-		const fetch_dates = fetch_times
-			.map((dir) => new Date(dir))
-			// @ts-ignore
-			.filter((date) => !isNaN(date));
-		this.fetches = fetch_dates.map((date) => date.toISOString());
-		this.fetches.sort();
 
 		this.fragmentContext = new FragmentContext(new VersionFragmentStrategy());
 		this.setFragmentationStrategy();
@@ -78,9 +66,6 @@ export class Data {
 					emitMemberOnce: true,
 					disablePolling: true,
 					mimeType: 'text/turtle',
-					// only fetch data added after latest fetch
-					fromTime:
-						this.fetches.length > 0 ? new Date(this.fetches[0]) : undefined,
 				};
 
 				let LDESClient = newEngine();
@@ -106,7 +91,6 @@ export class Data {
 					if (quad) {
 						this.store.addQuad(quad);
 					} else {
-						this.fetch_time = new Date().toISOString();
 						return resolve();
 					}
 				});
