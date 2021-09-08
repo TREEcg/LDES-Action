@@ -12,15 +12,14 @@ export interface IConfig {
 }
 
 export function getConfig(): IConfig {
-	const raw: any = {};
-	const keys = ['url', 'storage', 'gh_pages_branch', 'gh_pages_url', 'git_username', 'git_email', 'fragmentation_strategy', 'fragmentation_page_size'];
-	keys.forEach((k) => {
-		const v = core.getInput(k); // getInput always returns a string
-		core.info(`${k}: ${v}`);
-		if (v) {
-			raw[k] = v;
-		}
-	});
-	core.debug(`Raw config: ${JSON.stringify(raw)}`);
-	return raw as IConfig;
+	return {
+		url: core.getInput('url'),
+		storage: core.getInput('storage'),
+		gh_pages_branch: core.getInput('gh_pages_branch'),
+		gh_pages_url: core.getInput('gh_pages_url'),
+		git_username: core.getInput('git_username'),
+		git_email: core.getInput('git_email'),
+		fragmentation_strategy: core.getInput('fragmentation_strategy'),
+		fragmentation_page_size: parseInt(core.getInput('fragmentation_page_size'))
+	};
 }
