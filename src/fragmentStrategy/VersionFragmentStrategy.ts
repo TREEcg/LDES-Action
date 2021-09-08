@@ -64,6 +64,7 @@ class VersionFragmentStrategy implements IFragmentStrategy {
             if (fs.existsSync(`${config.storage}/${directory}/latest.ttl`)) {
                 // delete symbolic link
                 fs.unlinkSync(`${config.storage}/${directory}/latest.ttl`);
+                console.log(`unlinked ${config.storage}/${directory}/latest.ttl`);
             }
 
             // create symbolic link latets.ttl -> latest file
