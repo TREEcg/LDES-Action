@@ -42,10 +42,10 @@ const run = async (): Promise<void> => {
 	for (const filename of editedFilenames) {
 		core.debug(`git adding ${filename}…`);
 		await exec('git', ['add', filename]);
-		const bytes = await diff(filename);
+		//const bytes = await diff(filename);
 		editedFiles.push({
 			name: filename,
-			deltaBytes: bytes,
+			//deltaBytes: bytes,
 			source: config.url,
 		});
 	}
