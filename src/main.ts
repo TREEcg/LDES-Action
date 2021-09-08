@@ -54,13 +54,13 @@ const run = async (): Promise<void> => {
 	core.startGroup('Committing new data');
 	const alreadyEditedFiles = JSON.parse(process.env.FILES || '[]');
 	core.info('alreadyEditedFiles');
-	core.info(JSON.stringify(alreadyEditedFiles));
+	core.info(JSON.stringify(alreadyEditedFiles.slice(0, 100)));
 	core.info('editedFiles');
-	core.info(JSON.stringify(editedFiles));
+	core.info(JSON.stringify(editedFiles.slice(0, 100)));
 	const files = [...alreadyEditedFiles, ...editedFiles];
 	core.exportVariable('FILES', files);
 	core.info('process.env.FILES');
-	core.info(JSON.stringify(process.env.FILES?.slice(0,100)));
+	core.info(JSON.stringify(process.env.FILES));
 	core.endGroup();
 };
 
