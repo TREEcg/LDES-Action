@@ -2,6 +2,7 @@ import IFragmentStrategy from './IFragmentStrategy';
 import type * as RDF from 'rdf-js';
 import fs from 'fs';
 import date from "../utils/date";
+import { IConfig } from '../config';
 const N3 = require('n3');
 
 /**
@@ -10,7 +11,7 @@ const N3 = require('n3');
  */
 class VersionFragmentStrategy implements IFragmentStrategy {
 
-    fragment(data: RDF.Quad[][], config: { storage: any }): void {
+    fragment(data: RDF.Quad[][], config: IConfig): void {
         data.forEach(quadArr => {
             let identifier = this.find(quadArr, 'http://purl.org/dc/terms/isVersionOf');
             let reference = identifier.substring(identifier.lastIndexOf('/') + 1);
