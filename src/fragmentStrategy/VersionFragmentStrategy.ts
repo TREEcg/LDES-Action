@@ -62,7 +62,7 @@ class VersionFragmentStrategy implements IFragmentStrategy {
             // fs.writeFileSync(`${config.storage}/${directory}/latest.ttl`, '');
 
             // create symbolic link latets.ttl -> latest file
-            fs.symlinkSync(`${config.storage}/${directory}/latest.ttl`, `${config.storage}/${directory}/${latest}`);
+            fs.symlinkSync(`${config.storage}/${directory}/${latest}`, `${config.storage}/${directory}/latest.ttl`);
         });
     }
 
