@@ -42,11 +42,11 @@ const run = async (): Promise<void> => {
 	for (const filename of editedFilenames) {
 		core.debug(`git adding ${filename}…`);
 		await exec('git', ['add', filename]);
-		//const bytes = await diff(filename);
+		// const bytes = await diff(filename);
 		editedFiles.push({
 			name: filename,
-			//deltaBytes: bytes,
-			source: config.url,
+			// deltaBytes: bytes,
+			// source: config.url,
 		});
 	}
 	core.endGroup();
@@ -60,7 +60,7 @@ const run = async (): Promise<void> => {
 	const files = [...alreadyEditedFiles, ...editedFiles];
 	core.exportVariable('FILES', files);
 	core.info('process.env.FILES');
-	core.info(JSON.stringify(process.env.FILES));
+	core.info(JSON.stringify(process.env.FILES?.slice(0,100)));
 	core.endGroup();
 };
 
