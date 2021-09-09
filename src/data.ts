@@ -11,24 +11,45 @@ import FragmentContext from './fragmentStrategy/FragmentContext';
 import VersionFragmentStrategy from './fragmentStrategy/VersionFragmentStrategy';
 import IFragmentStrategy from './fragmentStrategy/IFragmentStrategy';
 import AlphabeticalFragmentStrategy from './fragmentStrategy/AlphabeticalFragmentStrategy';
+import DatasourceContext from './datasourceStrategy/DatasourceContext';
+import LDESClientDatasource from './datasourceStrategy/LDESClientDatasource';
+import IDatasource from './datasourceStrategy/IDatasource';
 
 export class Data {
 
 	private readonly config: IConfig;
 	private readonly store: N3.Store;
+	private datasourceContext: DatasourceContext;
 	private fragmentContext: FragmentContext;
+
+	private RDFData: RDF.Quad[][];
 
 	public constructor(config: IConfig) {
 		this.config = config;
 		this.store = new N3.Store();
+		this.RDFData = [];
 
 		// create necessary directories where data will be stored
 		if (!existsSync(this.config.storage)) {
 			mkdirSync(this.config.storage);
 		}
 
+		this.datasourceContext = new DatasourceContext(new LDESClientDatasource());
+		this.setDatasource();
+		
 		this.fragmentContext = new FragmentContext(new VersionFragmentStrategy());
 		this.setFragmentationStrategy();
+
+	}
+
+	/**
+	 * set the datasource strategy
+	 */
+	 private setDatasource(): void {
+		let datasource: IDatasource;
+		datasource = new LDESClientDatasource()
+
+		this.datasourceContext.setDatasource(datasource);
 
 	}
 
@@ -58,7 +79,7 @@ export class Data {
 
 	/**
 	 * fetch data using the LDES client
-	 */
+	 
 	public async fetchData(): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
 			try {
@@ -100,6 +121,22 @@ export class Data {
 			}
 		});
 	}
+	*/
+
+	/**
+	 * fetch data using Datasource
+	 */
+	public async fetchData():  Promise<void> {
+		return new Promise<void>(async (resolve, reject) => {
+			try {
+				this.RDFData = await this.datasourceContext.getData(this.config);
+				return resolve();
+			} catch (e) {
+				console.error(e);
+				return reject(e);
+			}
+		});
+	}
 
 	/**
 	 * write fetched data to the output directory supplied in the config file
@@ -107,11 +144,8 @@ export class Data {
 	public async writeData(): Promise<void> {
 		return new Promise<void>(async (resolve, reject) => {
 			try {
-				// reshape data to RDF.Quad[][] format
-				let respapedData: RDF.Quad[][] = this.reshapeData();
-
 				// fragment data & write to files
-				this.fragmentContext.fragment(respapedData, this.config);
+				this.fragmentContext.fragment(this.RDFData, this.config);
 
 				return resolve();
 			} catch (e) {
@@ -121,6 +155,7 @@ export class Data {
 		});
 	}
 
+	/*
 	// This code should be deprecatable when issue https://github.com/TREEcg/event-stream-client/issues/22 is fixed
 	private reshapeData(): RDF.Quad[][] {
 		let reshapedData: RDF.Quad[][] = [];
@@ -153,4 +188,5 @@ export class Data {
 
 		return reshapedData;
 	}
+	*/
 }
