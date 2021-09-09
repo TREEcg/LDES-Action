@@ -27,6 +27,10 @@ inputs:
     description: 'RDF object count per page'
     required: false
     default: "50"
+  datasource_strategy:
+    description: 'Datasource strategy to use'
+    required: false
+    default: 'ldes-client'
 outputs:
   delta_bytes: # size of changed data
     description: 'The overall number of bytes changed in the output data this run (current size - previous size)'
@@ -48,6 +52,7 @@ runs:
         INPUT_GIT_EMAIL: ${{ inputs.git_email }}
         INPUT_FRAGMENTATION_STRATEGY: ${{ inputs.fragmentation_strategy }}
         INPUT_FRAGMENTATION_PAGE_SIZE: ${{ inputs.fragmentation_page_size }}
+        INPUT_DATASOURCE_STRATEGY: ${{ inputs.datasource_strategy }}
     - name: Run post script
       run: node ${{ github.action_path }}/dist/post/index.js
       shell: bash
