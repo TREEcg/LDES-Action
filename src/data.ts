@@ -18,7 +18,6 @@ import IDatasource from './datasourceStrategy/IDatasource';
 export class Data {
 
 	private readonly config: IConfig;
-	private readonly store: N3.Store;
 	private datasourceContext: DatasourceContext;
 	private fragmentContext: FragmentContext;
 
@@ -26,7 +25,6 @@ export class Data {
 
 	public constructor(config: IConfig) {
 		this.config = config;
-		this.store = new N3.Store();
 		this.RDFData = [];
 
 		// create necessary directories where data will be stored
@@ -47,8 +45,16 @@ export class Data {
 	 */
 	 private setDatasource(): void {
 		let datasource: IDatasource;
-		datasource = new LDESClientDatasource()
-
+		switch (this.config.datasource_strategy) {
+			case "ldes-client": {
+				datasource = new LDESClientDatasource();
+				break;
+			}
+			default: {
+				datasource = new LDESClientDatasource();
+				break;
+			}
+		}
 		this.datasourceContext.setDatasource(datasource);
 
 	}
