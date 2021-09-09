@@ -1,4 +1,5 @@
 import type * as RDF from 'rdf-js';
+import { IConfig } from '../config';
 /**
  * The FragmentStrategy interface declares operations common to all supported versions
  * of some algorithm.
@@ -7,7 +8,7 @@ import type * as RDF from 'rdf-js';
  * Strategies.
  */
 interface IFragmentStrategy {
-    fragment(data: RDF.Quad[][], config: {}): void;
+    fragment(data: RDF.Quad[][], config: IConfig): void;
 }
 
 export default IFragmentStrategy;

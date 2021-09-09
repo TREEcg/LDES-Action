@@ -1,5 +1,6 @@
 import IFragmentStrategy from './IFragmentStrategy';
 import type * as RDF from 'rdf-js';
+import { IConfig } from '../config';
 
 /**
  * The FragmentContext defines the interface of interest to clients.
@@ -31,7 +32,7 @@ class FragmentContext {
      * The Context delegates some work to the Strategy object instead of
      * implementing multiple versions of the algorithm on its own.
      */
-    public fragment(data: RDF.Quad[][], config: {}): void {
+    public fragment(data: RDF.Quad[][], config: IConfig): void {
         this.strategy.fragment(data, config);
     }
 }
