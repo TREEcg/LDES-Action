@@ -13,12 +13,12 @@ class LDESClientDatasource implements IDatasource {
     }
 
     async getData(config: IConfig): Promise<RDF.Quad[][]> {
-        this.store = await this.fetchData(config);
+        await this.fetchData(config);
         return await this.reshapeData();
     }
 
-    private async fetchData(config: IConfig): Promise<N3.Store> {
-        return new Promise<N3.Store>((resolve, reject) => {
+    private async fetchData(config: IConfig): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             try {
                 let options = {
                     emitMemberOnce: true,
@@ -32,11 +32,8 @@ class LDESClientDatasource implements IDatasource {
                     options
                 );
 
-                let store: N3.Store = new N3.Store();
-
                 // @ Here should come the RDF.Quad[][] implementation when it is finished in the library!
                 // It should replace the current N3 Parser implementation.
-
                 const parser = new N3.Parser({ format: 'text/turtle' });
 
                 // read quads and add them to triple store
@@ -49,9 +46,9 @@ class LDESClientDatasource implements IDatasource {
                         console.log('prefixes:', prefs);
                     }
                     if (quad) {
-                        store.addQuad(quad);
+                        this.store.addQuad(quad);
                     } else {
-                        return resolve(store);
+                        return resolve();
                     }
                 });
             } catch (e) {
