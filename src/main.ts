@@ -5,7 +5,7 @@ import { execSync } from 'child_process';
 import { diff } from './git';
 import { getConfig, IConfig } from './config';
 import { Data } from './data';
-import { rmSync } from 'fs';
+import { rmdirSync } from 'fs';
 
 const run = async (): Promise<void> => {
 	core.startGroup('Configuration');
@@ -16,7 +16,7 @@ const run = async (): Promise<void> => {
 
 	core.startGroup('Delete output folder');
 	// Delete output folder to have a clean start, no symlinks, no old data
-	rmSync(config.storage, { recursive: true, force: true });
+	rmdirSync(config.storage, { recursive: true });
 	core.endGroup();
 
 	core.startGroup('Fetch and write data');
