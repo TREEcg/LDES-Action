@@ -65,8 +65,8 @@ const run = async (): Promise<void> => {
 	core.info(JSON.stringify(editedFiles.slice(0, 100)));
 	const files = [...alreadyEditedFiles, ...editedFiles];
 	core.exportVariable('FILES', files);
-	core.info('process.env.FILES');
-	core.info(JSON.stringify(process.env.FILES));
+	// core.info('process.env.FILES');
+	// core.info(JSON.stringify(process.env.FILES));
 	core.endGroup();
 };
 
