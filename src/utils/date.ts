@@ -3,12 +3,9 @@ import { formatISO } from 'date-fns'
 class date {
     
     dateToBasicISODate(date: Date) {
-        let ISODate = formatISO(date, { format: 'basic' })
-        // check if date has timezone
-        if (ISODate.charAt(ISODate.length - 6) === '+') {
-            return ISODate.slice(0, -6)
-        }
-        return ISODate;
+       // expected output: 2011-10-05T14:48:00.000Z
+        let ISODate = date.toISOString();
+        return ISODate.replace(/\-/g,'').replace(/\:/g,'').replace(/\./g,'');
     }
 
     /*
