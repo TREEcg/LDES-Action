@@ -5,12 +5,18 @@ import { execSync } from 'child_process';
 import { diff } from './git';
 import { getConfig, IConfig } from './config';
 import { Data } from './data';
+import { rmdirSync } from 'fs';
 
 const run = async (): Promise<void> => {
 	core.startGroup('Configuration');
 	const config: IConfig = getConfig();
 	await exec('git', ['config', 'user.name', config.git_username]);
 	await exec('git', ['config', 'user.email', `${config.git_email}`]);
+	core.endGroup();
+
+	core.startGroup('Delete output folder');
+	// Delete output folder to have a clean start, no symlinks, no old data
+	rmdirSync(config.storage, { recursive: true });
 	core.endGroup();
 
 	core.startGroup('Fetch and write data');
