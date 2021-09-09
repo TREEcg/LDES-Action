@@ -14,6 +14,7 @@ import AlphabeticalFragmentStrategy from './fragmentStrategy/AlphabeticalFragmen
 import DatasourceContext from './datasourceStrategy/DatasourceContext';
 import LDESClientDatasource from './datasourceStrategy/LDESClientDatasource';
 import IDatasource from './datasourceStrategy/IDatasource';
+import OldLDESClientDatasource from './datasourceStrategy/OldLDESClientDatasource';
 
 export class Data {
 
@@ -48,6 +49,10 @@ export class Data {
 		switch (this.config.datasource_strategy) {
 			case "ldes-client": {
 				datasource = new LDESClientDatasource();
+				break;
+			}
+			case "old-ldes-client": {
+				datasource = new OldLDESClientDatasource();
 				break;
 			}
 			default: {
