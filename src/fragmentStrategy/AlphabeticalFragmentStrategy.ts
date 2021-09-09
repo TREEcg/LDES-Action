@@ -3,13 +3,14 @@ import type * as RDF from 'rdf-js';
 import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import fs from 'fs';
 import { IConfig } from '../config';
+import AFragmentStrategy from './AFragmentStrategy';
 const N3 = require('n3');
 
 /**
  * Concrete Strategies implement the algorithm while following the base Strategy
  * interface. The interface makes them interchangeable in the Context.
  */
-class AlphabeticalFragmentStrategy implements IFragmentStrategy {
+class AlphabeticalFragmentStrategy extends AFragmentStrategy implements IFragmentStrategy {
 
     fragment(data: RDF.Quad[][], config: IConfig): void {
 
@@ -52,6 +53,7 @@ class AlphabeticalFragmentStrategy implements IFragmentStrategy {
         });
     }
 
+    /*
     find(data: RDF.Quad[], predicate: string): any {
         const found = data.find(element => element.predicate.value === predicate);
         return (found === undefined) ? null : found.object.value;
@@ -60,6 +62,7 @@ class AlphabeticalFragmentStrategy implements IFragmentStrategy {
     findAllMembers(data: RDF.Quad[]): string[] { 
         return [... new Set(data.map(element => element.subject.value))];
     }
+    */
 
     getFileLocation(index: number, config: IConfig): string {
         // file location
