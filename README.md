@@ -64,7 +64,7 @@ Default: `http(s)://<username>.github.io/<repository> or http(s)://<organization
 ### `fragmentation_strategy` (optional)
 
 Fragmentation strategy that will be deployed.
-Default: `version`
+Default: `subject-pages`
 
 ### `fragmentation_page_size` (optional)
 

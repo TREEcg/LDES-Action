@@ -74,7 +74,7 @@ export class Data {
 				strategy = new AlphabeticalFragmentStrategy();
 				break;
 			}
-			case "version": {
+			case "subject-pages": {
 				strategy = new SubjectPagesFragmentStrategy();
 				break;
 			}
