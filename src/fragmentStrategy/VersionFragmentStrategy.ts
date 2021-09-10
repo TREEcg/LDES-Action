@@ -40,8 +40,8 @@ class VersionFragmentStrategy implements IFragmentStrategy {
         this.addSymbolicLinks(config);
     }
 
-    find(data: RDF.Quad[], predicate: string): any {
-        const found = data.find(element => element.predicate.value === predicate);
+    find(data: any, predicate: string): any {
+        const found = data.find((element: RDF.Quad) => element.predicate.value === predicate);
         return (found === undefined) ? null : found.object.value;
     }
 
