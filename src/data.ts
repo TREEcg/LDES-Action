@@ -10,7 +10,6 @@ import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import FragmentContext from './fragmentStrategy/FragmentContext';
 import SubjectPagesFragmentStrategy from './fragmentStrategy/SubjectPagesFragmentStrategy';
 import IFragmentStrategy from './fragmentStrategy/IFragmentStrategy';
-import AlphabeticalFragmentStrategy from './fragmentStrategy/AlphabeticalFragmentStrategy';
 import DatasourceContext from './datasourceStrategy/DatasourceContext';
 import LDESClientDatasource from './datasourceStrategy/LDESClientDatasource';
 import IDatasource from './datasourceStrategy/IDatasource';
@@ -70,10 +69,6 @@ export class Data {
 	private setFragmentationStrategy(): void {
 		let strategy: IFragmentStrategy;
 		switch (this.config.fragmentation_strategy) {
-			case "alphabetical": {
-				strategy = new AlphabeticalFragmentStrategy();
-				break;
-			}
 			case "subject-pages": {
 				strategy = new SubjectPagesFragmentStrategy();
 				break;
