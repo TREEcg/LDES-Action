@@ -1,65 +1,91 @@
-import { newEngine } from '@treecg/actor-init-ldes-client';
-import fs from 'fs';
 import { existsSync, mkdirSync } from 'fs';
 import { IConfig } from './config';
 
+import type * as RDF from 'rdf-js';
+import FragmentContext from './fragmentStrategy/FragmentContext';
+import SubjectPagesFragmentStrategy from './fragmentStrategy/SubjectPagesFragmentStrategy';
+import IFragmentStrategy from './fragmentStrategy/IFragmentStrategy';
+import DatasourceContext from './datasourceStrategy/DatasourceContext';
+import LDESClientDatasource from './datasourceStrategy/LDESClientDatasource';
+import IDatasource from './datasourceStrategy/IDatasource';
+import OldLDESClientDatasource from './datasourceStrategy/OldLDESClientDatasource';
+
 export class Data {
-	// name of files where data will be stored
-	private readonly DATA_FILE = 'data';
-	// amount of objects we save per file;
-	private readonly FILE_SIZE = 500;
 
 	private readonly config: IConfig;
-	private readonly members: { [key: string]: object };
-	private readonly fetches: Array<string>;
+	private datasourceContext: DatasourceContext;
+	private fragmentContext: FragmentContext;
+
+	private RDFData: RDF.Quad[][];
 
 	public constructor(config: IConfig) {
 		this.config = config;
-		this.members = {};
+		this.RDFData = [];
 
 		// create necessary directories where data will be stored
 		if (!existsSync(this.config.storage)) {
 			mkdirSync(this.config.storage);
 		}
 
-		// load previous fetch times if they exist
-		const fetch_times = fs.readdirSync(this.config.storage);
-		const fetch_dates = fetch_times
-			.map((dir) => new Date(dir))
-			// @ts-ignore
-			.filter((date) => !isNaN(date));
-		this.fetches = fetch_dates.map((date) => date.toISOString());
-		this.fetches.sort();
+		this.datasourceContext = new DatasourceContext(new LDESClientDatasource());
+		this.setDatasource();
+		
+		this.fragmentContext = new FragmentContext(new SubjectPagesFragmentStrategy());
+		this.setFragmentationStrategy();
+
 	}
 
 	/**
-	 * fetch data using the LDES client
+	 * set the datasource strategy
 	 */
-	public async fetchData(): Promise<void> {
-		return new Promise<void>((resolve, reject) => {
+	 private setDatasource(): void {
+		let datasource: IDatasource;
+		switch (this.config.datasource_strategy) {
+			case "ldes-client": {
+				datasource = new LDESClientDatasource();
+				break;
+			}
+			case "old-ldes-client": {
+				datasource = new OldLDESClientDatasource();
+				break;
+			}
+			default: {
+				datasource = new LDESClientDatasource();
+				break;
+			}
+		}
+		this.datasourceContext.setDatasource(datasource);
+
+	}
+
+	/**
+	 * set the fragmentation strategy
+	 */
+	private setFragmentationStrategy(): void {
+		let strategy: IFragmentStrategy;
+		switch (this.config.fragmentation_strategy) {
+			case "subject-pages": {
+				strategy = new SubjectPagesFragmentStrategy();
+				break;
+			}
+			default: {
+				strategy = new SubjectPagesFragmentStrategy();
+				break;
+			}
+		}
+
+		this.fragmentContext.setStrategy(strategy);
+
+	}
+
+	/**
+	 * fetch data using Datasource
+	 */
+	public async fetchData():  Promise<void> {
+		return new Promise<void>(async (resolve, reject) => {
 			try {
-				let options = {
-					emitMemberOnce: true,
-					disablePolling: true,
-					// only fetch data added after latest fetch
-					fromTime:
-						this.fetches.length > 0 ? new Date(this.fetches[0]) : undefined,
-				};
-
-				let LDESClient = newEngine();
-				let eventStreamSync = LDESClient.createReadStream(
-					this.config.url,
-					options
-				);
-
-				eventStreamSync
-					.on('data', (data) => {
-						let obj = JSON.parse(data);
-						this.members[obj['@id']] = obj;
-					})
-					.on('end', async () => {
-						return resolve();
-					});
+				this.RDFData = await this.datasourceContext.getData(this.config);
+				return resolve();
 			} catch (e) {
 				console.error(e);
 				return reject(e);
@@ -73,38 +99,8 @@ export class Data {
 	public async writeData(): Promise<void> {
 		return new Promise<void>(async (resolve, reject) => {
 			try {
-				const member_values = Object.values(this.members);
-				if (member_values.length === 0) {
-					// if there are no members, we are done
-					return resolve();
-				}
-
-				// make directory where we will store newly fetched data
-				const now = new Date().toISOString();
-				mkdirSync(`${this.config.storage}/${now}`);
-
-				// split members into multiple files
-				const chunks = Array.from(
-					new Array(Math.ceil(member_values.length / this.FILE_SIZE)),
-					(_, i) =>
-						member_values.slice(
-							i * this.FILE_SIZE,
-							i * this.FILE_SIZE + this.FILE_SIZE
-						)
-				);
-
-				// write all chunks to a file
-				await Promise.all(
-					chunks.map((chunk, index) => {
-						// files are named data<number>.json, where <number> is a 5-digit number
-						// representing the chunk index
-						const file_num = String(index).padStart(5, '0');
-						fs.promises.writeFile(
-							`${this.config.storage}/${now}/${this.DATA_FILE}${file_num}.json`,
-							JSON.stringify(chunk)
-						);
-					})
-				);
+				// fragment data & write to files
+				this.fragmentContext.fragment(this.RDFData, this.config);
 
 				return resolve();
 			} catch (e) {
@@ -113,4 +109,5 @@ export class Data {
 			}
 		});
 	}
+
 }

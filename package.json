@@ -1,8 +1,8 @@
 {
-  "name": "republish-ldes",
+  "name": "ldes-action",
   "version": "1.0.0",
   "description": "",
-  "main": "run.js",
+  "main": "lib/main.js",
   "scripts": {
     "start": "node ./lib/main.js",
     "build": "tsc",
@@ -10,26 +10,32 @@
     "package-post": "ncc build --target es2020 lib/post.js -o dist/post",
     "dist": "npm run build && npm run package && npm run package-post",
     "format": "prettier --write **/*.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run build && env-cmd npm run start"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ArnoTroch/republish-ldes.git"
+    "url": "git+https://github.com/TREEcg/LDES-Action.git"
   },
   "keywords": [],
-  "author": "",
+  "contributors": [
+    "Arno Troch <arnot2k@gmail.com>",
+    "Kasper Zutterman <kasperzutterman1999@gmail.com> (https://www.kasperzutterman.com/)"
+  ],
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ArnoTroch/republish-ldes/issues"
+    "url": "https://github.com/TREEcg/LDES-Action/issues"
   },
-  "homepage": "https://github.com/ArnoTroch/republish-ldes#readme",
+  "homepage": "https://github.com/TREEcg/LDES-Action#readme",
   "dependencies": {
     "@actions/core": "^1.5.0",
     "@actions/exec": "^1.1.0",
-    "@treecg/actor-init-ldes-client": "2.3.5"
+    "@treecg/actor-init-ldes-client": "2.3.8",
+    "date-fns": "^2.23.0",
+    "n3": "^1.11.1"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.29.2",
+    "env-cmd": "^10.1.0",
     "prettier": "^2.3.2",
     "typescript": "^4.3.5"
   }

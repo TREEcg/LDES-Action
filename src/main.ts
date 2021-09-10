@@ -5,17 +5,18 @@ import { execSync } from 'child_process';
 import { diff } from './git';
 import { getConfig, IConfig } from './config';
 import { Data } from './data';
+import { rmdirSync } from 'fs';
 
 const run = async (): Promise<void> => {
 	core.startGroup('Configuration');
 	const config: IConfig = getConfig();
-	const username = 'flat-data';
-	await exec('git', ['config', 'user.name', username]);
-	await exec('git', [
-		'config',
-		'user.email',
-		`${username}@users.noreply.github.com`,
-	]);
+	await exec('git', ['config', 'user.name', config.git_username]);
+	await exec('git', ['config', 'user.email', `${config.git_email}`]);
+	core.endGroup();
+
+	core.startGroup('Delete output folder');
+	// Delete output folder to have a clean start, no symlinks, no old data
+	rmdirSync(config.storage, { recursive: true });
 	core.endGroup();
 
 	core.startGroup('Fetch and write data');
@@ -23,18 +24,6 @@ const run = async (): Promise<void> => {
 	await data_fetcher.fetchData();
 	await data_fetcher.writeData();
 	core.endGroup();
-
-	if (config.postprocess) {
-		core.startGroup('Postprocess');
-		core.debug(`Invoking ${config.postprocess}…`);
-		try {
-			core.info("TODO (doesn't run anything yet)");
-		} catch (error) {
-			// @ts-ignore
-			core.setFailed(error);
-		}
-		core.endGroup();
-	}
 
 	core.startGroup('File changes');
 	const newUnstagedFiles = execSync(
@@ -59,11 +48,11 @@ const run = async (): Promise<void> => {
 	for (const filename of editedFilenames) {
 		core.debug(`git adding ${filename}…`);
 		await exec('git', ['add', filename]);
-		const bytes = await diff(filename);
+		// const bytes = await diff(filename);
 		editedFiles.push({
 			name: filename,
-			deltaBytes: bytes,
-			source: config.url,
+			// deltaBytes: bytes,
+			// source: config.url,
 		});
 	}
 	core.endGroup();
@@ -71,10 +60,10 @@ const run = async (): Promise<void> => {
 	core.startGroup('Committing new data');
 	const alreadyEditedFiles = JSON.parse(process.env.FILES || '[]');
 	core.info('alreadyEditedFiles');
-	core.info(JSON.stringify(alreadyEditedFiles));
+	core.info(JSON.stringify(alreadyEditedFiles.slice(0, 100)));
 	core.info('editedFiles');
-	core.info(JSON.stringify(editedFiles));
-	const files = [...alreadyEditedFiles, ...editedFiles];
+	core.info(JSON.stringify(editedFiles.slice(0, 100)));
+	const files = [...alreadyEditedFiles.slice(0, 100), ...editedFiles.slice(0, 100)];
 	core.exportVariable('FILES', files);
 	core.info('process.env.FILES');
 	core.info(JSON.stringify(process.env.FILES));

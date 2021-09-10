@@ -7,13 +7,30 @@ inputs:
   storage:
     description: 'Output directory name where the fetched data will be stored'
     required: true
-  postprocess:
-    description: 'JavaScript postprocessing file (should be in the root of the project)'
+  gh_pages_url:
+    description: 'URL to the GitHub Pages repository'
     required: false
-  gh_pages_branch:
-    description: 'Branch that will be used to deploy to GitHub Pages'
+    default: 'https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/'
+  git_username:
+    description: 'Git username that makes the commits'
     required: false
-    default: 'gh-pages'
+    default: 'LDES-action'
+  git_email:
+    description: 'Git email that makes the commits'
+    required: false
+    default: 'LDES-action@users.noreply.github.com'
+  fragmentation_strategy:
+    description: 'Fragmentation strategy to use'
+    required: false
+    default: 'version'
+  fragmentation_page_size:
+    description: 'RDF object count per page'
+    required: false
+    default: "50"
+  datasource_strategy:
+    description: 'Datasource strategy to use'
+    required: false
+    default: 'ldes-client'
 outputs:
   delta_bytes: # size of changed data
     description: 'The overall number of bytes changed in the output data this run (current size - previous size)'
@@ -30,12 +47,12 @@ runs:
       env:
         INPUT_URL: ${{ inputs.url }}
         INPUT_STORAGE: ${{ inputs.storage }}
-        INPUT_POSTPROCESS: ${{ inputs.postprocess }}
+        INPUT_GH_PAGES_URL: ${{ inputs.gh_pages_url }}
+        INPUT_GIT_USERNAME: ${{ inputs.git_username }}
+        INPUT_GIT_EMAIL: ${{ inputs.git_email }}
+        INPUT_FRAGMENTATION_STRATEGY: ${{ inputs.fragmentation_strategy }}
+        INPUT_FRAGMENTATION_PAGE_SIZE: ${{ inputs.fragmentation_page_size }}
+        INPUT_DATASOURCE_STRATEGY: ${{ inputs.datasource_strategy }}
     - name: Run post script
       run: node ${{ github.action_path }}/dist/post/index.js
       shell: bash
-    - name: Deploy to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@4.1.4
-      with:
-        branch: ${{ inputs.gh_pages_branch }}
-        folder: ${{ inputs.storage }}

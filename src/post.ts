@@ -12,9 +12,6 @@ const run = async () => {
 	}
 
 	const files = JSON.parse(process.env.FILES || '[]');
-	core.info('files');
-	core.info(JSON.stringify(files));
-
 	// Don't want to commit if there aren't any files changed!
 	if (!files.length) {
 		core.info('No changes to commit');
@@ -24,8 +21,9 @@ const run = async () => {
 
 	const date = new Date().toISOString();
 	const meta = JSON.stringify({ date, files }, undefined, 2);
-	const msg = `Flat: latest data (${date})`;
-	const body = files.map((f: { [x: string]: any }) => f['name']).join('\n- ');
+	const msg = `LDES-Action: latest data (${date})`;
+	const body = files.map((f: { [x: string]: any }) => f['name']).slice(0,100).join('\n- ');
+	files.length > 100 ? body.concat(`${files.length - 100} files not shown`) : '';
 
 	// these should already be staged, in main.ts
 	core.info(`Committing "${msg}"`);
