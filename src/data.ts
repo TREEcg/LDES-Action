@@ -8,7 +8,7 @@ import date from "./utils/date";
 import type * as RDF from 'rdf-js';
 import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import FragmentContext from './fragmentStrategy/FragmentContext';
-import VersionFragmentStrategy from './fragmentStrategy/VersionFragmentStrategy';
+import SubjectPagesFragmentStrategy from './fragmentStrategy/SubjectPagesFragmentStrategy';
 import IFragmentStrategy from './fragmentStrategy/IFragmentStrategy';
 import AlphabeticalFragmentStrategy from './fragmentStrategy/AlphabeticalFragmentStrategy';
 import DatasourceContext from './datasourceStrategy/DatasourceContext';
@@ -36,7 +36,7 @@ export class Data {
 		this.datasourceContext = new DatasourceContext(new LDESClientDatasource());
 		this.setDatasource();
 		
-		this.fragmentContext = new FragmentContext(new VersionFragmentStrategy());
+		this.fragmentContext = new FragmentContext(new SubjectPagesFragmentStrategy());
 		this.setFragmentationStrategy();
 
 	}
@@ -75,11 +75,11 @@ export class Data {
 				break;
 			}
 			case "version": {
-				strategy = new VersionFragmentStrategy();
+				strategy = new SubjectPagesFragmentStrategy();
 				break;
 			}
 			default: {
-				strategy = new VersionFragmentStrategy();
+				strategy = new SubjectPagesFragmentStrategy();
 				break;
 			}
 		}
