@@ -24,9 +24,8 @@ class LDESClientDatasource implements IDatasource {
 
                 let data: RDF.Quad[][] = [];
 
-                eventStreamSync.on('data', (member : RDF.Quad[]) => {
-                    //console.log(member);
-                    data.push(member);
+                eventStreamSync.on('data', (member : any) => {
+                    data.push(member.quads);
                 });
                 eventStreamSync.on('end', () => {
                     console.log("No more data!");
