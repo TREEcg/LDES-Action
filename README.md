@@ -1,6 +1,6 @@
-# gh-action-republish-ldes
+# LDES-Action
 
-`gh-action-republish-ldes` is a GitHub Action that replicates a
+`LDES-Action` is a GitHub Action that replicates a
 [Linked Data Event Stream](https://w3id.org/ldes/specification)
 or [tree:Collection](https://w3id.org/tree/specification) and republishes it on GitHub Pages.
 
@@ -40,9 +40,9 @@ jobs:
           storage: 'output'
 ```
 
-The `TREEcg/gh-action-republish-ldes` action will perform the following operations:
+The `TREEcg/LDES-Action` action will perform the following operations:
 1. fetch data from the provided `url`
-2. split and store the fetched data across json files in the `storage` directory
+2. split and store the fetched data across turtle files in the `storage` directory
 3. commit and push all of the data to your repo
 4. deploy the data to GitHub Pages on branch `gh_pages_branch` (if not provided, the default branch is `gh-pages`).
 
