@@ -63,13 +63,18 @@ Default: `http(s)://<username>.github.io/<repository> or http(s)://<organization
 
 ### `fragmentation_strategy` (optional)
 
-Fragmentation strategy that will be deployed.
+Fragmentation strategy that will be deployed.  
 Default: `subject-pages`
 
 ### `fragmentation_page_size` (optional)
 
-Amount of RDF objects that will be on a single page.
+Amount of RDF objects that will be on a single page.  
 Default: `'50'`
+
+### `datasource_strategy` (optional)
+
+Datasource strategy to use.  
+Default: `ldes-client` (only one implemented at this point)
 
 ## Outputs
 
