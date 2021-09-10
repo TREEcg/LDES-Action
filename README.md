@@ -44,7 +44,7 @@ The `TREEcg/LDES-Action` action will perform the following operations:
 1. fetch data from the provided `url`
 2. split and store the fetched data across turtle files in the `storage` directory
 3. commit and push all of the data to your repo
-4. deploy the data to GitHub Pages on branch `gh_pages_branch` (if not provided, the default branch is `gh-pages`).
+4. deploy the data to GitHub Pages on branch `main`.
 
 ## Inputs
 
