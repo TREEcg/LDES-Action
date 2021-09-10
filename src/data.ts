@@ -10,7 +10,7 @@ import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import FragmentContext from './fragmentStrategy/FragmentContext';
 import VersionFragmentStrategy from './fragmentStrategy/VersionFragmentStrategy';
 import IFragmentStrategy from './fragmentStrategy/IFragmentStrategy';
-import AlphabeticalFragmentStrategy from './fragmentStrategy/AlphabeticalFragmentStrategy';
+import AlphabeticalFragmentStrategy from './fragmentStrategy/lexicographicalFragmentStrategy/AlphabeticalFragmentStrategy';
 
 export class Data {
 
@@ -91,6 +91,7 @@ export class Data {
 					if (quad) {
 						this.store.addQuad(quad);
 					} else {
+						console.log('end of stream');
 						return resolve();
 					}
 				});

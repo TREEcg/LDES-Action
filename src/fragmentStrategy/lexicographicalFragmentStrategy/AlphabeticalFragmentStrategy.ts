@@ -1,16 +1,16 @@
-import IFragmentStrategy from './IFragmentStrategy';
+import IFragmentStrategy from '../IFragmentStrategy';
 import type * as RDF from 'rdf-js';
 import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import fs from 'fs';
-import { IConfig } from '../config';
-import AFragmentStrategy from './AFragmentStrategy';
+import { IConfig } from '../../config';
+import ALexicographicalFragmentStrategy from './ALexicographicalFragmentStrategy';
 const N3 = require('n3');
 
 /**
  * Concrete Strategies implement the algorithm while following the base Strategy
  * interface. The interface makes them interchangeable in the Context.
  */
-class AlphabeticalFragmentStrategy extends AFragmentStrategy implements IFragmentStrategy {
+class AlphabeticalFragmentStrategy extends ALexicographicalFragmentStrategy implements IFragmentStrategy {
 
     fragment(data: RDF.Quad[][], config: IConfig): void {
 
@@ -45,13 +45,13 @@ class AlphabeticalFragmentStrategy extends AFragmentStrategy implements IFragmen
         });
     }
   
-    sort(data: RDF.Quad[][], predicate: string): RDF.Quad[][] {
+    /* sort(data: RDF.Quad[][], predicate: string): RDF.Quad[][] {
         return data.sort((a, b) => {
             let identifierA = this.find(a, predicate);
             let identifierB = this.find(b, predicate);
             return identifierA.localeCompare(identifierB);
         });
-    }
+    } */
 
     /*
     find(data: RDF.Quad[], predicate: string): any {
@@ -64,11 +64,11 @@ class AlphabeticalFragmentStrategy extends AFragmentStrategy implements IFragmen
     }
     */
 
-    getFileLocation(index: number, config: IConfig): string {
+    /* getFileLocation(index: number, config: IConfig): string {
         // file location
         const fileName = String(index).padStart(5, '0');
         return `${config.storage}/${fileName}.ttl`;
-    }
+    } */
 
     createHypermedia(data: RDF.Quad[], config: IConfig, fileLocation: string, nextPage: string | null, previousPage: string | null): RDF.Quad[] {
         let hypermedia: RDF.Quad[] = [];
