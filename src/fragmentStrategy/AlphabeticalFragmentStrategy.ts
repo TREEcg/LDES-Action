@@ -3,6 +3,7 @@ import type * as RDF from 'rdf-js';
 import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import fs from 'fs';
 import { IConfig } from '../config';
+import IData from '../IData';
 const N3 = require('n3');
 
 /**
@@ -11,9 +12,9 @@ const N3 = require('n3');
  */
 class AlphabeticalFragmentStrategy implements IFragmentStrategy {
 
-    fragment(data: RDF.Quad[][], config: IConfig): void {
+    fragment(data: IData[], config: IConfig): void {
 
-        let sortedData: RDF.Quad[][] = this.sort(data, 'http://purl.org/dc/terms/isVersionOf');
+        let sortedData: IData[] = this.sort(data, 'http://purl.org/dc/terms/isVersionOf');
 
         let pages: RDF.Quad[][] = [];
         let fragmentation_page_size = config.fragmentation_page_size || 100;
@@ -23,7 +24,7 @@ class AlphabeticalFragmentStrategy implements IFragmentStrategy {
                 pages.push([]);
             }
             let index = Math.floor(i / fragmentation_page_size)
-            pages[index] = pages[index].concat(sortedData[i]);
+            pages[index] = pages[index].concat(sortedData[i].quads);
         }
 
         pages.forEach((page, index) => {
@@ -44,10 +45,10 @@ class AlphabeticalFragmentStrategy implements IFragmentStrategy {
         });
     }
   
-    sort(data: RDF.Quad[][], predicate: string): RDF.Quad[][] {
+    sort(data: IData[], predicate: string): IData[] {
         return data.sort((a, b) => {
-            let identifierA = this.find(a, predicate);
-            let identifierB = this.find(b, predicate);
+            let identifierA = this.find(a.quads, predicate);
+            let identifierB = this.find(b.quads, predicate);
             return identifierA.localeCompare(identifierB);
         });
     }
