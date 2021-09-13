@@ -10,6 +10,7 @@ import LDESClientDatasource from './datasourceStrategy/LDESClientDatasource';
 import IDatasource from './datasourceStrategy/IDatasource';
 import OldLDESClientDatasource from './datasourceStrategy/OldLDESClientDatasource';
 import IData from './IData';
+import { materializeVersion } from './utils/version-materializer';
 
 export class Data {
 
@@ -100,6 +101,9 @@ export class Data {
 	public async writeData(): Promise<void> {
 		return new Promise<void>(async (resolve, reject) => {
 			try {
+				//LUCAS DIT MOET WEG
+				materializeVersion(this.RDFData);
+
 				// fragment data & write to files
 				this.fragmentContext.fragment(this.RDFData, this.config);
 
