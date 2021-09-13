@@ -12,7 +12,7 @@ import IFragmentStrategy from './IFragmentStrategy';
 abstract class AFragmentStrategy implements IFragmentStrategy {
     abstract fragment(data: IData[], config: IConfig): void;
 
-    // return the object value mathching a specific predicate
+    // return the object value matching a specific predicate
     find(data: RDF.Quad[], predicate: string): string {
         const found = data.find(element => element.predicate.value === predicate);
         return (found === undefined) ? 'undefined' : found.object.value;
