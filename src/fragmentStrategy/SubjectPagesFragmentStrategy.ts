@@ -3,6 +3,7 @@ import type * as RDF from 'rdf-js';
 import fs from 'fs';
 import date from "../utils/date";
 import { IConfig } from '../config';
+import IData from '../IData';
 const N3 = require('n3');
 
 /**
@@ -11,12 +12,12 @@ const N3 = require('n3');
  */
 class SubjectPagesFragmentStrategy implements IFragmentStrategy {
 
-    fragment(data: RDF.Quad[][], config: IConfig): void {
-        data.forEach(quadArr => {
-            let identifier = this.find(quadArr, 'http://purl.org/dc/terms/isVersionOf');
+    fragment(data: IData[], config: IConfig): void {
+        data.forEach((_data: IData) => {
+            let identifier = this.find(_data.quads, 'http://purl.org/dc/terms/isVersionOf');
             let reference = identifier.substring(identifier.lastIndexOf('/') + 1);
 
-            let generatedAtTime = this.find(quadArr, 'http://www.w3.org/ns/prov#generatedAtTime');
+            let generatedAtTime = this.find(_data.quads, 'http://www.w3.org/ns/prov#generatedAtTime');
             let basicISODate = date.dateToBasicISODate(new Date(generatedAtTime));
 
             // check if directory does not exist
@@ -30,7 +31,7 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
             if (!fs.existsSync(`${config.storage}/${reference}/${basicISODate}.ttl`)) {
                 // make file where we will store newly fetched data     
                 const writer = new N3.Writer({ format: 'N-Triples' });
-                let serialised = writer.quadsToString(quadArr);
+                let serialised = writer.quadsToString(_data.quads);
 
                 fs.writeFileSync(`${config.storage}/${reference}/${basicISODate}.ttl`, serialised);
             }
