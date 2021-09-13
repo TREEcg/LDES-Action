@@ -1,5 +1,6 @@
 import type * as RDF from 'rdf-js';
 import { IConfig } from '../config';
+import IData from '../IData';
 import IFragmentStrategy from './IFragmentStrategy';
 /**
  * The FragmentStrategy interface declares operations common to all supported versions
@@ -9,7 +10,7 @@ import IFragmentStrategy from './IFragmentStrategy';
  * Strategies.
  */
 abstract class AFragmentStrategy implements IFragmentStrategy {
-    abstract fragment(data: RDF.Quad[][], config: IConfig): void;
+    abstract fragment(data: IData[], config: IConfig): void;
 
     // return the object value mathching a specific predicate
     find(data: RDF.Quad[], predicate: string): string {

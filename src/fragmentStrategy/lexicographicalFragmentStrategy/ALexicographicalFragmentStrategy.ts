@@ -1,15 +1,16 @@
 import type * as RDF from 'rdf-js';
 import { IConfig } from "../../config";
+import IData from '../../IData';
 import AFragmentStrategy from "../AFragmentStrategy";
 import IFragmentStrategy from "../IFragmentStrategy";
 
 abstract class ALexicographicalFragmentStrategy extends AFragmentStrategy implements IFragmentStrategy {
-    abstract fragment(data: RDF.Quad[][], config: IConfig): void;
+    abstract fragment(data: IData[], config: IConfig): void;
 
-    sort(data: RDF.Quad[][], predicate: string): RDF.Quad[][] {
+    sort(data: IData[], predicate: string): IData[] {
         return data.sort((a, b) => {
-            let identifierA = this.find(a, predicate);
-            let identifierB = this.find(b, predicate);
+            let identifierA = this.find(a.quads, predicate);
+            let identifierB = this.find(b.quads, predicate);
             return identifierA.localeCompare(identifierB);
         });
     }
