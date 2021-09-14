@@ -14,7 +14,7 @@ export function materializeVersion(data: IData[]) {
       "timestampProperty": factory.namedNode('http://purl.org/dc/terms/created'), // defaults to dcterms:created, but there may be good reasons to change this to e.g., prov:generatedAtTime
       "addRdfStreamProcessingTriple": true
     };
-    console.log(materialize(_data.quads, options));
+    _data.quads = materialize(_data.quads, options);
   });
 
 
