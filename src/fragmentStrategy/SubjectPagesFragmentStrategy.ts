@@ -15,10 +15,10 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
     fragment(data: IData[], config: IConfig): void {
 
         data.forEach((_data: IData) => {
-            let identifier = this.find(_data.quads, 'http://purl.org/dc/terms/hasVersion');
+            let identifier = this.find(_data.quads, 'http://purl.org/dc/terms/hasVersion',true);
             let reference = identifier.substring(identifier.lastIndexOf('/') + 1);
 
-            let generatedAtTime = this.find(_data.quads, 'http://www.w3.org/ns/prov#generatedAtTime');
+            let generatedAtTime = this.find(_data.quads, 'http://www.w3.org/ns/prov#generatedAtTime',false);
             let basicISODate = date.dateToBasicISODate(new Date(generatedAtTime));
 
             // check if directory does not exist
@@ -42,10 +42,15 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
         this.addSymbolicLinks(config);
     }
 
-    find(data: any, predicate: string): any {
+    find(data: any, predicate: string,subject:boolean): any {
         const found = data.find((element: RDF.Quad) => element.predicate.value === predicate);
+        if(subject){
         return (found === undefined) ? null : found.object.value;
+        }else{
+            return (found===undefined)? null:found.subject.value;
+        }
     }
+    
 
     addSymbolicLinks(config: IConfig): void {
         // get all directories in the storage directory
