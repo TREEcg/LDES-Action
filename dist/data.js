@@ -68,7 +68,6 @@ class Data {
         return new Promise(async (resolve, reject) => {
             try {
                 this.RDFData = await this.datasourceContext.getData(this.config);
-                //materializeVersion(this.RDFData);
                 return resolve();
             }
             catch (e) {

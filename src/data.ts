@@ -10,7 +10,6 @@ import LDESClientDatasource from './datasourceStrategy/LDESClientDatasource';
 import IDatasource from './datasourceStrategy/IDatasource';
 import OldLDESClientDatasource from './datasourceStrategy/OldLDESClientDatasource';
 import IData from './IData';
-import { materializeVersion } from './utils/version-materializer';
 
 export class Data {
 
@@ -87,7 +86,6 @@ export class Data {
 		return new Promise<void>(async (resolve, reject) => {
 			try {
 				this.RDFData = await this.datasourceContext.getData(this.config);
-				//materializeVersion(this.RDFData);
 				return resolve();
 			} catch (e) {
 				console.error(e);
