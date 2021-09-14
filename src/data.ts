@@ -102,7 +102,7 @@ export class Data {
 		return new Promise<void>(async (resolve, reject) => {
 			try {
 				//LUCAS DIT MOET WEG
-				materializeVersion(this.RDFData);
+				await materializeVersion(this.RDFData);
 
 				// fragment data & write to files
 				this.fragmentContext.fragment(this.RDFData, this.config);

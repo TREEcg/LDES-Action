@@ -3,7 +3,7 @@ import { materialize } from '@treecg/version-materialize-rdf.js'
 import * as RDF from 'rdf-js';
 import IData from '../IData';
 
-export function materializeVersion(data: IData[]) {
+export async function materializeVersion(data: IData[]) {
   //dit is een foreach kind of situation
 
   data.forEach((_data: IData) => {
