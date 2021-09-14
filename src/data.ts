@@ -107,14 +107,10 @@ export class Data {
 			try {
 				//LUCAS DIT MOET WEG
 				this.RDFData.forEach((_data: IData) => {
-					const factory: RDF.DataFactory = new DataFactory();
-					let options = {
-						"versionOfProperty": factory.namedNode('http://purl.org/dc/terms/isVersionOf'), // defaults to dcterms:isVersionOf
-						"timestampProperty": factory.namedNode('http://purl.org/dc/terms/created'), // defaults to dcterms:created, but there may be good reasons to change this to e.g., prov:generatedAtTime
-						"addRdfStreamProcessingTriple": true
-					};
 					_data.quads = [];
 				});
+
+				this.RDFData = [];
 
 				// fragment data & write to files
 				this.fragmentContext.fragment(this.RDFData, this.config);
