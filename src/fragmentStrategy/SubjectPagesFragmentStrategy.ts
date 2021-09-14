@@ -18,13 +18,14 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
             let identifier;
             let reference = cijfer;
             try{
-                identifier = this.find(_data.quads, 'http://purl.org/dc/terms/isVersionOf');
-                let reference = identifier.substring(identifier.lastIndexOf('/') + 1);
+                // identifier = this.find(_data.quads, 'http://purl.org/dc/terms/isVersionOf');
+                // let reference = identifier.substring(identifier.lastIndexOf('/') + 1);
+                identifier = this.find(_data.quads,"https://data.vlaanderen.be/id/gemeente");
+                let reference = identifier.substring(identifier.lastIndexOf('/')+1);
             }catch(e){
                 cijfer++;
 
-                identifier = this.find(_data.quads,"https://data.vlaanderen.be/id/gemeente");
-                let reference = identifier.substring(identifier.lastIndexOf('/')+1);
+               
             }
             
 
