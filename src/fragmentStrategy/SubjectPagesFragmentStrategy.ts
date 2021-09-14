@@ -17,7 +17,7 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
         data.forEach((_data: IData) => {
             let identifier;
             let reference = cijfer;
-            try{
+            // try{
                 // identifier = this.find(_data.quads, 'http://purl.org/dc/terms/isVersionOf');
                 // let reference = identifier.substring(identifier.lastIndexOf('/') + 1);
                 identifier = this.find(_data.quads,"https://data.vlaanderen.be/id/gemeente");
@@ -29,11 +29,11 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
                     cijfer++;
                 }
                 
-            }catch(e){
-                cijfer++;
+            // }catch(e){
+            //     cijfer++;
 
                
-            }
+            // }
             
 
             let generatedAtTime = this.find(_data.quads, 'http://www.w3.org/ns/prov#generatedAtTime');
