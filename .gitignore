@@ -9,7 +9,6 @@
 
 # transpiled JavaScript files
 /lib
-/dist2
 
 # Logs
 logs
