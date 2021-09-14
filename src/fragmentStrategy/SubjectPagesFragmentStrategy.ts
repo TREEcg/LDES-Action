@@ -22,12 +22,10 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
                 // let reference = identifier.substring(identifier.lastIndexOf('/') + 1);
                 identifier = this.find(_data.quads,"https://data.vlaanderen.be/id/gemeente");
                 let found:RDF.Quad|any = _data.quads.find((element: RDF.Quad) => element.predicate.value === "https://data.vlaanderen.be/id/gemeente");
-                if(found){
+             
                     reference = found.predicate.value.substring(38,5);
                     
-                }else{
-                    cijfer++;
-                }
+                
                 
             // }catch(e){
             //     cijfer++;
