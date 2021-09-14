@@ -22,6 +22,9 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
                 let reference = identifier.substring(identifier.lastIndexOf('/') + 1);
             }catch(e){
                 cijfer++;
+
+                identifier = this.find(_data.quads,"https://data.vlaanderen.be/id/gemeente");
+                let reference = identifier.substring(identifier.lastIndexOf('/')+1);
             }
             
 
