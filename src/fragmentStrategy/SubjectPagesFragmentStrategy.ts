@@ -20,8 +20,8 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
             try{
                 // identifier = this.find(_data.quads, 'http://purl.org/dc/terms/isVersionOf');
                 // let reference = identifier.substring(identifier.lastIndexOf('/') + 1);
-                identifier = this.find(_data.quads,"https://data.vlaanderen.be/id/gemeente");
-                let reference = identifier.substring(identifier.lastIndexOf('/')+1);
+                reference = this.find(_data.quads,"https://data.vlaanderen.be/id/gemeente");
+                
             }catch(e){
                 cijfer++;
 
@@ -54,8 +54,12 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
     }
 
     find(data: any, predicate: string): any {
-        const found = data.find((element: RDF.Quad) => element.predicate.value === predicate);
-        return (found === undefined) ? null : found.object.value;
+        
+
+        const found = data.find((element:RDF.Quad) => element.predicate.value.substring(0,predicate.length) === predicate);
+        return (found === undefined) ? null : found.predicate.substring(predicate.length,5);
+
+        
     }
 
     addSymbolicLinks(config: IConfig): void {
