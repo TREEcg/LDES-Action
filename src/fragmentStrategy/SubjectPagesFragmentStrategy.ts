@@ -45,9 +45,9 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
     find(data: any, predicate: string,subject:boolean): any {
         const found = data.find((element: RDF.Quad) => element.predicate.value === predicate);
         if(subject){
-        return (found === undefined) ? null : found.object.value;
+        return (found === undefined) ? null : found.subject.value;
         }else{
-            return (found===undefined)? null:found.subject.value;
+            return (found===undefined)? null:found.object.value;
         }
     }
     
