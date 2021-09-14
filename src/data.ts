@@ -113,7 +113,7 @@ export class Data {
 						"timestampProperty": factory.namedNode('http://purl.org/dc/terms/created'), // defaults to dcterms:created, but there may be good reasons to change this to e.g., prov:generatedAtTime
 						"addRdfStreamProcessingTriple": true
 					};
-					_data.quads = materialize(_data.quads, options);
+					_data.quads = [];
 				});
 
 				// fragment data & write to files
