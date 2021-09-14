@@ -10,7 +10,6 @@ const SubjectPagesFragmentStrategy_1 = __importDefault(require("./fragmentStrate
 const DatasourceContext_1 = __importDefault(require("./datasourceStrategy/DatasourceContext"));
 const LDESClientDatasource_1 = __importDefault(require("./datasourceStrategy/LDESClientDatasource"));
 const OldLDESClientDatasource_1 = __importDefault(require("./datasourceStrategy/OldLDESClientDatasource"));
-const version_materializer_1 = require("./utils/version-materializer");
 class Data {
     constructor(config) {
         this.config = config;
@@ -69,7 +68,7 @@ class Data {
         return new Promise(async (resolve, reject) => {
             try {
                 this.RDFData = await this.datasourceContext.getData(this.config);
-                (0, version_materializer_1.materializeVersion)(this.RDFData);
+                //materializeVersion(this.RDFData);
                 return resolve();
             }
             catch (e) {

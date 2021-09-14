@@ -87,7 +87,7 @@ export class Data {
 		return new Promise<void>(async (resolve, reject) => {
 			try {
 				this.RDFData = await this.datasourceContext.getData(this.config);
-				materializeVersion(this.RDFData);
+				//materializeVersion(this.RDFData);
 				return resolve();
 			} catch (e) {
 				console.error(e);
