@@ -11,11 +11,6 @@ import IDatasource from './datasourceStrategy/IDatasource';
 import OldLDESClientDatasource from './datasourceStrategy/OldLDESClientDatasource';
 import IData from './IData';
 
-
-//van mij
-import { DataFactory,NamedNode,Quad } from 'rdf-data-factory';
-import { materialize } from '@treecg/version-materialize-rdf.js'
-
 export class Data {
 
 	private readonly config: IConfig;
@@ -90,7 +85,7 @@ export class Data {
 	public async fetchData():  Promise<void> {
 		return new Promise<void>(async (resolve, reject) => {
 			try {
-				this.RDFData = await this.datasourceContext.getData(this.config);
+				//this.RDFData = await this.datasourceContext.getData(this.config);
 				return resolve();
 			} catch (e) {
 				console.error(e);
@@ -105,13 +100,6 @@ export class Data {
 	public async writeData(): Promise<void> {
 		return new Promise<void>(async (resolve, reject) => {
 			try {
-				//LUCAS DIT MOET WEG
-				this.RDFData.forEach((_data: IData) => {
-					_data.quads = [];
-				});
-
-				this.RDFData = [];
-
 				// fragment data & write to files
 				this.fragmentContext.fragment(this.RDFData, this.config);
 
