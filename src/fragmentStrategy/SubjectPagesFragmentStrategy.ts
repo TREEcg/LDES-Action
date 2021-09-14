@@ -13,9 +13,17 @@ const N3 = require('n3');
 class SubjectPagesFragmentStrategy implements IFragmentStrategy {
 
     fragment(data: IData[], config: IConfig): void {
+        let cijfer:number = 0;
         data.forEach((_data: IData) => {
-            let identifier = this.find(_data.quads, 'http://purl.org/dc/terms/isVersionOf');
-            let reference = identifier.substring(identifier.lastIndexOf('/') + 1);
+            let identifier;
+            let reference = cijfer;
+            try{
+                identifier = this.find(_data.quads, 'http://purl.org/dc/terms/isVersionOf');
+                let reference = identifier.substring(identifier.lastIndexOf('/') + 1);
+            }catch(e){
+                cijfer++;
+            }
+            
 
             let generatedAtTime = this.find(_data.quads, 'http://www.w3.org/ns/prov#generatedAtTime');
             let basicISODate = date.dateToBasicISODate(new Date(generatedAtTime));
