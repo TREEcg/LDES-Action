@@ -14,14 +14,6 @@ export async function materializeVersion(data: IData[]) {
       "addRdfStreamProcessingTriple": true
     };
     _data.quads = materialize(_data.quads, options);
-
-    let rdf =  factory.quad(
-      factory.namedNode('test'),
-      factory.namedNode('test'),
-      factory.namedNode('test')
-    );
-
-    _data.quads.push(rdf);
   });
 
 

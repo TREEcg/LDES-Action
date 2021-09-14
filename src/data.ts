@@ -10,7 +10,11 @@ import LDESClientDatasource from './datasourceStrategy/LDESClientDatasource';
 import IDatasource from './datasourceStrategy/IDatasource';
 import OldLDESClientDatasource from './datasourceStrategy/OldLDESClientDatasource';
 import IData from './IData';
-import { materializeVersion } from './utils/version-materializer';
+
+
+//van mij
+import { DataFactory,NamedNode,Quad } from 'rdf-data-factory';
+import { materialize } from '@treecg/version-materialize-rdf.js'
 
 export class Data {
 
@@ -102,7 +106,15 @@ export class Data {
 		return new Promise<void>(async (resolve, reject) => {
 			try {
 				//LUCAS DIT MOET WEG
-				await materializeVersion(this.RDFData);
+				this.RDFData.forEach((_data: IData) => {
+					const factory: RDF.DataFactory = new DataFactory();
+					let options = {
+						"versionOfProperty": factory.namedNode('http://purl.org/dc/terms/isVersionOf'), // defaults to dcterms:isVersionOf
+						"timestampProperty": factory.namedNode('http://purl.org/dc/terms/created'), // defaults to dcterms:created, but there may be good reasons to change this to e.g., prov:generatedAtTime
+						"addRdfStreamProcessingTriple": true
+					};
+					_data.quads = materialize(_data.quads, options);
+				});
 
 				// fragment data & write to files
 				this.fragmentContext.fragment(this.RDFData, this.config);
