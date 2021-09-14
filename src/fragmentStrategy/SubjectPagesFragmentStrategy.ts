@@ -57,7 +57,7 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
         
 
         const found = data.find((element:RDF.Quad) => element.predicate.value.substring(0,predicate.length) === predicate);
-        return (found === undefined) ? null : found.predicate.substring(predicate.length,5);
+        return (found === undefined) ? null : found.predicate.value.substring(predicate.length,5);
 
         
     }
