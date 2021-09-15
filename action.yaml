@@ -31,7 +31,7 @@ inputs:
     description: 'Datasource strategy to use'
     required: false
     default: 'ldes-client'
-  version-materialize:
+  version_materialize:
     description: 'Wether version materialization should be used'
     required: false
     default: false

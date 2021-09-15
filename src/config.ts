@@ -24,6 +24,6 @@ export function getConfig(): IConfig {
 		fragmentation_strategy: core.getInput('fragmentation_strategy'),
 		fragmentation_page_size: parseInt(core.getInput('fragmentation_page_size')),
 		datasource_strategy: core.getInput('datasource_strategy'),
-		version_materialize: core.getBooleanInput('version-materialize')
+		version_materialize: core.getBooleanInput('version_materialize')
 	};
 }
