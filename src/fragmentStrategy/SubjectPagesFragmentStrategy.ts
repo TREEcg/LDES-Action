@@ -13,6 +13,7 @@ const N3 = require('n3');
 class SubjectPagesFragmentStrategy implements IFragmentStrategy {
 
     fragment(data: IData[], config: IConfig): void {
+        let cijfer:number = 0;
 
         data.forEach((_data: IData) => {
             // let identifier;
@@ -21,9 +22,11 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
             //     identifier = this.find(_data.quads, 'http://purl.org/dc/terms/hasVersion', true);
             //     reference = identifier.substring(identifier.lastIndexOf('/') + 1);
             // } else {
-                let identifier = this.find(_data.quads, 'http://purl.org.dc/terms/isVersionOf', false);
-                let reference = identifier.substring(identifier.lastIndexOf('/') + 1);
+                // let identifier = this.find(_data.quads, 'http://purl.org.dc/terms/isVersionOf', false);
+                // let reference = identifier.substring(identifier.lastIndexOf('/') + 1);
             // }
+            let reference = cijfer;
+            cijfer++;
 
             let generatedAtTime = this.find(_data.quads, 'http://www.w3.org/ns/prov#generatedAtTime', false);
             let basicISODate = date.dateToBasicISODate(new Date(generatedAtTime));
