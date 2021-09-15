@@ -76,6 +76,11 @@ Default: `'50'`
 Datasource strategy to use.  
 Default: `ldes-client` (only one implemented at this point)
 
+### `materialize_version` (optional)
+
+Materializes the versions of the RDF objects.
+Default: `false`
+
 ## Outputs
 
 ### `delta_bytes`
