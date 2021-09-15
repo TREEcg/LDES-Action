@@ -34,7 +34,7 @@ inputs:
   version_materialize:
     description: 'Wether version materialization should be used'
     required: false
-    default: false
+    default: 'false'
 outputs:
   delta_bytes: # size of changed data
     description: 'The overall number of bytes changed in the output data this run (current size - previous size)'
