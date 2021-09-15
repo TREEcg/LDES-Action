@@ -31,6 +31,10 @@ inputs:
     description: 'Datasource strategy to use'
     required: false
     default: 'ldes-client'
+  version-materialize:
+    description: 'Wether version materialization should be used'
+    required: false
+    default: false
 outputs:
   delta_bytes: # size of changed data
     description: 'The overall number of bytes changed in the output data this run (current size - previous size)'
@@ -53,6 +57,7 @@ runs:
         INPUT_FRAGMENTATION_STRATEGY: ${{ inputs.fragmentation_strategy }}
         INPUT_FRAGMENTATION_PAGE_SIZE: ${{ inputs.fragmentation_page_size }}
         INPUT_DATASOURCE_STRATEGY: ${{ inputs.datasource_strategy }}
+        INPUT_VERSION_MATERIALIZE: ${{ inputs.version_materialize }}
     - name: Run post script
       run: node ${{ github.action_path }}/dist/post/index.js
       shell: bash

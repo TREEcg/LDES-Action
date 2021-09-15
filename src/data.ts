@@ -31,7 +31,7 @@ export class Data {
 
 		this.datasourceContext = new DatasourceContext(new LDESClientDatasource());
 		this.setDatasource();
-		
+
 		this.fragmentContext = new FragmentContext(new SubjectPagesFragmentStrategy());
 		this.setFragmentationStrategy();
 
@@ -40,7 +40,7 @@ export class Data {
 	/**
 	 * set the datasource strategy
 	 */
-	 private setDatasource(): void {
+	private setDatasource(): void {
 		let datasource: IDatasource;
 		switch (this.config.datasource_strategy) {
 			case "ldes-client": {
@@ -83,7 +83,7 @@ export class Data {
 	/**
 	 * fetch data using Datasource
 	 */
-	public async fetchData():  Promise<void> {
+	public async fetchData(): Promise<void> {
 		return new Promise<void>(async (resolve, reject) => {
 			try {
 				this.RDFData = await this.datasourceContext.getData(this.config);
@@ -101,8 +101,11 @@ export class Data {
 	public async writeData(): Promise<void> {
 		return new Promise<void>(async (resolve, reject) => {
 			try {
+				//use version-materialization if it's requested
+				if (this.config.version_materialize) {
+					materializeVersion(this.RDFData);
+				}
 				// fragment data & write to files
-				materializeVersion(this.RDFData);
 				this.fragmentContext.fragment(this.RDFData, this.config);
 
 				return resolve();
