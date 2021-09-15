@@ -102,7 +102,7 @@ export class Data {
 		return new Promise<void>(async (resolve, reject) => {
 			try {
 				//use version-materialization if it's requested
-				if (this.config.version_materialize=='true') {
+				if (this.config.materialize_version) {
 					materializeVersion(this.RDFData);
 				}
 				// fragment data & write to files

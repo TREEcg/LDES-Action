@@ -31,7 +31,7 @@ inputs:
     description: 'Datasource strategy to use'
     required: false
     default: 'ldes-client'
-  version_materialize:
+  materialize_version:
     description: 'Wether version materialization should be used'
     required: false
     default: 'false'
@@ -57,7 +57,7 @@ runs:
         INPUT_FRAGMENTATION_STRATEGY: ${{ inputs.fragmentation_strategy }}
         INPUT_FRAGMENTATION_PAGE_SIZE: ${{ inputs.fragmentation_page_size }}
         INPUT_DATASOURCE_STRATEGY: ${{ inputs.datasource_strategy }}
-        INPUT_VERSION_MATERIALIZE: ${{ inputs.version_materialize }}
+        INPUT_MATERIALIZE_VERSION: ${{ inputs.materialize_version }}
     - name: Run post script
       run: node ${{ github.action_path }}/dist/post/index.js
       shell: bash

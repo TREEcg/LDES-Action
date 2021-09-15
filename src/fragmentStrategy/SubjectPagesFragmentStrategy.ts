@@ -16,7 +16,7 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
         let reference:any;
 
         data.forEach((_data: IData) => {
-            if (config.version_materialize != 'true') {
+            if (!config.materialize_version) {
                 let identifier = this.find(_data.quads, 'http://purl.org/dc/terms/isVersionOf', false);
                 reference = identifier.substring(identifier.lastIndexOf('/') + 1);
             }else{

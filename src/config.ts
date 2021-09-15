@@ -10,7 +10,7 @@ export interface IConfig {
 	fragmentation_strategy: string; // fragmentation strategy
 	fragmentation_page_size: number; // page size for fragmentation
 	datasource_strategy: string; // datasource strategy
-	version_materialize: string
+	materialize_version: boolean
 }
 
 export function getConfig(): IConfig {
@@ -24,6 +24,6 @@ export function getConfig(): IConfig {
 		fragmentation_strategy: core.getInput('fragmentation_strategy'),
 		fragmentation_page_size: parseInt(core.getInput('fragmentation_page_size')),
 		datasource_strategy: core.getInput('datasource_strategy'),
-		version_materialize: core.getInput('version_materialize')
+		materialize_version: (core.getInput('materialize_version')==='true')
 	};
 }
