@@ -13,24 +13,13 @@ const N3 = require('n3');
 class SubjectPagesFragmentStrategy implements IFragmentStrategy {
 
     fragment(data: IData[], config: IConfig): void {
-        let cijfer: number = 0;
+
 
         data.forEach((_data: IData) => {
-            let identifier;
-            let reference = cijfer;
-            try {
-                if (config.version_materialize=='true') {
-                    identifier = this.find(_data.quads, 'http://purl.org/dc/terms/hasVersion', true);
-                    reference = identifier.substring(identifier.lastIndexOf('/') + 1);
-                } else {
-                    identifier = this.find(_data.quads, 'http://purl.org.dc/terms/isVersionOf', false);
-                    reference = identifier.substring(identifier.lastIndexOf('/') + 1);
-                }
-            } catch (e) {
-                cijfer++;
-            }
+            let identifier = this.find(_data.quads, 'http://purl.org/dc/terms/isVersionOf');
+            let reference = identifier.substring(identifier.lastIndexOf('/') + 1);
 
-            let generatedAtTime = this.find(_data.quads, 'http://www.w3.org/ns/prov#generatedAtTime', false);
+            let generatedAtTime = this.find(_data.quads, 'http://www.w3.org/ns/prov#generatedAtTime');
             let basicISODate = date.dateToBasicISODate(new Date(generatedAtTime));
 
             // check if directory does not exist
@@ -54,13 +43,9 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
         this.addSymbolicLinks(config);
     }
 
-    find(data: any, predicate: string, subject: boolean): any {
+    find(data: any, predicate: string): any {
         const found = data.find((element: RDF.Quad) => element.predicate.value === predicate);
-        if (subject) {
-            return (found === undefined) ? null : found.subject.value;
-        } else {
-            return (found === undefined) ? null : found.object.value;
-        }
+        return (found === undefined) ? null : found.object.value;
     }
 
 
