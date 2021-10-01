@@ -2,7 +2,7 @@ import { existsSync, mkdirSync } from 'fs';
 import { IConfig } from './config';
 import * as N3 from 'n3';
 
-import date from "./utils/date";
+import date from './utils/date';
 import type * as RDF from 'rdf-js';
 import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import FragmentContext from './fragmentStrategy/FragmentContext';
@@ -13,15 +13,14 @@ import DatasourceContext from './datasourceStrategy/DatasourceContext';
 import LDESClientDatasource from './datasourceStrategy/LDESClientDatasource';
 import IDatasource from './datasourceStrategy/IDatasource';
 import OldLDESClientDatasource from './datasourceStrategy/OldLDESClientDatasource';
-import IData from './IData';
+import IMember from './IMember';
 
 export class Data {
-
 	private readonly config: IConfig;
 	private datasourceContext: DatasourceContext;
 	private fragmentContext: FragmentContext;
 
-	private RDFData: IData[];
+	private RDFData: IMember[];
 
 	public constructor(config: IConfig) {
 		this.config = config;
@@ -34,23 +33,24 @@ export class Data {
 
 		this.datasourceContext = new DatasourceContext(new LDESClientDatasource());
 		this.setDatasource();
-		
-		this.fragmentContext = new FragmentContext(new SubjectPagesFragmentStrategy());
-		this.setFragmentationStrategy();
 
+		this.fragmentContext = new FragmentContext(
+			new SubjectPagesFragmentStrategy()
+		);
+		this.setFragmentationStrategy();
 	}
 
 	/**
 	 * set the datasource strategy
 	 */
-	 private setDatasource(): void {
+	private setDatasource(): void {
 		let datasource: IDatasource;
 		switch (this.config.datasource_strategy) {
-			case "ldes-client": {
+			case 'ldes-client': {
 				datasource = new LDESClientDatasource();
 				break;
 			}
-			case "old-ldes-client": {
+			case 'old-ldes-client': {
 				datasource = new OldLDESClientDatasource();
 				break;
 			}
@@ -60,7 +60,6 @@ export class Data {
 			}
 		}
 		this.datasourceContext.setDatasource(datasource);
-
 	}
 
 	/**
@@ -69,11 +68,11 @@ export class Data {
 	private setFragmentationStrategy(): void {
 		let strategy: IFragmentStrategy;
 		switch (this.config.fragmentation_strategy) {
-			case "alphabetical": {
+			case 'alphabetical': {
 				strategy = new AlphabeticalFragmentStrategy();
 				break;
 			}
-			case "subject-pages": {
+			case 'subject-pages': {
 				strategy = new SubjectPagesFragmentStrategy();
 				break;
 			}
@@ -84,13 +83,12 @@ export class Data {
 		}
 
 		this.fragmentContext.setStrategy(strategy);
-
 	}
 
 	/**
 	 * fetch data using Datasource
 	 */
-	public async fetchData():  Promise<void> {
+	public async fetchData(): Promise<void> {
 		return new Promise<void>(async (resolve, reject) => {
 			try {
 				this.RDFData = await this.datasourceContext.getData(this.config);
@@ -118,5 +116,4 @@ export class Data {
 			}
 		});
 	}
-
 }

@@ -3,12 +3,12 @@ import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import { IConfig } from '../config';
 import IDatasource from './IDatasource';
 import { newEngine } from '@treecg/actor-init-ldes-client';
-import IData from '../IData';
+import IMember from '../IMember';
 
 class LDESClientDatasource implements IDatasource {
 
-    async getData(config: IConfig): Promise<IData[]> {
-        return new Promise<IData[]>((resolve, reject) => {
+    async getData(config: IConfig): Promise<IMember[]> {
+        return new Promise<IMember[]>((resolve, reject) => {
             try {
                 let options = {
                     emitMemberOnce: true,
@@ -23,9 +23,9 @@ class LDESClientDatasource implements IDatasource {
                     options
                 );
 
-                let data: IData[] = [];
+                let data: IMember[] = [];
 
-                eventStreamSync.on('data', (member : IData) => {
+                eventStreamSync.on('data', (member : IMember) => {
                     data.push(member);
                 });
 
