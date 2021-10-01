@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 
-export interface IConfig {
+export interface Config {
 	url: string; // HTTP(S) data source
 	storage: string; // directory where data will be written
 	gh_pages_branch: string; // branch used for deploying to GitHub Pages
@@ -12,7 +12,7 @@ export interface IConfig {
 	datasource_strategy: string; // datasource strategy
 }
 
-export function getConfig(): IConfig {
+export function getConfig(): Config {
 	return {
 		url: core.getInput('url'),
 		storage: core.getInput('storage'),
