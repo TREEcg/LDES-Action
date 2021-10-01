@@ -9,7 +9,7 @@ import IMember from '../IMember';
  * Strategies.
  */
 interface IFragmentStrategy {
-    fragment(data: IMember[], config: IConfig): void;
+	fragment(data: IMember[], config: IConfig): void;
 }
 
 export default IFragmentStrategy;

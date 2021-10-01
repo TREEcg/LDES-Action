@@ -3,7 +3,7 @@ import { IConfig } from '../config';
 import IMember from '../IMember';
 
 interface IDatasource {
-    getData(config: IConfig): Promise<IMember[]>;
+	getData(config: IConfig): Promise<IMember[]>;
 }
 
 export default IDatasource;
