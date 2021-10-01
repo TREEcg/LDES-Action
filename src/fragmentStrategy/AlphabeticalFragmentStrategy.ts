@@ -3,7 +3,7 @@ import type * as RDF from 'rdf-js';
 import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import fs from 'fs';
 import { IConfig } from '../config';
-import IData from '../IData';
+import IMember from '../IMember';
 const N3 = require('n3');
 
 /**
@@ -12,9 +12,9 @@ const N3 = require('n3');
  */
 class AlphabeticalFragmentStrategy implements IFragmentStrategy {
 
-    fragment(data: IData[], config: IConfig): void {
+    fragment(data: IMember[], config: IConfig): void {
 
-        let sortedData: IData[] = this.sort(data, 'http://purl.org/dc/terms/isVersionOf');
+        let sortedData: IMember[] = this.sort(data, 'http://purl.org/dc/terms/isVersionOf');
 
         let pages: RDF.Quad[][] = [];
         let fragmentation_page_size = config.fragmentation_page_size || 100;
@@ -45,7 +45,7 @@ class AlphabeticalFragmentStrategy implements IFragmentStrategy {
         });
     }
   
-    sort(data: IData[], predicate: string): IData[] {
+    sort(data: IMember[], predicate: string): IMember[] {
         return data.sort((a, b) => {
             let identifierA = this.find(a.quads, predicate);
             let identifierB = this.find(b.quads, predicate);

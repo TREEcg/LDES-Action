@@ -3,7 +3,7 @@ import type * as RDF from 'rdf-js';
 import fs from 'fs';
 import date from "../utils/date";
 import { IConfig } from '../config';
-import IData from '../IData';
+import IMember from '../IMember';
 const N3 = require('n3');
 
 /**
@@ -12,8 +12,8 @@ const N3 = require('n3');
  */
 class SubjectPagesFragmentStrategy implements IFragmentStrategy {
 
-    fragment(data: IData[], config: IConfig): void {
-        data.forEach((_data: IData) => {
+    fragment(data: IMember[], config: IConfig): void {
+        data.forEach((_data: IMember) => {
             let identifier = this.find(_data.quads, 'http://purl.org/dc/terms/isVersionOf');
             let reference = identifier.substring(identifier.lastIndexOf('/') + 1);
 

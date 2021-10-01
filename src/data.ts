@@ -13,7 +13,7 @@ import DatasourceContext from './datasourceStrategy/DatasourceContext';
 import LDESClientDatasource from './datasourceStrategy/LDESClientDatasource';
 import IDatasource from './datasourceStrategy/IDatasource';
 import OldLDESClientDatasource from './datasourceStrategy/OldLDESClientDatasource';
-import IData from './IData';
+import IMember from './IMember';
 
 export class Data {
 
@@ -21,7 +21,7 @@ export class Data {
 	private datasourceContext: DatasourceContext;
 	private fragmentContext: FragmentContext;
 
-	private RDFData: IData[];
+	private RDFData: IMember[];
 
 	public constructor(config: IConfig) {
 		this.config = config;
