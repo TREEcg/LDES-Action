@@ -4,7 +4,8 @@ import fs from 'fs';
 import date from "../utils/date";
 import { IConfig } from '../config';
 import IData from '../IData';
-const N3 = require('n3');
+import N3 from 'n3';
+import { SubstringBucketizer } from '@ldes/subject-page-bucketizer';
 
 /**
  * Concrete Strategies implement the algorithm while following the base Strategy
@@ -14,31 +15,31 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
 
     fragment(data: IData[], config: IConfig): void {
         data.forEach((_data: IData) => {
-            let identifier = this.find(_data.quads, 'http://purl.org/dc/terms/isVersionOf');
-            let reference = identifier.substring(identifier.lastIndexOf('/') + 1);
+            const bucketizer = new SubstringBucketizer(config.property_path);
+            bucketizer.bucketize(_data.quads, _data.id);
+            const bucketTriples = this.findBucketTriples(_data.quads);
 
-            let generatedAtTime = this.find(_data.quads, 'http://www.w3.org/ns/prov#generatedAtTime');
-            let basicISODate = date.dateToBasicISODate(new Date(generatedAtTime));
+            bucketTriples.forEach(bucket => {
+                const writer = new N3.Writer();
+                const bucketPath = `${config.storage}/${bucket}.ttl`;
+                _data.quads = _data.quads.filter(quad => !bucketTriples.includes(quad));
+                writer.addQuads(_data.quads);
+                writer.end((error, result) => {
+                    if (error) {
+                        throw new Error(error.stack);
+                    }
 
-            // check if directory does not exist
-            if (!fs.existsSync(`${config.storage}/${reference}`)) {
-                //console.log('Directory not existing!');
-                // make directory where we will store newly fetched data
-                fs.mkdirSync(`${config.storage}/${reference}`);
-            }
-
-            // check if file not exists
-            if (!fs.existsSync(`${config.storage}/${reference}/${basicISODate}.ttl`)) {
-                // make file where we will store newly fetched data     
-                const writer = new N3.Writer({ format: 'N-Triples' });
-                let serialised = writer.quadsToString(_data.quads);
-
-                fs.writeFileSync(`${config.storage}/${reference}/${basicISODate}.ttl`, serialised);
-            }
+                    fs.appendFileSync(bucketPath, result);
+                });
+            });
 
         });
 
         this.addSymbolicLinks(config);
+    }
+
+    findBucketTriples(quads: RDF.Quad[]): RDF.Quad[] {
+        return quads.filter(quad => quad.predicate.value === 'https://w3id.org/ldes#bucket');
     }
 
     find(data: any, predicate: string): any {

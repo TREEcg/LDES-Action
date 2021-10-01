@@ -53,6 +53,7 @@ runs:
         INPUT_FRAGMENTATION_STRATEGY: ${{ inputs.fragmentation_strategy }}
         INPUT_FRAGMENTATION_PAGE_SIZE: ${{ inputs.fragmentation_page_size }}
         INPUT_DATASOURCE_STRATEGY: ${{ inputs.datasource_strategy }}
+        INPUT_PROPERTY_PATH: ${{ inputs.property_path }}
     - name: Run post script
       run: node ${{ github.action_path }}/dist/post/index.js
       shell: bash
