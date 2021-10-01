@@ -1,7 +1,7 @@
 import type * as RDF from 'rdf-js';
 import { IConfig } from '../config';
 import Member from '../types/Member';
-import Datasource from './Datasource';
+import Datasource from '../types/Datasource';
 
 class DatasourceContext {
 	private datasource: Datasource;

@@ -1,7 +1,7 @@
 import type * as RDF from 'rdf-js';
 import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import { IConfig } from '../config';
-import Datasource from './Datasource';
+import Datasource from '../types/Datasource';
 import * as N3 from 'n3';
 import { newEngine } from '@treecg/actor-init-ldes-client';
 import Member from '../types/Member';

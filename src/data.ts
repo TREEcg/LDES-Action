@@ -11,7 +11,7 @@ import FragmentStrategy from './fragmentStrategy/FragmentStrategy';
 import AlphabeticalFragmentStrategy from './fragmentStrategy/AlphabeticalFragmentStrategy';
 import DatasourceContext from './datasourceStrategy/DatasourceContext';
 import LDESClientDatasource from './datasourceStrategy/LDESClientDatasource';
-import Datasource from './datasourceStrategy/Datasource';
+import Datasource from './types/Datasource';
 import OldLDESClientDatasource from './datasourceStrategy/OldLDESClientDatasource';
 import Member from './types/Member';
 
