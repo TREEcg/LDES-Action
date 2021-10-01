@@ -4,6 +4,7 @@ import { Config } from '../types/Config';
 import Datasource from '../types/Datasource';
 import { newEngine } from '@treecg/actor-init-ldes-client';
 import Member from '../types/Member';
+import Metadata from '../types/Metadata';
 
 class LDESClientDatasource implements Datasource {
 	async getData(config: Config): Promise<Member[]> {
@@ -20,21 +21,21 @@ class LDESClientDatasource implements Datasource {
 				let eventStreamSync = LDESClient.createReadStream(config.url, options);
 
 				let data: Member[] = [];
-                let metadata: Object[] = [];
+				let metadata: Metadata[] = [];
 
 				eventStreamSync.on('data', (member: Member) => {
 					data.push(member);
 				});
 
-				eventStreamSync.on('metadata', (metadata) => {
-                    // follows the structure of the TREE metadata extractor (https://github.com/TREEcg/tree-metadata-extraction#extracted-metadata)
-					if (metadata.treeMetadata) console.log(metadata.treeMetadata); 
-					console.log(metadata.url); // page from where metadata has been extracted
+				eventStreamSync.on('metadata', (_metadata: Metadata) => {
+					// follows the structure of the TREE metadata extractor (https://github.com/TREEcg/tree-metadata-extraction#extracted-metadata)
+					//if (_metadata.treeMetadata) console.log(_metadata.treeMetadata);
+					//console.log(_metadata.url); // page from where metadata has been extracted
 
-					console.log(metadata);
+					console.log(_metadata);
 					//console.log(metadata.treeMetadata.collections.values().next().value.member);
 
-                    metadata.push(metadata);
+					metadata.push(_metadata);
 				});
 
 				eventStreamSync.on('end', () => {
