@@ -5,10 +5,11 @@ import Datasource from '../types/Datasource';
 import { newEngine } from '@treecg/actor-init-ldes-client';
 import Member from '../types/Member';
 import Metadata from '../types/Metadata';
+import Dataset from '../types/Dataset';
 
 class LDESClientDatasource implements Datasource {
-	async getData(config: Config): Promise<Member[]> {
-		return new Promise<Member[]>((resolve, reject) => {
+	async getData(config: Config): Promise<Dataset> {
+		return new Promise<Dataset>((resolve, reject) => {
 			try {
 				let options = {
 					emitMemberOnce: true,
@@ -31,8 +32,6 @@ class LDESClientDatasource implements Datasource {
 					// follows the structure of the TREE metadata extractor (https://github.com/TREEcg/tree-metadata-extraction#extracted-metadata)
 					//if (_metadata.treeMetadata) console.log(_metadata.treeMetadata);
 					//console.log(_metadata.url); // page from where metadata has been extracted
-
-					console.log(_metadata);
 					//console.log(metadata.treeMetadata.collections.values().next().value.member);
 
 					metadata.push(_metadata);
@@ -40,7 +39,11 @@ class LDESClientDatasource implements Datasource {
 
 				eventStreamSync.on('end', () => {
 					console.log('No more data!');
-					resolve(data);
+					let dataset: Dataset = {
+						data: data,
+						metadata: metadata,
+					};
+					resolve(dataset);
 				});
 			} catch (e) {
 				console.error(e);

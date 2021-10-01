@@ -1,6 +1,7 @@
 import type * as RDF from 'rdf-js';
 import { Config } from './Config';
-import Member from './Member';
+import Dataset from './Dataset';
+
 /**
  * The FragmentStrategy interface declares operations common to all supported versions
  * of some algorithm.
@@ -9,7 +10,7 @@ import Member from './Member';
  * Strategies.
  */
 interface FragmentStrategy {
-	fragment(data: Member[], config: Config): void;
+	fragment(data: Dataset, config: Config): void;
 }
 
 export default FragmentStrategy;

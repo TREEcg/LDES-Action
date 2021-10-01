@@ -4,6 +4,7 @@ import fs from 'fs';
 import date from '../utils/date';
 import { Config } from '../types/Config';
 import Member from '../types/Member';
+import Dataset from '../types/Dataset';
 const N3 = require('n3');
 
 /**
@@ -11,7 +12,8 @@ const N3 = require('n3');
  * interface. The interface makes them interchangeable in the Context.
  */
 class SubjectPagesFragmentStrategy implements FragmentStrategy {
-	fragment(data: Member[], config: Config): void {
+	fragment(dataset: Dataset, config: Config): void {
+		let data: Member[] = dataset.data;
 		data.forEach((_data: Member) => {
 			let identifier = this.find(
 				_data.quads,

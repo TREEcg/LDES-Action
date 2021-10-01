@@ -2,6 +2,7 @@ import FragmentStrategy from '../types/FragmentStrategy';
 import type * as RDF from 'rdf-js';
 import { Config } from '../types/Config';
 import Member from '../types/Member';
+import Dataset from '../types/Dataset';
 
 /**
  * The FragmentContext defines the interface of interest to clients.
@@ -33,7 +34,7 @@ class FragmentContext {
 	 * The Context delegates some work to the Strategy object instead of
 	 * implementing multiple versions of the algorithm on its own.
 	 */
-	public fragment(data: Member[], config: Config): void {
+	public fragment(data: Dataset, config: Config): void {
 		this.strategy.fragment(data, config);
 	}
 }

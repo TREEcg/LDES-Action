@@ -4,6 +4,7 @@ import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import fs from 'fs';
 import { Config } from '../types/Config';
 import Member from '../types/Member';
+import Dataset from '../types/Dataset';
 const N3 = require('n3');
 
 /**
@@ -11,7 +12,8 @@ const N3 = require('n3');
  * interface. The interface makes them interchangeable in the Context.
  */
 class AlphabeticalFragmentStrategy implements FragmentStrategy {
-	fragment(data: Member[], config: Config): void {
+	fragment(dataset: Dataset, config: Config): void {
+		let data: Member[] = dataset.data;
 		let sortedData: Member[] = this.sort(
 			data,
 			'http://purl.org/dc/terms/isVersionOf'
