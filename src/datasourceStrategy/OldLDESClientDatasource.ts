@@ -1,6 +1,6 @@
 import type * as RDF from 'rdf-js';
 import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
-import { IConfig } from '../config';
+import { Config } from '../types/Config';
 import Datasource from '../types/Datasource';
 import * as N3 from 'n3';
 import { newEngine } from '@treecg/actor-init-ldes-client';
@@ -13,12 +13,12 @@ class OldLDESClientDatasource implements Datasource {
 		this.store = new N3.Store();
 	}
 
-	async getData(config: IConfig): Promise<Member[]> {
+	async getData(config: Config): Promise<Member[]> {
 		await this.fetchData(config);
 		return await this.reshapeData();
 	}
 
-	private async fetchData(config: IConfig): Promise<void> {
+	private async fetchData(config: Config): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
 			try {
 				let options = {

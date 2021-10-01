@@ -1,5 +1,5 @@
 import type * as RDF from 'rdf-js';
-import { IConfig } from '../config';
+import { Config } from './Config';
 import Member from './Member';
 /**
  * The FragmentStrategy interface declares operations common to all supported versions
@@ -9,7 +9,7 @@ import Member from './Member';
  * Strategies.
  */
 interface FragmentStrategy {
-	fragment(data: Member[], config: IConfig): void;
+	fragment(data: Member[], config: Config): void;
 }
 
 export default FragmentStrategy;

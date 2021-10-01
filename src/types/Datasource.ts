@@ -1,9 +1,9 @@
 import type * as RDF from 'rdf-js';
-import { IConfig } from '../config';
+import { Config } from './Config';
 import Member from './Member';
 
 interface Datasource {
-	getData(config: IConfig): Promise<Member[]>;
+	getData(config: Config): Promise<Member[]>;
 }
 
 export default Datasource;

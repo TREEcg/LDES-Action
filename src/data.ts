@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync } from 'fs';
-import { IConfig } from './config';
+import { Config } from './types/Config';
 import * as N3 from 'n3';
 
 import date from './utils/date';
@@ -16,13 +16,13 @@ import OldLDESClientDatasource from './datasourceStrategy/OldLDESClientDatasourc
 import Member from './types/Member';
 
 export class Data {
-	private readonly config: IConfig;
+	private readonly config: Config;
 	private datasourceContext: DatasourceContext;
 	private fragmentContext: FragmentContext;
 
 	private RDFData: Member[];
 
-	public constructor(config: IConfig) {
+	public constructor(config: Config) {
 		this.config = config;
 		this.RDFData = [];
 

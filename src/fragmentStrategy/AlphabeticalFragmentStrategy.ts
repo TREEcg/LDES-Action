@@ -2,7 +2,7 @@ import FragmentStrategy from '../types/FragmentStrategy';
 import type * as RDF from 'rdf-js';
 import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import fs from 'fs';
-import { IConfig } from '../config';
+import { Config } from '../types/Config';
 import Member from '../types/Member';
 const N3 = require('n3');
 
@@ -11,7 +11,7 @@ const N3 = require('n3');
  * interface. The interface makes them interchangeable in the Context.
  */
 class AlphabeticalFragmentStrategy implements FragmentStrategy {
-	fragment(data: Member[], config: IConfig): void {
+	fragment(data: Member[], config: Config): void {
 		let sortedData: Member[] = this.sort(
 			data,
 			'http://purl.org/dc/terms/isVersionOf'
@@ -75,7 +75,7 @@ class AlphabeticalFragmentStrategy implements FragmentStrategy {
 		return [...new Set(data.map((element) => element.subject.value))];
 	}
 
-	getFileLocation(index: number, config: IConfig): string {
+	getFileLocation(index: number, config: Config): string {
 		// file location
 		const fileName = String(index).padStart(5, '0');
 		return `${config.storage}/${fileName}.ttl`;
@@ -83,7 +83,7 @@ class AlphabeticalFragmentStrategy implements FragmentStrategy {
 
 	createHypermedia(
 		data: RDF.Quad[],
-		config: IConfig,
+		config: Config,
 		fileLocation: string,
 		nextPage: string | null,
 		previousPage: string | null

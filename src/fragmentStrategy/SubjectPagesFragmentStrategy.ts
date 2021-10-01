@@ -2,7 +2,7 @@ import FragmentStrategy from '../types/FragmentStrategy';
 import type * as RDF from 'rdf-js';
 import fs from 'fs';
 import date from '../utils/date';
-import { IConfig } from '../config';
+import { Config } from '../types/Config';
 import Member from '../types/Member';
 const N3 = require('n3');
 
@@ -11,7 +11,7 @@ const N3 = require('n3');
  * interface. The interface makes them interchangeable in the Context.
  */
 class SubjectPagesFragmentStrategy implements FragmentStrategy {
-	fragment(data: Member[], config: IConfig): void {
+	fragment(data: Member[], config: Config): void {
 		data.forEach((_data: Member) => {
 			let identifier = this.find(
 				_data.quads,
@@ -57,7 +57,7 @@ class SubjectPagesFragmentStrategy implements FragmentStrategy {
 		return found === undefined ? null : found.object.value;
 	}
 
-	addSymbolicLinks(config: IConfig): void {
+	addSymbolicLinks(config: Config): void {
 		// get all directories in the storage directory
 		const directories = fs
 			.readdirSync(config.storage)
