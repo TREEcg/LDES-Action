@@ -31,6 +31,8 @@ inputs:
     description: 'Datasource strategy to use'
     required: false
     default: 'ldes-client'
+  property_path:
+    description: 'Property path to be used by bucketizers'
 outputs:
   delta_bytes: # size of changed data
     description: 'The overall number of bytes changed in the output data this run (current size - previous size)'

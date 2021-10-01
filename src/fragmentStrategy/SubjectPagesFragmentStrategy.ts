@@ -5,7 +5,7 @@ import date from "../utils/date";
 import { IConfig } from '../config';
 import IData from '../IData';
 import N3 from 'n3';
-import { SubstringBucketizer } from '@ldes/subject-page-bucketizer';
+const ldes = require('@ldes/subject-page-bucketizer');
 
 /**
  * Concrete Strategies implement the algorithm while following the base Strategy
@@ -15,7 +15,7 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
 
     fragment(data: IData[], config: IConfig): void {
         data.forEach((_data: IData) => {
-            const bucketizer = new SubstringBucketizer(config.property_path);
+            const bucketizer = new ldes.SubstringBucketizer(config.property_path);
             bucketizer.bucketize(_data.quads, _data.id);
             const bucketTriples = this.findBucketTriples(_data.quads);
 
