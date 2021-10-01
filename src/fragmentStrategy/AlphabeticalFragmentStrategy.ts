@@ -1,4 +1,4 @@
-import FragmentStrategy from './FragmentStrategy';
+import FragmentStrategy from '../types/FragmentStrategy';
 import type * as RDF from 'rdf-js';
 import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import fs from 'fs';

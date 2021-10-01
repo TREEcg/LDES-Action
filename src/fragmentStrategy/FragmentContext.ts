@@ -1,4 +1,4 @@
-import FragmentStrategy from './FragmentStrategy';
+import FragmentStrategy from '../types/FragmentStrategy';
 import type * as RDF from 'rdf-js';
 import { IConfig } from '../config';
 import Member from '../types/Member';

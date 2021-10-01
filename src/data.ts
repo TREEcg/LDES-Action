@@ -7,7 +7,7 @@ import type * as RDF from 'rdf-js';
 import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import FragmentContext from './fragmentStrategy/FragmentContext';
 import SubjectPagesFragmentStrategy from './fragmentStrategy/SubjectPagesFragmentStrategy';
-import FragmentStrategy from './fragmentStrategy/FragmentStrategy';
+import FragmentStrategy from './types/FragmentStrategy';
 import AlphabeticalFragmentStrategy from './fragmentStrategy/AlphabeticalFragmentStrategy';
 import DatasourceContext from './datasourceStrategy/DatasourceContext';
 import LDESClientDatasource from './datasourceStrategy/LDESClientDatasource';

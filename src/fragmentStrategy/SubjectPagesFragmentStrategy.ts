@@ -1,4 +1,4 @@
-import FragmentStrategy from './FragmentStrategy';
+import FragmentStrategy from '../types/FragmentStrategy';
 import type * as RDF from 'rdf-js';
 import fs from 'fs';
 import date from '../utils/date';

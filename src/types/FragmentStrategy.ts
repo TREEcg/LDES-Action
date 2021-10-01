@@ -1,6 +1,6 @@
 import type * as RDF from 'rdf-js';
 import { IConfig } from '../config';
-import Member from '../types/Member';
+import Member from './Member';
 /**
  * The FragmentStrategy interface declares operations common to all supported versions
  * of some algorithm.
