@@ -20,17 +20,21 @@ class LDESClientDatasource implements IDatasource {
 				let eventStreamSync = LDESClient.createReadStream(config.url, options);
 
 				let data: IMember[] = [];
+                let metadata: Object[] = [];
 
 				eventStreamSync.on('data', (member: IMember) => {
 					data.push(member);
 				});
 
 				eventStreamSync.on('metadata', (metadata) => {
-					if (metadata.treeMetadata) console.log(metadata.treeMetadata); // follows the structure of the TREE metadata extractor (https://github.com/TREEcg/tree-metadata-extraction#extracted-metadata)
+                    // follows the structure of the TREE metadata extractor (https://github.com/TREEcg/tree-metadata-extraction#extracted-metadata)
+					if (metadata.treeMetadata) console.log(metadata.treeMetadata); 
 					console.log(metadata.url); // page from where metadata has been extracted
 
 					console.log(metadata);
 					//console.log(metadata.treeMetadata.collections.values().next().value.member);
+
+                    metadata.push(metadata);
 				});
 
 				eventStreamSync.on('end', () => {
