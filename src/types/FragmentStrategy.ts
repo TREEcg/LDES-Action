@@ -1,6 +1,6 @@
 import type * as RDF from 'rdf-js';
-import { IConfig } from '../config';
-import IMember from '../IMember';
+import { Config } from './Config';
+import Member from './Member';
 /**
  * The FragmentStrategy interface declares operations common to all supported versions
  * of some algorithm.
@@ -8,8 +8,8 @@ import IMember from '../IMember';
  * The Context uses this interface to call the algorithm defined by Concrete
  * Strategies.
  */
-interface IFragmentStrategy {
-	fragment(data: IMember[], config: IConfig): void;
+interface FragmentStrategy {
+	fragment(data: Member[], config: Config): void;
 }
 
-export default IFragmentStrategy;
+export default FragmentStrategy;

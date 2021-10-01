@@ -1,18 +1,18 @@
-import IFragmentStrategy from './IFragmentStrategy';
+import FragmentStrategy from '../types/FragmentStrategy';
 import type * as RDF from 'rdf-js';
 import fs from 'fs';
 import date from '../utils/date';
-import { IConfig } from '../config';
-import IMember from '../IMember';
+import { Config } from '../types/Config';
+import Member from '../types/Member';
 const N3 = require('n3');
 
 /**
  * Concrete Strategies implement the algorithm while following the base Strategy
  * interface. The interface makes them interchangeable in the Context.
  */
-class SubjectPagesFragmentStrategy implements IFragmentStrategy {
-	fragment(data: IMember[], config: IConfig): void {
-		data.forEach((_data: IMember) => {
+class SubjectPagesFragmentStrategy implements FragmentStrategy {
+	fragment(data: Member[], config: Config): void {
+		data.forEach((_data: Member) => {
 			let identifier = this.find(
 				_data.quads,
 				'http://purl.org/dc/terms/isVersionOf'
@@ -57,7 +57,7 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
 		return found === undefined ? null : found.object.value;
 	}
 
-	addSymbolicLinks(config: IConfig): void {
+	addSymbolicLinks(config: Config): void {
 		// get all directories in the storage directory
 		const directories = fs
 			.readdirSync(config.storage)

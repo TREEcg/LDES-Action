@@ -1,18 +1,18 @@
-import IFragmentStrategy from './IFragmentStrategy';
+import FragmentStrategy from '../types/FragmentStrategy';
 import type * as RDF from 'rdf-js';
 import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import fs from 'fs';
-import { IConfig } from '../config';
-import IMember from '../IMember';
+import { Config } from '../types/Config';
+import Member from '../types/Member';
 const N3 = require('n3');
 
 /**
  * Concrete Strategies implement the algorithm while following the base Strategy
  * interface. The interface makes them interchangeable in the Context.
  */
-class AlphabeticalFragmentStrategy implements IFragmentStrategy {
-	fragment(data: IMember[], config: IConfig): void {
-		let sortedData: IMember[] = this.sort(
+class AlphabeticalFragmentStrategy implements FragmentStrategy {
+	fragment(data: Member[], config: Config): void {
+		let sortedData: Member[] = this.sort(
 			data,
 			'http://purl.org/dc/terms/isVersionOf'
 		);
@@ -58,7 +58,7 @@ class AlphabeticalFragmentStrategy implements IFragmentStrategy {
 		});
 	}
 
-	sort(data: IMember[], predicate: string): IMember[] {
+	sort(data: Member[], predicate: string): Member[] {
 		return data.sort((a, b) => {
 			let identifierA = this.find(a.quads, predicate);
 			let identifierB = this.find(b.quads, predicate);
@@ -75,7 +75,7 @@ class AlphabeticalFragmentStrategy implements IFragmentStrategy {
 		return [...new Set(data.map((element) => element.subject.value))];
 	}
 
-	getFileLocation(index: number, config: IConfig): string {
+	getFileLocation(index: number, config: Config): string {
 		// file location
 		const fileName = String(index).padStart(5, '0');
 		return `${config.storage}/${fileName}.ttl`;
@@ -83,7 +83,7 @@ class AlphabeticalFragmentStrategy implements IFragmentStrategy {
 
 	createHypermedia(
 		data: RDF.Quad[],
-		config: IConfig,
+		config: Config,
 		fileLocation: string,
 		nextPage: string | null,
 		previousPage: string | null

@@ -3,13 +3,13 @@ import * as core from '@actions/core';
 import { exec } from '@actions/exec';
 import { execSync } from 'child_process';
 import { diff } from './git';
-import { getConfig, IConfig } from './config';
+import { getConfig, Config } from './types/Config';
 import { Data } from './data';
 import { rmdirSync } from 'fs';
 
 const run = async (): Promise<void> => {
 	core.startGroup('Configuration');
-	const config: IConfig = getConfig();
+	const config: Config = getConfig();
 	await exec('git', ['config', 'user.name', config.git_username]);
 	await exec('git', ['config', 'user.email', `${config.git_email}`]);
 	core.endGroup();

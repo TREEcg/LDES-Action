@@ -1,20 +1,20 @@
 import type * as RDF from 'rdf-js';
-import { IConfig } from '../config';
-import IMember from '../IMember';
-import IDatasource from './IDatasource';
+import { Config } from '../types/Config';
+import Member from '../types/Member';
+import Datasource from '../types/Datasource';
 
 class DatasourceContext {
-	private datasource: IDatasource;
+	private datasource: Datasource;
 
-	constructor(datasource: IDatasource) {
+	constructor(datasource: Datasource) {
 		this.datasource = datasource;
 	}
 
-	public setDatasource(datasource: IDatasource) {
+	public setDatasource(datasource: Datasource) {
 		this.datasource = datasource;
 	}
 
-	public getData(config: IConfig): Promise<IMember[]> {
+	public getData(config: Config): Promise<Member[]> {
 		return this.datasource.getData(config);
 	}
 }

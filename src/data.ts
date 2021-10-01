@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync } from 'fs';
-import { IConfig } from './config';
+import { Config } from './types/Config';
 import * as N3 from 'n3';
 
 import date from './utils/date';
@@ -7,22 +7,22 @@ import type * as RDF from 'rdf-js';
 import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import FragmentContext from './fragmentStrategy/FragmentContext';
 import SubjectPagesFragmentStrategy from './fragmentStrategy/SubjectPagesFragmentStrategy';
-import IFragmentStrategy from './fragmentStrategy/IFragmentStrategy';
+import FragmentStrategy from './types/FragmentStrategy';
 import AlphabeticalFragmentStrategy from './fragmentStrategy/AlphabeticalFragmentStrategy';
 import DatasourceContext from './datasourceStrategy/DatasourceContext';
 import LDESClientDatasource from './datasourceStrategy/LDESClientDatasource';
-import IDatasource from './datasourceStrategy/IDatasource';
+import Datasource from './types/Datasource';
 import OldLDESClientDatasource from './datasourceStrategy/OldLDESClientDatasource';
-import IMember from './IMember';
+import Member from './types/Member';
 
 export class Data {
-	private readonly config: IConfig;
+	private readonly config: Config;
 	private datasourceContext: DatasourceContext;
 	private fragmentContext: FragmentContext;
 
-	private RDFData: IMember[];
+	private RDFData: Member[];
 
-	public constructor(config: IConfig) {
+	public constructor(config: Config) {
 		this.config = config;
 		this.RDFData = [];
 
@@ -44,7 +44,7 @@ export class Data {
 	 * set the datasource strategy
 	 */
 	private setDatasource(): void {
-		let datasource: IDatasource;
+		let datasource: Datasource;
 		switch (this.config.datasource_strategy) {
 			case 'ldes-client': {
 				datasource = new LDESClientDatasource();
@@ -66,7 +66,7 @@ export class Data {
 	 * set the fragmentation strategy
 	 */
 	private setFragmentationStrategy(): void {
-		let strategy: IFragmentStrategy;
+		let strategy: FragmentStrategy;
 		switch (this.config.fragmentation_strategy) {
 			case 'alphabetical': {
 				strategy = new AlphabeticalFragmentStrategy();
