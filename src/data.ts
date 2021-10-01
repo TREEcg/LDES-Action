@@ -11,7 +11,7 @@ import FragmentStrategy from './fragmentStrategy/FragmentStrategy';
 import AlphabeticalFragmentStrategy from './fragmentStrategy/AlphabeticalFragmentStrategy';
 import DatasourceContext from './datasourceStrategy/DatasourceContext';
 import LDESClientDatasource from './datasourceStrategy/LDESClientDatasource';
-import IDatasource from './datasourceStrategy/IDatasource';
+import Datasource from './datasourceStrategy/Datasource';
 import OldLDESClientDatasource from './datasourceStrategy/OldLDESClientDatasource';
 import Member from './types/Member';
 
@@ -44,7 +44,7 @@ export class Data {
 	 * set the datasource strategy
 	 */
 	private setDatasource(): void {
-		let datasource: IDatasource;
+		let datasource: Datasource;
 		switch (this.config.datasource_strategy) {
 			case 'ldes-client': {
 				datasource = new LDESClientDatasource();

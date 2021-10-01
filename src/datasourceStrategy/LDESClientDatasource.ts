@@ -1,11 +1,11 @@
 import type * as RDF from 'rdf-js';
 import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import { IConfig } from '../config';
-import IDatasource from './IDatasource';
+import Datasource from './Datasource';
 import { newEngine } from '@treecg/actor-init-ldes-client';
 import Member from '../types/Member';
 
-class LDESClientDatasource implements IDatasource {
+class LDESClientDatasource implements Datasource {
 	async getData(config: IConfig): Promise<Member[]> {
 		return new Promise<Member[]>((resolve, reject) => {
 			try {

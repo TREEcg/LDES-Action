@@ -1,12 +1,12 @@
 import type * as RDF from 'rdf-js';
 import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import { IConfig } from '../config';
-import IDatasource from './IDatasource';
+import Datasource from './Datasource';
 import * as N3 from 'n3';
 import { newEngine } from '@treecg/actor-init-ldes-client';
 import Member from '../types/Member';
 
-class OldLDESClientDatasource implements IDatasource {
+class OldLDESClientDatasource implements Datasource {
 	private store: N3.Store;
 
 	constructor() {

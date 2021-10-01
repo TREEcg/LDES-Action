@@ -1,16 +1,16 @@
 import type * as RDF from 'rdf-js';
 import { IConfig } from '../config';
 import Member from '../types/Member';
-import IDatasource from './IDatasource';
+import Datasource from './Datasource';
 
 class DatasourceContext {
-	private datasource: IDatasource;
+	private datasource: Datasource;
 
-	constructor(datasource: IDatasource) {
+	constructor(datasource: Datasource) {
 		this.datasource = datasource;
 	}
 
-	public setDatasource(datasource: IDatasource) {
+	public setDatasource(datasource: Datasource) {
 		this.datasource = datasource;
 	}
 
