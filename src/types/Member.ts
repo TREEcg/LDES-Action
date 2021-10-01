@@ -1,8 +1,8 @@
 import type * as RDF from 'rdf-js';
 
-interface IMember {
+interface Member {
 	id: string;
 	quads: RDF.Quad[];
 }
 
-export default IMember;
+export default Member;

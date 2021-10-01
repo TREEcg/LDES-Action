@@ -3,7 +3,7 @@ import type * as RDF from 'rdf-js';
 import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import fs from 'fs';
 import { IConfig } from '../config';
-import IMember from '../IMember';
+import Member from '../types/Member';
 const N3 = require('n3');
 
 /**
@@ -11,8 +11,8 @@ const N3 = require('n3');
  * interface. The interface makes them interchangeable in the Context.
  */
 class AlphabeticalFragmentStrategy implements IFragmentStrategy {
-	fragment(data: IMember[], config: IConfig): void {
-		let sortedData: IMember[] = this.sort(
+	fragment(data: Member[], config: IConfig): void {
+		let sortedData: Member[] = this.sort(
 			data,
 			'http://purl.org/dc/terms/isVersionOf'
 		);
@@ -58,7 +58,7 @@ class AlphabeticalFragmentStrategy implements IFragmentStrategy {
 		});
 	}
 
-	sort(data: IMember[], predicate: string): IMember[] {
+	sort(data: Member[], predicate: string): Member[] {
 		return data.sort((a, b) => {
 			let identifierA = this.find(a.quads, predicate);
 			let identifierB = this.find(b.quads, predicate);

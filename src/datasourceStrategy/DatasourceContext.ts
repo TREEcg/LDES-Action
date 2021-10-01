@@ -1,6 +1,6 @@
 import type * as RDF from 'rdf-js';
 import { IConfig } from '../config';
-import IMember from '../IMember';
+import Member from '../types/Member';
 import IDatasource from './IDatasource';
 
 class DatasourceContext {
@@ -14,7 +14,7 @@ class DatasourceContext {
 		this.datasource = datasource;
 	}
 
-	public getData(config: IConfig): Promise<IMember[]> {
+	public getData(config: IConfig): Promise<Member[]> {
 		return this.datasource.getData(config);
 	}
 }

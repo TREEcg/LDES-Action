@@ -3,7 +3,7 @@ import type * as RDF from 'rdf-js';
 import fs from 'fs';
 import date from '../utils/date';
 import { IConfig } from '../config';
-import IMember from '../IMember';
+import Member from '../types/Member';
 const N3 = require('n3');
 
 /**
@@ -11,8 +11,8 @@ const N3 = require('n3');
  * interface. The interface makes them interchangeable in the Context.
  */
 class SubjectPagesFragmentStrategy implements IFragmentStrategy {
-	fragment(data: IMember[], config: IConfig): void {
-		data.forEach((_data: IMember) => {
+	fragment(data: Member[], config: IConfig): void {
+		data.forEach((_data: Member) => {
 			let identifier = this.find(
 				_data.quads,
 				'http://purl.org/dc/terms/isVersionOf'

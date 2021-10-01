@@ -4,7 +4,7 @@ import { IConfig } from '../config';
 import IDatasource from './IDatasource';
 import * as N3 from 'n3';
 import { newEngine } from '@treecg/actor-init-ldes-client';
-import IMember from '../IMember';
+import Member from '../types/Member';
 
 class OldLDESClientDatasource implements IDatasource {
 	private store: N3.Store;
@@ -13,7 +13,7 @@ class OldLDESClientDatasource implements IDatasource {
 		this.store = new N3.Store();
 	}
 
-	async getData(config: IConfig): Promise<IMember[]> {
+	async getData(config: IConfig): Promise<Member[]> {
 		await this.fetchData(config);
 		return await this.reshapeData();
 	}
@@ -59,10 +59,10 @@ class OldLDESClientDatasource implements IDatasource {
 	/*
 	 * This code should be deprecatable when issue https://github.com/TREEcg/event-stream-client/issues/22 is fixed
 	 */
-	private async reshapeData(): Promise<IMember[]> {
-		return new Promise<IMember[]>((resolve, reject) => {
+	private async reshapeData(): Promise<Member[]> {
+		return new Promise<Member[]>((resolve, reject) => {
 			try {
-				let reshapedData: IMember[] = [];
+				let reshapedData: Member[] = [];
 
 				let uniqueSubjects = this.store.getSubjects(null, null, null);
 
