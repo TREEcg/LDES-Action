@@ -8,8 +8,8 @@ import Member from '../types/Member';
  * The Context uses this interface to call the algorithm defined by Concrete
  * Strategies.
  */
-interface IFragmentStrategy {
+interface FragmentStrategy {
 	fragment(data: Member[], config: IConfig): void;
 }
 
-export default IFragmentStrategy;
+export default FragmentStrategy;

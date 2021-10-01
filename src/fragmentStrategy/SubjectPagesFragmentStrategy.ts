@@ -1,4 +1,4 @@
-import IFragmentStrategy from './IFragmentStrategy';
+import FragmentStrategy from './FragmentStrategy';
 import type * as RDF from 'rdf-js';
 import fs from 'fs';
 import date from '../utils/date';
@@ -10,7 +10,7 @@ const N3 = require('n3');
  * Concrete Strategies implement the algorithm while following the base Strategy
  * interface. The interface makes them interchangeable in the Context.
  */
-class SubjectPagesFragmentStrategy implements IFragmentStrategy {
+class SubjectPagesFragmentStrategy implements FragmentStrategy {
 	fragment(data: Member[], config: IConfig): void {
 		data.forEach((_data: Member) => {
 			let identifier = this.find(

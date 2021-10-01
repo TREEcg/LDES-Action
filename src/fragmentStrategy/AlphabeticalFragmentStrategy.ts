@@ -1,4 +1,4 @@
-import IFragmentStrategy from './IFragmentStrategy';
+import FragmentStrategy from './FragmentStrategy';
 import type * as RDF from 'rdf-js';
 import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import fs from 'fs';
@@ -10,7 +10,7 @@ const N3 = require('n3');
  * Concrete Strategies implement the algorithm while following the base Strategy
  * interface. The interface makes them interchangeable in the Context.
  */
-class AlphabeticalFragmentStrategy implements IFragmentStrategy {
+class AlphabeticalFragmentStrategy implements FragmentStrategy {
 	fragment(data: Member[], config: IConfig): void {
 		let sortedData: Member[] = this.sort(
 			data,

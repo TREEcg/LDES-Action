@@ -7,7 +7,7 @@ import type * as RDF from 'rdf-js';
 import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import FragmentContext from './fragmentStrategy/FragmentContext';
 import SubjectPagesFragmentStrategy from './fragmentStrategy/SubjectPagesFragmentStrategy';
-import IFragmentStrategy from './fragmentStrategy/IFragmentStrategy';
+import FragmentStrategy from './fragmentStrategy/FragmentStrategy';
 import AlphabeticalFragmentStrategy from './fragmentStrategy/AlphabeticalFragmentStrategy';
 import DatasourceContext from './datasourceStrategy/DatasourceContext';
 import LDESClientDatasource from './datasourceStrategy/LDESClientDatasource';
@@ -66,7 +66,7 @@ export class Data {
 	 * set the fragmentation strategy
 	 */
 	private setFragmentationStrategy(): void {
-		let strategy: IFragmentStrategy;
+		let strategy: FragmentStrategy;
 		switch (this.config.fragmentation_strategy) {
 			case 'alphabetical': {
 				strategy = new AlphabeticalFragmentStrategy();
