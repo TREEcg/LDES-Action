@@ -12,19 +12,22 @@ import AlphabeticalFragmentStrategy from './fragmentStrategy/AlphabeticalFragmen
 import DatasourceContext from './datasourceStrategy/DatasourceContext';
 import LDESClientDatasource from './datasourceStrategy/LDESClientDatasource';
 import Datasource from './types/Datasource';
-import OldLDESClientDatasource from './datasourceStrategy/OldLDESClientDatasource';
 import Member from './types/Member';
+import Dataset from './types/Dataset';
 
 export class Data {
 	private readonly config: Config;
 	private datasourceContext: DatasourceContext;
 	private fragmentContext: FragmentContext;
 
-	private RDFData: Member[];
+	private RDFData: Dataset;
 
 	public constructor(config: Config) {
 		this.config = config;
-		this.RDFData = [];
+		this.RDFData = {
+			data: [],
+			metadata: [],
+		};
 
 		// create necessary directories where data will be stored
 		if (!existsSync(this.config.storage)) {
@@ -48,10 +51,6 @@ export class Data {
 		switch (this.config.datasource_strategy) {
 			case 'ldes-client': {
 				datasource = new LDESClientDatasource();
-				break;
-			}
-			case 'old-ldes-client': {
-				datasource = new OldLDESClientDatasource();
 				break;
 			}
 			default: {
