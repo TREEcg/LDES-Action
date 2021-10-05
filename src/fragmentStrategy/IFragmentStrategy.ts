@@ -1,4 +1,3 @@
-import type * as RDF from 'rdf-js';
 import { IConfig } from '../config';
 import IData from '../IData';
 /**

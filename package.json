@@ -29,13 +29,16 @@
   "dependencies": {
     "@actions/core": "^1.5.0",
     "@actions/exec": "^1.1.0",
-    "@ldes/subject-page-bucketizer": "0.0.1",
+    "@rdfjs/types": "^1.0.1",
     "@treecg/actor-init-ldes-client": "2.3.8",
+    "@treecg/ldes-subject-page-bucketizer": "0.0.4-alpha.0",
+    "@treecg/ldes-substring-bucketizer": "0.0.4-alpha.0",
     "date-fns": "^2.23.0",
-    "n3": "^1.11.1"
+    "n3": "^1.11.1",
+    "rdf-data-factory": "^1.1.0"
   },
   "devDependencies": {
-    "@ldes/types": "0.0.1",
+    "@ldes/types": "0.0.2",
     "@vercel/ncc": "^0.29.2",
     "env-cmd": "^10.1.0",
     "prettier": "^2.3.2",

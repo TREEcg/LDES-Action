@@ -6,6 +6,9 @@ import { diff } from './git';
 import { getConfig, IConfig } from './config';
 import { Data } from './data';
 import { rmdirSync } from 'fs';
+import type * as RDF from '@rdfjs/types';
+import { DataFactory } from 'rdf-data-factory';
+
 
 const run = async (): Promise<void> => {
 	core.startGroup('Configuration');

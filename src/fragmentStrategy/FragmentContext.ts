@@ -33,7 +33,7 @@ class FragmentContext {
      * The Context delegates some work to the Strategy object instead of
      * implementing multiple versions of the algorithm on its own.
      */
-    public fragment(data: IData[], config: IConfig): void {
+    public async fragment(data: IData[], config: IConfig): Promise<void> {
         this.strategy.fragment(data, config);
     }
 }

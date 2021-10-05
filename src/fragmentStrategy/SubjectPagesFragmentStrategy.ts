@@ -4,8 +4,9 @@ import fs from 'fs';
 import date from "../utils/date";
 import { IConfig } from '../config';
 import IData from '../IData';
-import N3 from 'n3';
-import { SubjectPageBucketizer } from '@ldes/subject-page-bucketizer';
+import * as N3 from 'n3';
+import { SubjectPageBucketizer } from '@treecg/ldes-subject-page-bucketizer';
+import { appendFile } from 'fs/promises';
 
 /**
  * Concrete Strategies implement the algorithm while following the base Strategy
@@ -13,33 +14,41 @@ import { SubjectPageBucketizer } from '@ldes/subject-page-bucketizer';
  */
 class SubjectPagesFragmentStrategy implements IFragmentStrategy {
 
-    fragment(data: IData[], config: IConfig): void {
+    async fragment(data: IData[], config: IConfig): Promise<void> {
+        const bucketizer = await SubjectPageBucketizer.build(config.property_path);
+        const tasks: any[] = [];
         data.forEach((_data: IData) => {
-            const bucketizer = new SubjectPageBucketizer(config.property_path);
             bucketizer.bucketize(_data.quads, _data.id);
             const bucketTriples = this.findBucketTriples(_data.quads);
 
-            bucketTriples.forEach(bucket => {
-                const writer = new N3.Writer();
+            bucketTriples.forEach(triple => {
+                const bucket = triple.object.value;
                 const bucketPath = `${config.storage}/${bucket}.ttl`;
                 _data.quads = _data.quads.filter(quad => !bucketTriples.includes(quad));
-                writer.addQuads(_data.quads);
-                writer.end((error, result) => {
-                    if (error) {
-                        throw new Error(error.stack);
-                    }
-
-                    fs.appendFileSync(bucketPath, result);
-                });
+                tasks.push(this.writeToBucket(bucketPath, _data.quads));
             });
 
         });
-
-        this.addSymbolicLinks(config);
+        await Promise.all(tasks); 
     }
 
     findBucketTriples(quads: RDF.Quad[]): RDF.Quad[] {
         return quads.filter(quad => quad.predicate.value === 'https://w3id.org/ldes#bucket');
+    }
+
+    async writeToBucket(bucketPath: string, quads: RDF.Quad[]): Promise<void> {
+        const writer = new N3.Writer();
+        writer.addQuads(quads);
+        await new Promise<void>((resolve, reject) => {
+            writer.end(async (error, result) => {
+                if (error) {
+                    reject(new Error(error.stack));
+                }
+
+                await appendFile(bucketPath, result);
+                resolve();
+            });
+        });
     }
 
     find(data: any, predicate: string): any {

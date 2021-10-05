@@ -10,6 +10,7 @@ import LDESClientDatasource from './datasourceStrategy/LDESClientDatasource';
 import IDatasource from './datasourceStrategy/IDatasource';
 import OldLDESClientDatasource from './datasourceStrategy/OldLDESClientDatasource';
 import IData from './IData';
+import SubstringFragmentStrategy from './fragmentStrategy/SubstringFragmentStrategy';
 
 export class Data {
 
@@ -23,6 +24,7 @@ export class Data {
 		this.config = config;
 		this.RDFData = [];
 
+		console.log('Testing current dir: ' + this.config.storage);
 		// create necessary directories where data will be stored
 		if (!existsSync(this.config.storage)) {
 			mkdirSync(this.config.storage);
@@ -69,6 +71,10 @@ export class Data {
 				strategy = new SubjectPagesFragmentStrategy();
 				break;
 			}
+			case "substring": {
+				strategy = new SubstringFragmentStrategy();
+				break;
+			}
 			default: {
 				strategy = new SubjectPagesFragmentStrategy();
 				break;
@@ -101,7 +107,7 @@ export class Data {
 		return new Promise<void>(async (resolve, reject) => {
 			try {
 				// fragment data & write to files
-				this.fragmentContext.fragment(this.RDFData, this.config);
+				await this.fragmentContext.fragment(this.RDFData, this.config);
 
 				return resolve();
 			} catch (e) {
