@@ -32,7 +32,7 @@
     "@rdfjs/types": "^1.0.1",
     "@treecg/actor-init-ldes-client": "2.3.8",
     "@treecg/ldes-subject-page-bucketizer": "0.0.4-alpha.0",
-    "@treecg/ldes-substring-bucketizer": "0.0.4-alpha.0",
+    "@treecg/ldes-substring-bucketizer": "0.0.6-alpha.0",
     "date-fns": "^2.23.0",
     "n3": "^1.11.1",
     "rdf-data-factory": "^1.1.0"

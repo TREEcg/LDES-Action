@@ -6,7 +6,7 @@ import { IConfig } from '../config';
 import IData from '../IData';
 import * as N3 from 'n3';
 import { SubjectPageBucketizer } from '@treecg/ldes-subject-page-bucketizer';
-import { appendFile } from 'fs/promises';
+import { appendFileSync } from 'fs';
 
 /**
  * Concrete Strategies implement the algorithm while following the base Strategy
@@ -40,12 +40,12 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
         const writer = new N3.Writer();
         writer.addQuads(quads);
         await new Promise<void>((resolve, reject) => {
-            writer.end(async (error, result) => {
+            writer.end((error, result) => {
                 if (error) {
                     reject(new Error(error.stack));
                 }
 
-                await appendFile(bucketPath, result);
+                appendFileSync(bucketPath, result);
                 resolve();
             });
         });

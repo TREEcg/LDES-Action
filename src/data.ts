@@ -103,13 +103,13 @@ export class Data {
 	/**
 	 * write fetched data to the output directory supplied in the config file
 	 */
-	public async writeData(): Promise<void> {
-		return new Promise<void>(async (resolve, reject) => {
+	public writeData(): Promise<void> {
+		return new Promise<void>((resolve, reject) => {
 			try {
 				// fragment data & write to files
-				await this.fragmentContext.fragment(this.RDFData, this.config);
+				resolve(this.fragmentContext.fragment(this.RDFData, this.config));
 
-				return resolve();
+				//return resolve();
 			} catch (e) {
 				console.error(e);
 				return reject(e);

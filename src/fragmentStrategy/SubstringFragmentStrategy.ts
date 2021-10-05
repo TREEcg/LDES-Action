@@ -4,7 +4,7 @@ import IFragmentStrategy from "./IFragmentStrategy";
 import { SubstringBucketizer } from '@treecg/ldes-substring-bucketizer';
 import type * as RDF from '@rdfjs/types';
 import * as N3 from 'n3';
-import { appendFile } from 'fs/promises';
+import { appendFileSync } from 'fs';
 import { DataFactory } from "rdf-data-factory";
 
 class SubstringFragmentStrategy implements IFragmentStrategy {
@@ -13,6 +13,7 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
   public constructor() {
     this.factory = new DataFactory();
   }
+
   async fragment(data: IData[], config: IConfig): Promise<void> {
     const bucketizer = await SubstringBucketizer.build(config.property_path, config.fragmentation_page_size);
     const tasks: any[] = [];
@@ -21,10 +22,16 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
       bucketizer.bucketize(_data.quads, _data.id);
       const bucketTriples = this.findBucketTriples(_data.quads);
 
+      _data.quads = _data.quads.filter(quad => !bucketTriples.includes(quad));
+      _data.quads.push(this.factory.quad(
+        this.factory.namedNode(config.url),
+        this.factory.namedNode('https://w3id.org/tree#member'),
+        this.factory.namedNode(_data.id)
+      ))
+
       bucketTriples.forEach(triple => {
         const bucket = triple.object.value;
         const bucketPath = `${config.storage}/${bucket}.ttl`;
-        _data.quads = _data.quads.filter(quad => !bucketTriples.includes(quad));
         tasks.push(this.writeToBucket(bucketPath, _data.quads));
       });
 
@@ -33,21 +40,30 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
 
     const hypermediaControls = bucketizer.getBucketHypermediaControlsMap();
 
+    let pages: string[] = [];
+    const githubPagesUrl = config.gh_pages_url.includes('https') ? config.gh_pages_url : `https://${config.gh_pages_url}`;
+    const outputDirPath = `${githubPagesUrl}/${config.storage}`;
+
     hypermediaControls.forEach((relations: string[], node: string) => {
       const bucketPath = `${config.storage}/${node}.ttl`;
-      const triples = this.createHypermediaControlTriples(relations, config.storage, node);
+
+      pages = [...new Set([...pages, ...relations, node])];
+
+      const triples = this.createHypermediaControlTriples(relations, outputDirPath, node);
       tasks.push(this.writeToBucket(bucketPath, triples));
     });
+
+    pages.map(page => tasks.push(this.addCollectionLink(page, outputDirPath, config.url, config.storage)))
 
     await Promise.all(tasks);
   }
 
-  createHypermediaControlTriples(controls: string[], storagePath: string, bucket: string): RDF.Quad[] {
+  createHypermediaControlTriples(controls: string[], outputDirPath: string, bucket: string): RDF.Quad[] {
     const result: RDF.Quad[] = [];
-    const bucketPath = `${storagePath}/${bucket}.ttl`;
+    const bucketPath = `${outputDirPath}/${bucket}.ttl`;
 
     controls.forEach(control => {
-      const nodePath = `${storagePath}/${control}.ttl`
+      const nodePath = `${outputDirPath}/${control}.ttl`
       const blankNode = this.factory.blankNode();
       result.push(
         this.factory.quad(
@@ -88,6 +104,19 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
     return result;
   }
 
+  addCollectionLink(bucket: string, outputDirPath: string, collectionUri: string, storage: string): Promise<void> {
+    const predicate = bucket === 'root' ? 'https://w3id.org/tree#view' : 'http://rdfs.org/ns/void#subset';
+    const bucketFilePath = `${storage}/${bucket}.ttl`;
+
+    const quad = this.factory.quad(
+      this.factory.namedNode(collectionUri),
+      this.factory.namedNode(predicate),
+      this.factory.namedNode(bucketFilePath)
+    )
+
+    return this.writeToBucket(bucketFilePath, [quad]);
+  }
+
   findBucketTriples(quads: RDF.Quad[]): RDF.Quad[] {
     return quads.filter(quad => quad.predicate.value === 'https://w3id.org/ldes#bucket');
   }
@@ -96,12 +125,12 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
     const writer = new N3.Writer();
     writer.addQuads(quads);
     await new Promise<void>((resolve, reject) => {
-      writer.end(async (error, result) => {
+      writer.end((error, result) => {
         if (error) {
           reject(new Error(error.stack));
         }
 
-        await appendFile(bucketPath, result);
+        appendFileSync(bucketPath, result);
         resolve();
       });
     });
