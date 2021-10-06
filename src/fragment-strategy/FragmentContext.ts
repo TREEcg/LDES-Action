@@ -1,7 +1,7 @@
 import IFragmentStrategy from '../utils/interfaces/IFragmentStrategy';
-import type * as RDF from 'rdf-js';
 import { IConfig } from '../utils/Config';
 import IData from '../utils/interfaces/IData';
+import { IBucketizer } from '@treecg/ldes-types';
 
 /**
  * The FragmentContext defines the interface of interest to clients.
@@ -29,12 +29,21 @@ class FragmentContext {
         this.strategy = strategy;
     }
 
+    public initBucketizer(config: IConfig): Promise<IBucketizer> {
+        return this.strategy.initBucketizer(config);
+    }
+
     /**
      * The Context delegates some work to the Strategy object instead of
      * implementing multiple versions of the algorithm on its own.
      */
-    public async fragment(data: IData[], config: IConfig): Promise<void> {
-        this.strategy.fragment(data, config);
+    public async fragment(data: IData, config: IConfig, bucketizer: IBucketizer): Promise<void> {
+        return this.strategy.fragment(data, config, bucketizer);
+        //this.strategy.fragment(data, config);
+    }
+
+    public async addHypermediaControls(hypermediaControls: Map<string, string[]>, config: IConfig): Promise<void> {
+        return this.strategy.addHypermediaControls(hypermediaControls, config);
     }
 }
 

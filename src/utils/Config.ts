@@ -10,7 +10,8 @@ export interface IConfig {
 	fragmentation_strategy: string; // fragmentation strategy
 	fragmentation_page_size: number; // page size for fragmentation
 	datasource_strategy: string; // datasource strategy,
-	property_path: string
+	property_path: string,
+	stream_data: boolean
 }
 
 export function getConfig(): IConfig {
@@ -24,6 +25,7 @@ export function getConfig(): IConfig {
 		fragmentation_strategy: core.getInput('fragmentation_strategy'),
 		fragmentation_page_size: parseInt(core.getInput('fragmentation_page_size')),
 		datasource_strategy: core.getInput('datasource_strategy'),
-		property_path: core.getInput('property_path')
+		property_path: core.getInput('property_path'),
+		stream_data: core.getBooleanInput('stream_data'),
 	};
 }

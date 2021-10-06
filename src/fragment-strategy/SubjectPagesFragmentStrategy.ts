@@ -5,6 +5,7 @@ import IData from '../utils/interfaces/IData';
 import * as N3 from 'n3';
 import { SubjectPageBucketizer } from '@treecg/ldes-subject-page-bucketizer';
 import { appendFileSync } from 'fs';
+import { IBucketizer } from '@treecg/ldes-types';
 
 /**
  * Concrete Strategies implement the algorithm while following the base Strategy
@@ -12,22 +13,28 @@ import { appendFileSync } from 'fs';
  */
 class SubjectPagesFragmentStrategy implements IFragmentStrategy {
 
-    async fragment(data: IData[], config: IConfig): Promise<void> {
-        const bucketizer = await SubjectPageBucketizer.build(config.property_path);
+    public initBucketizer(config: IConfig): Promise<IBucketizer> {
+        return new Promise(resolve => resolve(SubjectPageBucketizer.build(config.property_path)));
+    }
+
+    async fragment(_data: IData, config: IConfig, bucketizer: IBucketizer): Promise<void> {
+        //const bucketizer = await SubjectPageBucketizer.build(config.property_path);
         const tasks: any[] = [];
-        data.forEach((_data: IData) => {
-            bucketizer.bucketize(_data.quads, _data.id);
-            const bucketTriples = this.findBucketTriples(_data.quads);
+        bucketizer.bucketize(_data.quads, _data.id);
+        const bucketTriples = this.findBucketTriples(_data.quads);
 
-            bucketTriples.forEach(triple => {
-                const bucket = triple.object.value;
-                const bucketPath = `${config.storage}/${bucket}.ttl`;
-                _data.quads = _data.quads.filter(quad => !bucketTriples.includes(quad));
-                tasks.push(this.writeToBucket(bucketPath, _data.quads));
-            });
-
+        bucketTriples.forEach(triple => {
+            const bucket = triple.object.value;
+            const bucketPath = `${config.storage}/${bucket}.ttl`;
+            _data.quads = _data.quads.filter(quad => !bucketTriples.includes(quad));
+            tasks.push(this.writeToBucket(bucketPath, _data.quads));
         });
-        await Promise.all(tasks); 
+        await Promise.all(tasks);
+    }
+
+    async addHypermediaControls(hypermediaControls: Map<string, string[]>, config: IConfig): Promise<void> {
+        console.log(`[SubjectPagesFragmentStrategy]: Hypermedia controls are not necessary for this strategy`);
+        return new Promise(resolve => resolve());
     }
 
     findBucketTriples(quads: RDF.Quad[]): RDF.Quad[] {

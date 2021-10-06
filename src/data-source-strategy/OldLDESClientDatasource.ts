@@ -1,10 +1,11 @@
 import type * as RDF from 'rdf-js';
 import { quad } from '@rdfjs/data-model';
 import { IConfig } from '../utils/Config';
-import IDatasource from './IDatasource';
+import IDatasource from '../utils/interfaces/IDatasource';
 import * as N3 from 'n3';
 import { newEngine } from '@treecg/actor-init-ldes-client';
-import IData from '../utils/IData';
+import IData from '../utils/interfaces/IData';
+import { Readable } from 'stream';
 
 class OldLDESClientDatasource implements IDatasource {
     private store: N3.Store;
@@ -18,20 +19,24 @@ class OldLDESClientDatasource implements IDatasource {
         return await this.reshapeData();
     }
 
+    getLinkedDataEventStream(url: string): Readable {
+        let options = {
+            emitMemberOnce: true,
+            disablePolling: true,
+            mimeType: 'text/turtle',
+        };
+
+        let LDESClient = newEngine();
+        return LDESClient.createReadStream(
+            url,
+            options
+        );
+    }
+
     private async fetchData(config: IConfig): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             try {
-                let options = {
-                    emitMemberOnce: true,
-                    disablePolling: true,
-                    mimeType: 'text/turtle',
-                };
-
-                let LDESClient = newEngine();
-                let eventStreamSync = LDESClient.createReadStream(
-                    config.url,
-                    options
-                );
+                const ldes = this.getLinkedDataEventStream(config.url);
 
                 // @ Here should come the RDF.Quad[][] implementation when it is finished in the library!
                 // It should replace the current N3 Parser implementation.
@@ -39,7 +44,7 @@ class OldLDESClientDatasource implements IDatasource {
 
                 // read quads and add them to triple store
                 // @ts-ignore
-                parser.parse(eventStreamSync, (err, quad, prefs) => {
+                parser.parse(ldes, (err, quad, prefs) => {
                     if (err) {
                         throw (err);
                     }

@@ -3,12 +3,12 @@ import { IConfig } from './utils/Config';
 
 import FragmentContext from './fragment-strategy/FragmentContext';
 import SubjectPagesFragmentStrategy from './fragment-strategy/SubjectPagesFragmentStrategy';
-import IFragmentStrategy from './fragment-strategy/IFragmentStrategy';
+import IFragmentStrategy from './utils/interfaces/IFragmentStrategy';
 import DatasourceContext from './data-source-strategy/DatasourceContext';
 import LDESClientDatasource from './data-source-strategy/LDESClientDatasource';
-import IDatasource from './data-source-strategy/IDatasource';
+import IDatasource from './utils/interfaces/IDatasource';
 import OldLDESClientDatasource from './data-source-strategy/OldLDESClientDatasource';
-import IData from './utils/IData';
+import IData from './utils/interfaces/IData';
 import SubstringFragmentStrategy from './fragment-strategy/SubstringFragmentStrategy';
 
 export class Data {
@@ -24,7 +24,7 @@ export class Data {
 		this.RDFData = [];
 
 		console.log('Testing current dir: ' + this.config.storage);
-		
+
 		// Create necessary directories where data will be stored
 		if (!existsSync(this.config.storage)) {
 			mkdirSync(this.config.storage);
@@ -32,16 +32,39 @@ export class Data {
 
 		this.datasourceContext = new DatasourceContext(new LDESClientDatasource());
 		this.setDatasource();
-		
+
 		this.fragmentContext = new FragmentContext(new SubjectPagesFragmentStrategy());
 		this.setFragmentationStrategy();
 
 	}
 
+
+
+	public async processDataMemory(): Promise<void> {
+		await this.fetchData();
+		await this.writeData();
+	}
+
+	public async processDataStreamingly(): Promise<void> {
+		const ldes = this.datasourceContext.getLinkedDataEventStream(this.config.url);
+		const bucketizer = await this.fragmentContext.initBucketizer(this.config);
+
+		return new Promise((resolve, reject) => {
+			ldes.on('data', (member: IData) => {
+				this.fragmentContext.fragment(member, this.config, bucketizer);
+			})
+
+			ldes.on('end', () => {
+				const hypermediaControls = bucketizer.getBucketHypermediaControlsMap();
+				resolve(this.fragmentContext.addHypermediaControls(hypermediaControls, this.config));
+			});
+		})
+	}
+
 	/**
 	 * set the datasource strategy
 	 */
-	 private setDatasource(): void {
+	private setDatasource(): void {
 		let datasource: IDatasource;
 
 		switch (this.config.datasource_strategy) {
@@ -89,7 +112,7 @@ export class Data {
 	/**
 	 * fetch data using Datasource
 	 */
-	public async fetchData():  Promise<void> {
+	public async fetchData(): Promise<void> {
 		return new Promise<void>(async (resolve, reject) => {
 			try {
 				this.RDFData = await this.datasourceContext.getData(this.config);
@@ -105,12 +128,18 @@ export class Data {
 	 * write fetched data to the output directory supplied in the config file
 	 */
 	public writeData(): Promise<void> {
-		return new Promise<void>((resolve, reject) => {
+		return new Promise<void>(async (resolve, reject) => {
 			try {
-				// fragment data & write to files
-				resolve(this.fragmentContext.fragment(this.RDFData, this.config));
+				const bucketizer = await this.fragmentContext.initBucketizer(this.config);
 
-				//return resolve();
+				const tasks: any[] = [];
+				this.RDFData.forEach(member => tasks.push(this.fragmentContext.fragment(member, this.config, bucketizer)));
+				await Promise.all(tasks);
+
+				const hypermediaControls = bucketizer.getBucketHypermediaControlsMap();
+				await this.fragmentContext.addHypermediaControls(hypermediaControls, this.config);
+
+				return resolve();
 			} catch (e) {
 				console.error(e);
 				return reject(e);

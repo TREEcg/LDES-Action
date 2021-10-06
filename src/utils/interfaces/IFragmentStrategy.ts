@@ -1,5 +1,6 @@
 import { IConfig } from '../Config';
 import IData from './IData';
+import { IBucketizer } from '@treecg/ldes-types';
 /**
  * The FragmentStrategy interface declares operations common to all supported versions
  * of some algorithm.
@@ -8,7 +9,9 @@ import IData from './IData';
  * Strategies.
  */
 interface IFragmentStrategy {
-    fragment(data: IData[], config: IConfig): void;
+    initBucketizer(config: IConfig): Promise<IBucketizer>;
+    fragment(data: IData, config: IConfig, bucketizer: IBucketizer): Promise<void>;
+    addHypermediaControls(hypermediaControls: Map<string, string[]>, config: IConfig): Promise<void>
 }
 
 export default IFragmentStrategy;

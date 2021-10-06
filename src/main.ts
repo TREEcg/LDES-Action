@@ -6,9 +6,6 @@ import { diff } from './utils/Git';
 import { getConfig, IConfig } from './utils/Config';
 import { Data } from './data';
 import { rmdirSync } from 'fs';
-import type * as RDF from '@rdfjs/types';
-import { DataFactory } from 'rdf-data-factory';
-
 
 const run = async (): Promise<void> => {
 	// Read configuration from .yaml file
@@ -26,8 +23,11 @@ const run = async (): Promise<void> => {
 	// Fetches the LDES and applies a fragmentation strategy
 	core.startGroup('Fetch and write data');
 	const data_fetcher = new Data(config);
-	await data_fetcher.fetchData();
-	await data_fetcher.writeData();
+	if (config.stream_data) {
+		await data_fetcher.processDataStreamingly();
+	} else {
+		await data_fetcher.processDataMemory();
+	}
 	core.endGroup();
 
 	// List all changed files

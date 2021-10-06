@@ -1,34 +1,25 @@
 import type * as RDF from 'rdf-js';
 import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
 import { IConfig } from '../utils/Config';
-import IDatasource from './IDatasource';
+import IDatasource from '../utils/interfaces/IDatasource';
 import { newEngine } from '@treecg/actor-init-ldes-client';
-import IData from '../utils/IData';
+import IData from '../utils/interfaces/IData';
+import { Readable } from 'stream';
 
 class LDESClientDatasource implements IDatasource {
 
     async getData(config: IConfig): Promise<IData[]> {
         return new Promise<IData[]>((resolve, reject) => {
             try {
-                let options = {
-                    emitMemberOnce: true,
-                    disablePolling: true,
-                    mimeType: 'text/turtle',
-                    representation: "Quads",
-                };
-
-                let LDESClient = newEngine();
-                let eventStreamSync = LDESClient.createReadStream(
-                    config.url,
-                    options
-                );
+                const ldes = this.getLinkedDataEventStream(config.url);
 
                 let data: IData[] = [];
 
-                eventStreamSync.on('data', (member : IData) => {
+                ldes.on('data', (member: IData) => {
                     data.push(member);
                 });
-                eventStreamSync.on('end', () => {
+
+                ldes.on('end', () => {
                     console.log("No more data!");
                     resolve(data);
                 });
@@ -37,6 +28,21 @@ class LDESClientDatasource implements IDatasource {
                 return reject(e);
             }
         });
+    }
+
+    getLinkedDataEventStream(url: string): Readable {
+        let options = {
+            emitMemberOnce: true,
+            disablePolling: true,
+            mimeType: 'text/turtle',
+            representation: "Quads",
+        };
+
+        let LDESClient = newEngine();
+        return LDESClient.createReadStream(
+            url,
+            options
+        );
     }
 
 }

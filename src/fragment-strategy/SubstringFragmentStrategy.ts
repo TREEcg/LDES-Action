@@ -6,6 +6,7 @@ import type * as RDF from '@rdfjs/types';
 import * as N3 from 'n3';
 import { appendFileSync } from 'fs';
 import { DataFactory } from "rdf-data-factory";
+import { IBucketizer } from "@treecg/ldes-types";
 
 class SubstringFragmentStrategy implements IFragmentStrategy {
   public factory: RDF.DataFactory;
@@ -14,47 +15,48 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
     this.factory = new DataFactory();
   }
 
-  async fragment(data: IData[], config: IConfig): Promise<void> {
-    const bucketizer = await SubstringBucketizer.build(config.property_path, config.fragmentation_page_size);
-    //const tasks: any[] = [];
+  public initBucketizer(config: IConfig): Promise<IBucketizer> {
+    return new Promise(resolve => resolve(SubstringBucketizer.build(config.property_path, config.fragmentation_page_size)));
+  }
 
-    data.forEach((_data: IData) => {
-      bucketizer.bucketize(_data.quads, _data.id);
-      const bucketTriples = this.findBucketTriples(_data.quads);
+  async fragment(_data: IData, config: IConfig, bucketizer: IBucketizer): Promise<void> {
+    const tasks: any[] = [];
 
-      _data.quads = _data.quads.filter(quad => !bucketTriples.includes(quad));
-      _data.quads.push(this.factory.quad(
-        this.factory.namedNode(config.url),
-        this.factory.namedNode('https://w3id.org/tree#member'),
-        this.factory.namedNode(_data.id)
-      ))
+    bucketizer.bucketize(_data.quads, _data.id);
+    const bucketTriples = this.findBucketTriples(_data.quads);
 
-      bucketTriples.forEach(async triple => {
-        const bucket = triple.object.value;
-        const bucketPath = `${config.storage}/${bucket}.ttl`;
-        await this.writeToBucket(bucketPath, _data.quads);
-      });
+    _data.quads = _data.quads.filter(quad => !bucketTriples.includes(quad));
+    _data.quads.push(this.factory.quad(
+      this.factory.namedNode(config.url),
+      this.factory.namedNode('https://w3id.org/tree#member'),
+      this.factory.namedNode(_data.id)
+    ))
 
+    bucketTriples.forEach(async triple => {
+      const bucket = triple.object.value;
+      const bucketPath = `${config.storage}/${bucket}.ttl`;
+      await this.writeToBucket(bucketPath, _data.quads);
     });
-    //await Promise.all(tasks);
+    await Promise.all(tasks);
+  }
 
-    const hypermediaControls = bucketizer.getBucketHypermediaControlsMap();
-
+  async addHypermediaControls(hypermediaControls: Map<string, string[]>, config: IConfig): Promise<void> {
+    let tasks: any[] = []
     let pages: string[] = [];
     const githubPagesUrl = config.gh_pages_url.includes('https') ? config.gh_pages_url : `https://${config.gh_pages_url}`;
     const outputDirPath = `${githubPagesUrl}/${config.storage}`;
 
-    hypermediaControls.forEach(async (relations: string[], node: string) => {
+    hypermediaControls.forEach((relations: string[], node: string) => {
       const bucketPath = `${config.storage}/${node}.ttl`;
 
       pages = [...new Set([...pages, ...relations, node])];
 
       const triples = this.createHypermediaControlTriples(relations, outputDirPath, node);
-      await this.writeToBucket(bucketPath, triples);
+      tasks.push(this.writeToBucket(bucketPath, triples));
     });
 
-    pages.map(async page => await this.addCollectionLink(page, outputDirPath, config.url, config.storage))
-    //await Promise.all(tasks2);
+    pages.map(async page => tasks.push(this.addCollectionLink(page, outputDirPath, config.url, config.storage)));
+    await Promise.all(tasks);
   }
 
   createHypermediaControlTriples(controls: string[], outputDirPath: string, bucket: string): RDF.Quad[] {
