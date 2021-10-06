@@ -16,7 +16,7 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
 
   async fragment(data: IData[], config: IConfig): Promise<void> {
     const bucketizer = await SubstringBucketizer.build(config.property_path, config.fragmentation_page_size);
-    const tasks: any[] = [];
+    //const tasks: any[] = [];
 
     data.forEach((_data: IData) => {
       bucketizer.bucketize(_data.quads, _data.id);
@@ -29,14 +29,14 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
         this.factory.namedNode(_data.id)
       ))
 
-      bucketTriples.forEach(triple => {
+      bucketTriples.forEach(async triple => {
         const bucket = triple.object.value;
         const bucketPath = `${config.storage}/${bucket}.ttl`;
-        tasks.push(this.writeToBucket(bucketPath, _data.quads));
+        await this.writeToBucket(bucketPath, _data.quads);
       });
 
     });
-    await Promise.all(tasks);
+    //await Promise.all(tasks);
 
     const hypermediaControls = bucketizer.getBucketHypermediaControlsMap();
 
@@ -44,18 +44,17 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
     const githubPagesUrl = config.gh_pages_url.includes('https') ? config.gh_pages_url : `https://${config.gh_pages_url}`;
     const outputDirPath = `${githubPagesUrl}/${config.storage}`;
 
-    hypermediaControls.forEach((relations: string[], node: string) => {
+    hypermediaControls.forEach(async (relations: string[], node: string) => {
       const bucketPath = `${config.storage}/${node}.ttl`;
 
       pages = [...new Set([...pages, ...relations, node])];
 
       const triples = this.createHypermediaControlTriples(relations, outputDirPath, node);
-      tasks.push(this.writeToBucket(bucketPath, triples));
+      await this.writeToBucket(bucketPath, triples);
     });
 
-    pages.map(page => tasks.push(this.addCollectionLink(page, outputDirPath, config.url, config.storage)))
-
-    await Promise.all(tasks);
+    pages.map(async page => await this.addCollectionLink(page, outputDirPath, config.url, config.storage))
+    //await Promise.all(tasks2);
   }
 
   createHypermediaControlTriples(controls: string[], outputDirPath: string, bucket: string): RDF.Quad[] {
