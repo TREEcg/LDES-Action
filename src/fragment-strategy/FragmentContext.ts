@@ -1,7 +1,7 @@
-import IFragmentStrategy from './IFragmentStrategy';
+import IFragmentStrategy from '../utils/interfaces/IFragmentStrategy';
 import type * as RDF from 'rdf-js';
 import { IConfig } from '../utils/Config';
-import IData from '../utils/IData';
+import IData from '../utils/interfaces/IData';
 
 /**
  * The FragmentContext defines the interface of interest to clients.

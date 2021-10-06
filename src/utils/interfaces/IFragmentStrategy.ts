@@ -1,5 +1,5 @@
-import { IConfig } from '../utils/Config';
-import IData from '../utils/IData';
+import { IConfig } from '../Config';
+import IData from './IData';
 /**
  * The FragmentStrategy interface declares operations common to all supported versions
  * of some algorithm.

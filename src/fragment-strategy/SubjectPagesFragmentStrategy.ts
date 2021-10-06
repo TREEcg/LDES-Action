@@ -1,7 +1,7 @@
-import IFragmentStrategy from './IFragmentStrategy';
+import IFragmentStrategy from '../utils/interfaces/IFragmentStrategy';
 import type * as RDF from 'rdf-js';
 import { IConfig } from '../utils/Config';
-import IData from '../utils/IData';
+import IData from '../utils/interfaces/IData';
 import * as N3 from 'n3';
 import { SubjectPageBucketizer } from '@treecg/ldes-subject-page-bucketizer';
 import { appendFileSync } from 'fs';
