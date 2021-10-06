@@ -1,5 +1,5 @@
-import { IConfig } from "../config";
-import IData from "../IData";
+import { IConfig } from "../utils/Config";
+import IData from "../utils/IData";
 import IFragmentStrategy from "./IFragmentStrategy";
 import { SubstringBucketizer } from '@treecg/ldes-substring-bucketizer';
 import type * as RDF from '@rdfjs/types';

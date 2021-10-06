@@ -1,16 +1,15 @@
 import { existsSync, mkdirSync } from 'fs';
-import { IConfig } from './config';
+import { IConfig } from './utils/Config';
 
-import type * as RDF from 'rdf-js';
-import FragmentContext from './fragmentStrategy/FragmentContext';
-import SubjectPagesFragmentStrategy from './fragmentStrategy/SubjectPagesFragmentStrategy';
-import IFragmentStrategy from './fragmentStrategy/IFragmentStrategy';
-import DatasourceContext from './datasourceStrategy/DatasourceContext';
-import LDESClientDatasource from './datasourceStrategy/LDESClientDatasource';
-import IDatasource from './datasourceStrategy/IDatasource';
-import OldLDESClientDatasource from './datasourceStrategy/OldLDESClientDatasource';
-import IData from './IData';
-import SubstringFragmentStrategy from './fragmentStrategy/SubstringFragmentStrategy';
+import FragmentContext from './fragment-strategy/FragmentContext';
+import SubjectPagesFragmentStrategy from './fragment-strategy/SubjectPagesFragmentStrategy';
+import IFragmentStrategy from './fragment-strategy/IFragmentStrategy';
+import DatasourceContext from './data-source-strategy/DatasourceContext';
+import LDESClientDatasource from './data-source-strategy/LDESClientDatasource';
+import IDatasource from './data-source-strategy/IDatasource';
+import OldLDESClientDatasource from './data-source-strategy/OldLDESClientDatasource';
+import IData from './utils/IData';
+import SubstringFragmentStrategy from './fragment-strategy/SubstringFragmentStrategy';
 
 export class Data {
 
@@ -25,7 +24,8 @@ export class Data {
 		this.RDFData = [];
 
 		console.log('Testing current dir: ' + this.config.storage);
-		// create necessary directories where data will be stored
+		
+		// Create necessary directories where data will be stored
 		if (!existsSync(this.config.storage)) {
 			mkdirSync(this.config.storage);
 		}
@@ -43,6 +43,7 @@ export class Data {
 	 */
 	 private setDatasource(): void {
 		let datasource: IDatasource;
+
 		switch (this.config.datasource_strategy) {
 			case "ldes-client": {
 				datasource = new LDESClientDatasource();
@@ -57,8 +58,8 @@ export class Data {
 				break;
 			}
 		}
-		this.datasourceContext.setDatasource(datasource);
 
+		this.datasourceContext.setDatasource(datasource);
 	}
 
 	/**
@@ -66,6 +67,7 @@ export class Data {
 	 */
 	private setFragmentationStrategy(): void {
 		let strategy: IFragmentStrategy;
+
 		switch (this.config.fragmentation_strategy) {
 			case "subject-pages": {
 				strategy = new SubjectPagesFragmentStrategy();
@@ -82,7 +84,6 @@ export class Data {
 		}
 
 		this.fragmentContext.setStrategy(strategy);
-
 	}
 
 	/**
@@ -116,5 +117,4 @@ export class Data {
 			}
 		});
 	}
-
 }

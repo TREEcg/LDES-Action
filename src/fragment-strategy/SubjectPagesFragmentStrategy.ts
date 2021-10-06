@@ -1,0 +1,58 @@
+import IFragmentStrategy from './IFragmentStrategy';
+import type * as RDF from 'rdf-js';
+import { IConfig } from '../utils/Config';
+import IData from '../utils/IData';
+import * as N3 from 'n3';
+import { SubjectPageBucketizer } from '@treecg/ldes-subject-page-bucketizer';
+import { appendFileSync } from 'fs';
+
+/**
+ * Concrete Strategies implement the algorithm while following the base Strategy
+ * interface. The interface makes them interchangeable in the Context.
+ */
+class SubjectPagesFragmentStrategy implements IFragmentStrategy {
+
+    async fragment(data: IData[], config: IConfig): Promise<void> {
+        const bucketizer = await SubjectPageBucketizer.build(config.property_path);
+        const tasks: any[] = [];
+        data.forEach((_data: IData) => {
+            bucketizer.bucketize(_data.quads, _data.id);
+            const bucketTriples = this.findBucketTriples(_data.quads);
+
+            bucketTriples.forEach(triple => {
+                const bucket = triple.object.value;
+                const bucketPath = `${config.storage}/${bucket}.ttl`;
+                _data.quads = _data.quads.filter(quad => !bucketTriples.includes(quad));
+                tasks.push(this.writeToBucket(bucketPath, _data.quads));
+            });
+
+        });
+        await Promise.all(tasks); 
+    }
+
+    findBucketTriples(quads: RDF.Quad[]): RDF.Quad[] {
+        return quads.filter(quad => quad.predicate.value === 'https://w3id.org/ldes#bucket');
+    }
+
+    async writeToBucket(bucketPath: string, quads: RDF.Quad[]): Promise<void> {
+        const writer = new N3.Writer();
+        writer.addQuads(quads);
+        await new Promise<void>((resolve, reject) => {
+            writer.end((error, result) => {
+                if (error) {
+                    reject(new Error(error.stack));
+                }
+
+                appendFileSync(bucketPath, result);
+                resolve();
+            });
+        });
+    }
+
+    find(data: any, predicate: string): any {
+        const found = data.find((element: RDF.Quad) => element.predicate.value === predicate);
+        return (found === undefined) ? null : found.object.value;
+    }
+}
+
+export default SubjectPagesFragmentStrategy;
