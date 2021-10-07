@@ -2,6 +2,7 @@ import { existsSync, mkdirSync } from 'fs';
 
 import DatasourceContext from './data-source-strategy/DatasourceContext';
 import LDESClientDatasource from './data-source-strategy/LdesClientDatasource';
+import BasicFragmentStrategy from './fragment-strategy/BasicFragmentStrategy';
 import FragmentContext from './fragment-strategy/FragmentContext';
 import SubjectPagesFragmentStrategy from './fragment-strategy/SubjectPagesFragmentStrategy';
 import SubstringFragmentStrategy from './fragment-strategy/SubstringFragmentStrategy';
@@ -79,8 +80,9 @@ export class Data {
         strategy = new SubstringFragmentStrategy();
         break;
       }
+      case 'basic':
       default: {
-        strategy = new SubjectPagesFragmentStrategy();
+        strategy = new BasicFragmentStrategy();
         break;
       }
     }

@@ -22,7 +22,7 @@ inputs:
   fragmentation_strategy:
     description: 'Fragmentation strategy to use'
     required: false
-    default: 'version'
+    default: 'basic'
   fragmentation_page_size:
     description: 'RDF object count per page'
     required: false
