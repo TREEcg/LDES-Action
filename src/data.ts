@@ -38,8 +38,6 @@ export class Data {
 
 	}
 
-
-
 	public async processDataMemory(): Promise<void> {
 		await this.fetchData();
 		await this.writeData();
@@ -62,7 +60,7 @@ export class Data {
 	}
 
 	/**
-	 * set the datasource strategy
+	 * Set the datasource strategy
 	 */
 	private setDatasource(): void {
 		let datasource: IDatasource;
@@ -86,7 +84,7 @@ export class Data {
 	}
 
 	/**
-	 * set the fragmentation strategy
+	 * Set the fragmentation strategy
 	 */
 	private setFragmentationStrategy(): void {
 		let strategy: IFragmentStrategy;
@@ -110,7 +108,7 @@ export class Data {
 	}
 
 	/**
-	 * fetch data using Datasource
+	 * Fetch data using Datasource
 	 */
 	public async fetchData(): Promise<void> {
 		return new Promise<void>(async (resolve, reject) => {
@@ -125,7 +123,7 @@ export class Data {
 	}
 
 	/**
-	 * write fetched data to the output directory supplied in the config file
+	 * Write fetched data to the output directory supplied in the config file
 	 */
 	public writeData(): Promise<void> {
 		return new Promise<void>(async (resolve, reject) => {

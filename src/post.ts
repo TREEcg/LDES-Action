@@ -12,6 +12,7 @@ const run = async () => {
 	}
 
 	const files = JSON.parse(process.env.FILES || '[]');
+
 	// Don't want to commit if there aren't any files changed!
 	if (!files.length) {
 		core.info('No changes to commit');
@@ -25,7 +26,7 @@ const run = async () => {
 	const body = files.map((f: { [x: string]: any }) => f['name']).slice(0,100).join('\n- ');
 	files.length > 100 ? body.concat(`${files.length - 100} files not shown`) : '';
 
-	// these should already be staged, in main.ts
+	// These should already be staged, in main.ts
 	core.info(`Committing "${msg}"`);
 	core.debug(meta);
 	await exec('git', [

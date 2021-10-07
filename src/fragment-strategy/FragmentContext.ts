@@ -39,7 +39,6 @@ class FragmentContext {
      */
     public async fragment(data: IData, config: IConfig, bucketizer: IBucketizer): Promise<void> {
         return this.strategy.fragment(data, config, bucketizer);
-        //this.strategy.fragment(data, config);
     }
 
     public async addHypermediaControls(hypermediaControls: Map<string, string[]>, config: IConfig): Promise<void> {

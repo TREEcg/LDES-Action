@@ -55,7 +55,7 @@ async function diffSize(file: GitStatus): Promise<number> {
 				`Calculating diff for ${JSON.stringify(file)}, with size ${stat.size}b`
 			);
 
-			// get old size and compare
+			// Get old size and compare
 			const oldSize = await getHeadSize(file.path);
 			const delta = oldSize === undefined ? stat.size : stat.size - oldSize;
 			core.debug(
@@ -63,6 +63,7 @@ async function diffSize(file: GitStatus): Promise<number> {
 			);
 			return delta;
 		}
+
 		case 'A': {
 			const stat = statSync(file.path);
 			core.debug(
@@ -72,12 +73,14 @@ async function diffSize(file: GitStatus): Promise<number> {
 			core.debug(` ==> ${file.path} added: delta ${stat.size}b`);
 			return stat.size;
 		}
+
 		case 'D': {
 			const oldSize = await getHeadSize(file.path);
 			const delta = oldSize === undefined ? 0 : oldSize;
 			core.debug(` ==> ${file.path} deleted: delta ${delta}b`);
 			return delta;
 		}
+
 		default: {
 			throw new Error(
 				`Encountered an unexpected file status in git: ${file.flag} ${file.path}`
@@ -91,10 +94,13 @@ export async function diff(filename: string): Promise<number> {
 	core.debug(
 		`Parsed statuses: ${statuses.map((s) => JSON.stringify(s)).join(', ')}`
 	);
+
 	const status = statuses.find((s) => path.relative(s.path, filename) === '');
+	
 	if (typeof status === 'undefined') {
 		core.info(`No status found for ${filename}, aborting.`);
 		return 0; // there's no change to the specified file
 	}
+
 	return await diffSize(status);
 }
