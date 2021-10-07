@@ -15,7 +15,7 @@ const run = async (): Promise<void> => {
   await exec('git', ['config', 'user.email', `${config.git_email}`]);
   core.endGroup();
 
-  // Delete local output folder to have a clean start, no symlinks and no old data
+  // Delete output folder to have a clean start, no symlinks and no old data
   core.startGroup('Delete output folder');
   rmdirSync(config.storage, { recursive: true });
   core.endGroup();

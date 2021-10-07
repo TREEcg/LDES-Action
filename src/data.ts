@@ -43,14 +43,14 @@ export class Data {
     const ldes = this.datasourceContext.getLinkedDataEventStream(this.config.url);
     const bucketizer = await this.fragmentContext.initBucketizer(this.config);
 
-    return new Promise(async (resolve, reject) => {
+    return new Promise(resolve => {
       const tasks: any[] = [];
       ldes.on('data', (member: IData) => {
         tasks.push(this.fragmentContext.fragment(member, this.config, bucketizer));
       });
-      await Promise.all(tasks);
 
-      ldes.on('end', () => {
+      ldes.on('end', async () => {
+        await Promise.all(tasks);
         const hypermediaControls = bucketizer.getBucketHypermediaControlsMap();
         resolve(this.fragmentContext.addHypermediaControls(hypermediaControls, this.config));
       });
