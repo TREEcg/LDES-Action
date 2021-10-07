@@ -1,50 +1,46 @@
-import type * as RDF from 'rdf-js';
-import { literal, namedNode, blankNode, quad } from '@rdfjs/data-model';
-import { IConfig } from '../utils/Config';
-import IDatasource from '../utils/interfaces/IDatasource';
+import type { Readable } from 'stream';
 import { newEngine } from '@treecg/actor-init-ldes-client';
-import IData from '../utils/interfaces/IData';
-import { Readable } from 'stream';
+import type { IConfig } from '../utils/Config';
+import type IData from '../utils/interfaces/IData';
+import type IDatasource from '../utils/interfaces/IDatasource';
 
 class LDESClientDatasource implements IDatasource {
+  public async getData(config: IConfig): Promise<IData[]> {
+    return new Promise<IData[]>((resolve, reject) => {
+      try {
+        const ldes = this.getLinkedDataEventStream(config.url);
 
-    async getData(config: IConfig): Promise<IData[]> {
-        return new Promise<IData[]>((resolve, reject) => {
-            try {
-                const ldes = this.getLinkedDataEventStream(config.url);
+        const data: IData[] = [];
 
-                let data: IData[] = [];
-
-                ldes.on('data', (member: IData) => {
-                    data.push(member);
-                });
-
-                ldes.on('end', () => {
-                    console.log("No more data!");
-                    resolve(data);
-                });
-            } catch (e) {
-                console.error(e);
-                return reject(e);
-            }
+        ldes.on('data', (member: IData) => {
+          data.push(member);
         });
-    }
 
-    getLinkedDataEventStream(url: string): Readable {
-        let options = {
-            emitMemberOnce: true,
-            disablePolling: true,
-            mimeType: 'text/turtle',
-            representation: "Quads",
-        };
+        ldes.on('end', () => {
+          console.log('No more data!');
+          resolve(data);
+        });
+      } catch (error: unknown) {
+        console.error(error);
+        return reject(error);
+      }
+    });
+  }
 
-        let LDESClient = newEngine();
-        return LDESClient.createReadStream(
-            url,
-            options
-        );
-    }
+  public getLinkedDataEventStream(url: string): Readable {
+    const options = {
+      emitMemberOnce: true,
+      disablePolling: true,
+      mimeType: 'text/turtle',
+      representation: 'Quads',
+    };
 
+    const LDESClient = newEngine();
+    return LDESClient.createReadStream(
+      url,
+      options,
+    );
+  }
 }
 
 export default LDESClientDatasource;

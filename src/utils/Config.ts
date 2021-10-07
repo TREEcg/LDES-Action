@@ -1,31 +1,52 @@
 import * as core from '@actions/core';
 
 export interface IConfig {
-	url: string; // HTTP(S) data source
-	storage: string; // directory where data will be written
-	gh_pages_branch: string; // branch used for deploying to GitHub Pages
-	gh_pages_url: string; // URL of the GitHub Pages deployment
-	git_username: string; // GitHub username that makes the commits
-	git_email: string; // GitHub email that makes the commits
-	fragmentation_strategy: string; // fragmentation strategy
-	fragmentation_page_size: number; // page size for fragmentation
-	datasource_strategy: string; // datasource strategy,
-	property_path: string,
-	stream_data: boolean
+  // HTTP(S) data source
+  url: string;
+
+  // Directory where data will be written
+  storage: string;
+
+  // Branch used for deploying to GitHub Pages
+  gh_pages_branch: string;
+
+  // URL of the GitHub Pages deployment
+  gh_pages_url: string;
+
+  // GitHub username that makes the commits
+  git_username: string;
+
+  // GitHub email that makes the commits
+  git_email: string;
+
+  // Fragmentation strategy
+  fragmentation_strategy: string;
+
+  // Page size for fragmentation
+  fragmentation_page_size: number;
+
+  // Datasource strategy
+  datasource_strategy: string;
+
+  // Property path that will be resolved by bucketizer
+  property_path: string;
+
+  // Whether or not to process LDES member once received or to load all of them in memory
+  stream_data: boolean;
 }
 
 export function getConfig(): IConfig {
-	return {
-		url: core.getInput('url'),
-		storage: core.getInput('storage'),
-		gh_pages_branch: core.getInput('gh_pages_branch'),
-		gh_pages_url: core.getInput('gh_pages_url'),
-		git_username: core.getInput('git_username'),
-		git_email: core.getInput('git_email'),
-		fragmentation_strategy: core.getInput('fragmentation_strategy'),
-		fragmentation_page_size: parseInt(core.getInput('fragmentation_page_size')),
-		datasource_strategy: core.getInput('datasource_strategy'),
-		property_path: core.getInput('property_path'),
-		stream_data: core.getBooleanInput('stream_data') || false,
-	};
+  return {
+    url: core.getInput('url'),
+    storage: core.getInput('storage'),
+    gh_pages_branch: core.getInput('gh_pages_branch'),
+    gh_pages_url: core.getInput('gh_pages_url'),
+    git_username: core.getInput('git_username'),
+    git_email: core.getInput('git_email'),
+    fragmentation_strategy: core.getInput('fragmentation_strategy'),
+    fragmentation_page_size: Number.parseInt(core.getInput('fragmentation_page_size'), 10),
+    datasource_strategy: core.getInput('datasource_strategy'),
+    property_path: core.getInput('property_path'),
+    stream_data: core.getBooleanInput('stream_data') || false,
+  };
 }

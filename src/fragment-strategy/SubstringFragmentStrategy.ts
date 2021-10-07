@@ -1,12 +1,12 @@
-import { IConfig } from "../utils/Config";
-import IData from "../utils/interfaces/IData";
-import IFragmentStrategy from "../utils/interfaces/IFragmentStrategy";
-import { SubstringBucketizer } from '@treecg/ldes-substring-bucketizer';
-import type * as RDF from '@rdfjs/types';
-import * as N3 from 'n3';
 import { appendFileSync } from 'fs';
-import { DataFactory } from "rdf-data-factory";
-import { IBucketizer } from "@treecg/ldes-types";
+import type * as RDF from '@rdfjs/types';
+import { SubstringBucketizer } from '@treecg/ldes-substring-bucketizer';
+import type { IBucketizer } from '@treecg/ldes-types';
+import * as N3 from 'n3';
+import { DataFactory } from 'rdf-data-factory';
+import type { IConfig } from '../utils/Config';
+import type IData from '../utils/interfaces/IData';
+import type IFragmentStrategy from '../utils/interfaces/IFragmentStrategy';
 
 class SubstringFragmentStrategy implements IFragmentStrategy {
   public factory: RDF.DataFactory;
@@ -16,10 +16,11 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
   }
 
   public initBucketizer(config: IConfig): Promise<IBucketizer> {
-    return new Promise(resolve => resolve(SubstringBucketizer.build(config.property_path, config.fragmentation_page_size)));
+    return new Promise(resolve =>
+      resolve(SubstringBucketizer.build(config.property_path, config.fragmentation_page_size)));
   }
 
-  async fragment(_data: IData, config: IConfig, bucketizer: IBucketizer): Promise<void> {
+  public async fragment(_data: IData, config: IConfig, bucketizer: IBucketizer): Promise<void> {
     const tasks: any[] = [];
 
     bucketizer.bucketize(_data.quads, _data.id);
@@ -29,8 +30,8 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
     _data.quads.push(this.factory.quad(
       this.factory.namedNode(config.url),
       this.factory.namedNode('https://w3id.org/tree#member'),
-      this.factory.namedNode(_data.id)
-    ))
+      this.factory.namedNode(_data.id),
+    ));
 
     bucketTriples.forEach(async triple => {
       const bucket = triple.object.value;
@@ -40,8 +41,8 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
     await Promise.all(tasks);
   }
 
-  async addHypermediaControls(hypermediaControls: Map<string, string[]>, config: IConfig): Promise<void> {
-    let tasks: any[] = []
+  public async addHypermediaControls(hypermediaControls: Map<string, string[]>, config: IConfig): Promise<void> {
+    const tasks: any[] = [];
     let pages: string[] = [];
     const githubPagesUrl = config.gh_pages_url.includes('https') ? config.gh_pages_url : `https://${config.gh_pages_url}`;
     const outputDirPath = `${githubPagesUrl}/${config.storage}`;
@@ -59,29 +60,29 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
     await Promise.all(tasks);
   }
 
-  createHypermediaControlTriples(controls: string[], outputDirPath: string, bucket: string): RDF.Quad[] {
+  private createHypermediaControlTriples(controls: string[], outputDirPath: string, bucket: string): RDF.Quad[] {
     const result: RDF.Quad[] = [];
     const bucketPath = `${outputDirPath}/${bucket}.ttl`;
 
     controls.forEach(control => {
-      const nodePath = `${outputDirPath}/${control}.ttl`
+      const nodePath = `${outputDirPath}/${control}.ttl`;
       const blankNode = this.factory.blankNode();
       result.push(
         this.factory.quad(
           this.factory.namedNode(bucketPath),
           this.factory.namedNode('https://w3id.org/tree#relation'),
-          blankNode
+          blankNode,
         ),
         this.factory.quad(
           blankNode,
           this.factory.namedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
-          this.factory.namedNode('https://w3id.org/tree#SubstringRelation')
+          this.factory.namedNode('https://w3id.org/tree#SubstringRelation'),
         ),
         this.factory.quad(
           blankNode,
           this.factory.namedNode('https://w3id.org/tree#node'),
-          this.factory.namedNode(nodePath)
-        )
+          this.factory.namedNode(nodePath),
+        ),
       );
 
       const values = [];
@@ -91,13 +92,11 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
         values.push(control);
       }
 
-      const treeValueTriples: RDF.Quad[] = values.map(treeValue => {
-        return this.factory.quad(
-          blankNode,
-          this.factory.namedNode('https://w3id.org/tree#value'),
-          this.factory.literal(treeValue, this.factory.namedNode('http://www.w3.org/2001/XMLSchema#string'))
-        )
-      });
+      const treeValueTriples: RDF.Quad[] = values.map(treeValue => this.factory.quad(
+        blankNode,
+        this.factory.namedNode('https://w3id.org/tree#value'),
+        this.factory.literal(treeValue, this.factory.namedNode('http://www.w3.org/2001/XMLSchema#string')),
+      ));
 
       result.push(...treeValueTriples);
     });
@@ -105,24 +104,29 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
     return result;
   }
 
-  addCollectionLink(bucket: string, outputDirPath: string, collectionUri: string, storage: string): Promise<void> {
+  private addCollectionLink(
+    bucket: string,
+    outputDirPath: string,
+    collectionUri: string,
+    storage: string,
+  ): Promise<void> {
     const predicate = bucket === 'root' ? 'https://w3id.org/tree#view' : 'http://rdfs.org/ns/void#subset';
     const bucketFilePath = `${storage}/${bucket}.ttl`;
 
     const quad = this.factory.quad(
       this.factory.namedNode(collectionUri),
       this.factory.namedNode(predicate),
-      this.factory.namedNode(bucketFilePath)
-    )
+      this.factory.namedNode(bucketFilePath),
+    );
 
     return this.writeToBucket(bucketFilePath, [quad]);
   }
 
-  findBucketTriples(quads: RDF.Quad[]): RDF.Quad[] {
+  private findBucketTriples(quads: RDF.Quad[]): RDF.Quad[] {
     return quads.filter(quad => quad.predicate.value === 'https://w3id.org/ldes#bucket');
   }
 
-  async writeToBucket(bucketPath: string, quads: RDF.Quad[]): Promise<void> {
+  private async writeToBucket(bucketPath: string, quads: RDF.Quad[]): Promise<void> {
     const writer = new N3.Writer();
     writer.addQuads(quads);
     await new Promise<void>((resolve, reject) => {
