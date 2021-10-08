@@ -1,4 +1,5 @@
 import type { Readable } from 'stream';
+import type { IBucketizer } from '@treecg/ldes-types';
 import type { IConfig } from '../utils/Config';
 import type IData from '../utils/interfaces/IData';
 import type IDatasource from '../utils/interfaces/IDatasource';
@@ -14,8 +15,8 @@ class DatasourceContext {
     this.datasource = datasource;
   }
 
-  public getData(config: IConfig): Promise<IData[]> {
-    return this.datasource.getData(config);
+  public getData(config: IConfig, bucketizer: IBucketizer): Promise<IData[]> {
+    return this.datasource.getData(config, bucketizer);
   }
 
   public getLinkedDataEventStream(url: string): Readable {

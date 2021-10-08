@@ -29,20 +29,20 @@ class FragmentContext {
     this.strategy = strategy;
   }
 
-  public initBucketizer(config: IConfig): Promise<IBucketizer> {
-    return this.strategy.initBucketizer(config);
-  }
-
   /**
      * The Context delegates some work to the Strategy object instead of
      * implementing multiple versions of the algorithm on its own.
      */
-  public async fragment(data: IData, config: IConfig, bucketizer: IBucketizer): Promise<void> {
-    return this.strategy.fragment(data, config, bucketizer);
+  public async fragment(data: IData, config: IConfig): Promise<void> {
+    return this.strategy.fragment(data, config);
   }
 
   public async addHypermediaControls(hypermediaControls: Map<string, string[]>, config: IConfig): Promise<void> {
     return this.strategy.addHypermediaControls(hypermediaControls, config);
+  }
+
+  public getStrategyBucketizer(config: IConfig): Promise<IBucketizer> {
+    return new Promise(resolve => resolve(this.strategy.initBucketizer(config)));
   }
 }
 

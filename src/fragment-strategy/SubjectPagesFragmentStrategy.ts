@@ -16,9 +16,8 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
     return new Promise(resolve => resolve(SubjectPageBucketizer.build(config.property_path)));
   }
 
-  public async fragment(_data: IData, config: IConfig, bucketizer: IBucketizer): Promise<void> {
+  public async fragment(_data: IData, config: IConfig): Promise<void> {
     const tasks: any[] = [];
-    bucketizer.bucketize(_data.quads, _data.id);
     const bucketTriples = this.findBucketTriples(_data.quads);
 
     bucketTriples.forEach(triple => {

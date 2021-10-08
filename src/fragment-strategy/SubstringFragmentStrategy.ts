@@ -20,10 +20,8 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
       resolve(SubstringBucketizer.build(config.property_path, config.fragmentation_page_size)));
   }
 
-  public async fragment(_data: IData, config: IConfig, bucketizer: IBucketizer): Promise<void> {
+  public async fragment(_data: IData, config: IConfig): Promise<void> {
     const tasks: any[] = [];
-
-    bucketizer.bucketize(_data.quads, _data.id);
     const bucketTriples = this.findBucketTriples(_data.quads);
 
     _data.quads = _data.quads.filter(quad => !bucketTriples.includes(quad));

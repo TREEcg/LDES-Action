@@ -10,7 +10,7 @@ import type IData from './IData';
  */
 interface IFragmentStrategy {
   initBucketizer: (config: IConfig) => Promise<IBucketizer>;
-  fragment: (data: IData, config: IConfig, bucketizer: IBucketizer) => Promise<void>;
+  fragment: (data: IData, config: IConfig) => Promise<void>;
   addHypermediaControls: (hypermediaControls: Map<string, string[]>, config: IConfig) => Promise<void>;
 }
 

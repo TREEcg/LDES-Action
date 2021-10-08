@@ -15,13 +15,12 @@ class BasicFragmentStrategy implements IFragmentStrategy {
     this.factory = new DataFactory();
   }
 
-  public initBucketizer(config: IConfig): Promise<IBucketizer> {
+  public async initBucketizer(config: IConfig): Promise<IBucketizer> {
     return new Promise(resolve =>
       resolve(BasicBucketizer.build(config.fragmentation_page_size)));
   }
 
-  public async fragment(data: IData, config: IConfig, bucketizer: IBucketizer): Promise<void> {
-    bucketizer.bucketize(data.quads, data.id);
+  public async fragment(data: IData, config: IConfig): Promise<void> {
     const bucketTriples = this.findBucketTriples(data.quads);
 
     data.quads = data.quads.filter(quad => !bucketTriples.includes(quad));
