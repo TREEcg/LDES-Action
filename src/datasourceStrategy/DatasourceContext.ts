@@ -5,11 +5,11 @@ import type IDatasource from './IDatasource';
 class DatasourceContext {
   private datasource: IDatasource;
 
-  constructor(datasource: IDatasource) {
+  public constructor(datasource: IDatasource) {
     this.datasource = datasource;
   }
 
-  public setDatasource(datasource: IDatasource) {
+  public setDatasource(datasource: IDatasource): void {
     this.datasource = datasource;
   }
 

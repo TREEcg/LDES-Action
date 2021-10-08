@@ -1,3 +1,5 @@
+/* eslint-disable eslint-comments/disable-enable-pair */
+/* eslint-disable no-sync */
 import fs from 'fs';
 import type * as RDF from 'rdf-js';
 import type { IConfig } from '../config';
@@ -11,7 +13,7 @@ const N3 = require('n3');
  * interface. The interface makes them interchangeable in the Context.
  */
 class SubjectPagesFragmentStrategy implements IFragmentStrategy {
-  fragment(data: IData[], config: IConfig): void {
+  public fragment(data: IData[], config: IConfig): void {
     data.forEach((_data: IData) => {
       const identifier = this.find(_data.quads, 'http://purl.org/dc/terms/isVersionOf');
       const reference = identifier.slice(Math.max(0, identifier.lastIndexOf('/') + 1));
@@ -39,12 +41,12 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
     this.addSymbolicLinks(config);
   }
 
-  find(data: any, predicate: string): any {
+  public find(data: any, predicate: string): any {
     const found = data.find((element: RDF.Quad) => element.predicate.value === predicate);
     return found === undefined ? null : found.object.value;
   }
 
-  addSymbolicLinks(config: IConfig): void {
+  private addSymbolicLinks(config: IConfig): void {
     // Get all directories in the storage directory
     const directories = fs.readdirSync(config.storage).filter(
       (file: string) => fs.statSync(`${config.storage}/${file}`).isDirectory(),

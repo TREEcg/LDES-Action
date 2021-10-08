@@ -9,11 +9,11 @@ import type IDatasource from './IDatasource';
 class OldLDESClientDatasource implements IDatasource {
   private readonly store: N3.Store;
 
-  constructor() {
+  public constructor() {
     this.store = new N3.Store();
   }
 
-  async getData(config: IConfig): Promise<IData[]> {
+  public async getData(config: IConfig): Promise<IData[]> {
     await this.fetchData(config);
     return await this.reshapeData();
   }
@@ -39,20 +39,20 @@ class OldLDESClientDatasource implements IDatasource {
 
         // Read quads and add them to triple store
         // @ts-expect-error
-        parser.parse(eventStreamSync, (err, quad, prefs) => {
+        parser.parse(eventStreamSync, (err, _quad, prefs) => {
           if (err) {
             throw err;
           }
           if (prefs) {
             console.log('prefixes:', prefs);
           }
-          if (quad) {
-            this.store.addQuad(quad);
+          if (_quad) {
+            this.store.addQuad(_quad);
           } else {
             return resolve();
           }
         });
-      } catch (error) {
+      } catch (error: unknown) {
         console.error(error);
         return reject(error);
       }
@@ -90,7 +90,7 @@ class OldLDESClientDatasource implements IDatasource {
         });
 
         return resolve(reshapedData);
-      } catch (error) {
+      } catch (error: unknown) {
         console.error(error);
         return reject(error);
       }

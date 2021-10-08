@@ -1,15 +1,24 @@
 import * as core from '@actions/core';
 
 export interface IConfig {
-  url: string; // HTTP(S) data source
-  storage: string; // Directory where data will be written
-  gh_pages_branch: string; // Branch used for deploying to GitHub Pages
-  gh_pages_url: string; // URL of the GitHub Pages deployment
-  git_username: string; // GitHub username that makes the commits
-  git_email: string; // GitHub email that makes the commits
-  fragmentation_strategy: string; // Fragmentation strategy
-  fragmentation_page_size: number; // Page size for fragmentation
-  datasource_strategy: string; // Datasource strategy
+  // HTTP(S) data source
+  url: string;
+  // Directory where data will be written
+  storage: string;
+  // Branch used for deploying to GitHub Pages
+  gh_pages_branch: string;
+  // URL of the GitHub Pages deployment
+  gh_pages_url: string;
+  // GitHub username that makes the commits
+  git_username: string;
+  // GitHub email that makes the commits
+  git_email: string;
+  // Fragmentation strategy
+  fragmentation_strategy: string;
+  // Page size for fragmentation
+  fragmentation_page_size: number;
+  // Datasource strategy
+  datasource_strategy: string;
 }
 
 export function getConfig(): IConfig {
@@ -21,7 +30,7 @@ export function getConfig(): IConfig {
     git_username: core.getInput('git_username'),
     git_email: core.getInput('git_email'),
     fragmentation_strategy: core.getInput('fragmentation_strategy'),
-    fragmentation_page_size: Number.parseInt(core.getInput('fragmentation_page_size')),
+    fragmentation_page_size: Number.parseInt(core.getInput('fragmentation_page_size'), 10),
     datasource_strategy: core.getInput('datasource_strategy'),
   };
 }

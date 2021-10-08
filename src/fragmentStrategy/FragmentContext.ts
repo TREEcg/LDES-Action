@@ -17,14 +17,14 @@ class FragmentContext {
      * Usually, the Context accepts a strategy through the constructor, but also
      * provides a setter to change it at runtime.
      */
-  constructor(strategy: IFragmentStrategy) {
+  public constructor(strategy: IFragmentStrategy) {
     this.strategy = strategy;
   }
 
   /**
      * Usually, the Context allows replacing a Strategy object at runtime.
      */
-  public setStrategy(strategy: IFragmentStrategy) {
+  public setStrategy(strategy: IFragmentStrategy): void {
     this.strategy = strategy;
   }
 

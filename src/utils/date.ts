@@ -1,8 +1,8 @@
 class date {
-  dateToBasicISODate(date: Date) {
+  public dateToBasicISODate(_date: Date): string {
     // Expected output: 2011-10-05T14:48:00.000Z
-    const ISODate = date.toISOString();
-    return ISODate.replace(/-/g, '').replace(/:/g, '').replace(/\./g, '');
+    const ISODate = _date.toISOString();
+    return ISODate.replace(/-/gu, '').replace(/:/gu, '').replace(/\./gu, '');
   }
 
   //

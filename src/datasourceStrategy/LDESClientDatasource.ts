@@ -4,7 +4,7 @@ import type IData from '../IData';
 import type IDatasource from './IDatasource';
 
 class LDESClientDatasource implements IDatasource {
-  async getData(config: IConfig): Promise<IData[]> {
+  public async getData(config: IConfig): Promise<IData[]> {
     return new Promise<IData[]>((resolve, reject) => {
       try {
         const options = {
@@ -29,7 +29,7 @@ class LDESClientDatasource implements IDatasource {
           console.log('No more data!');
           resolve(data);
         });
-      } catch (error) {
+      } catch (error: unknown) {
         console.error(error);
         return reject(error);
       }
