@@ -10,7 +10,11 @@
     "package-post": "ncc build --target es2020 lib/post.js -o dist/post",
     "dist": "npm run build && npm run package && npm run package-post",
     "format": "prettier --write **/*.ts",
-    "test": "npm run build && env-cmd npm run start"
+    "test": "npm run build && env-cmd npm run start",
+    "eslint": "eslint . --ext ts",
+    "eslint:cache": "npm run eslint -- --cache",
+    "lint": "npm run eslint",
+    "lint:fix": "npm run eslint -- --fix"
   },
   "repository": {
     "type": "git",
@@ -31,6 +35,12 @@
     "@actions/exec": "^1.1.0",
     "@treecg/actor-init-ldes-client": "2.3.8",
     "date-fns": "^2.23.0",
+    "eslint": "^7.32.0",
+    "eslint-config-es": "^3.30.15",
+    "eslint-import-resolver-typescript": "^2.5.0",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-tsdoc": "^0.2.14",
+    "eslint-plugin-unused-imports": "^1.1.5",
     "n3": "^1.11.1"
   },
   "devDependencies": {
