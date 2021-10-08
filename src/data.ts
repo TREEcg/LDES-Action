@@ -82,7 +82,7 @@ export class Data {
       try {
         this.RDFData = await this.datasourceContext.getData(this.config);
         return resolve();
-      } catch (error) {
+      } catch (error: unknown) {
         console.error(error);
         return reject(error);
       }
@@ -99,7 +99,7 @@ export class Data {
         this.fragmentContext.fragment(this.RDFData, this.config);
 
         return resolve();
-      } catch (error) {
+      } catch (error: unknown) {
         console.error(error);
         return reject(error);
       }

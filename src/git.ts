@@ -4,6 +4,7 @@ import path from 'path';
 import * as core from '@actions/core';
 import { exec } from '@actions/exec';
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export interface GitStatus {
   flag: string;
   path: string;
@@ -22,19 +23,19 @@ export async function gitStatus(): Promise<GitStatus[]> {
   core.debug(`=== output was:\n${output}`);
   return output
     .split('\n')
-    .filter(l => l != '')
-    .map(l => {
-      const chunks = l.trim().split(/\s+/);
-      return {
+    .filter(char => char !== '')
+    .map(char => {
+      const chunks = char.trim().split(/\s+/u);
+      return <GitStatus>{
         flag: chunks[0],
         path: chunks[1],
-      } as GitStatus;
+      }!;
     });
 }
 
-async function getHeadSize(path: string): Promise<number | undefined> {
+async function getHeadSize(hash: string): Promise<number | undefined> {
   let raw = '';
-  const exitcode = await exec('git', ['cat-file', '-s', `HEAD:${path}`], {
+  const exitcode = await exec('git', ['cat-file', '-s', `HEAD:${hash}`], {
     listeners: {
       stdline(data: string) {
         raw += data;
@@ -89,12 +90,14 @@ async function diffSize(file: GitStatus): Promise<number> {
 export async function diff(filename: string): Promise<number> {
   const statuses = await gitStatus();
   core.debug(
-    `Parsed statuses: ${statuses.map(s => JSON.stringify(s)).join(', ')}`,
+    `Parsed statuses: ${statuses.map(status => JSON.stringify(status)).join(', ')}`,
   );
-  const status = statuses.find(s => path.relative(s.path, filename) === '');
+  const status = statuses.find(_status => path.relative(_status.path, filename) === '');
   if (typeof status === 'undefined') {
     core.info(`No status found for ${filename}, aborting.`);
-    return 0; // There's no change to the specified file
+
+    // There's no change to the specified file
+    return 0;
   }
   return await diffSize(status);
 }
