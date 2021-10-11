@@ -36,7 +36,11 @@ export class Data {
     this.setFragmentationStrategy();
   }
 
-  public async processDataMemory(): Promise<void> {
+  public processData(): Promise<void> {
+    return this.config.stream_data ? this.processDataStreamingly() : this.processDataMemory();
+  }
+
+  private async processDataMemory(): Promise<void> {
     const bucketizer = await this.fragmentContext.getStrategyBucketizer(this.config);
 
     await this.fetchData(bucketizer);
@@ -45,7 +49,7 @@ export class Data {
     await this.writeData(hypermediaControls);
   }
 
-  public async processDataStreamingly(): Promise<void> {
+  private async processDataStreamingly(): Promise<void> {
     const ldes = this.datasourceContext.getLinkedDataEventStream(this.config.url);
     const bucketizer = await this.fragmentContext.getStrategyBucketizer(this.config);
 

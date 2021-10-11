@@ -23,11 +23,7 @@ const run = async (): Promise<void> => {
   // Fetches the LDES and applies a fragmentation strategy
   core.startGroup('Fetch and write data');
   const data_fetcher = new Data(config);
-  if (config.stream_data) {
-    await data_fetcher.processDataStreamingly();
-  } else {
-    await data_fetcher.processDataMemory();
-  }
+  await data_fetcher.processData();
   core.endGroup();
 
   // List all changed files
