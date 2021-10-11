@@ -38,7 +38,7 @@ const run = async () => {
     }
     const files = JSON.parse(process.env.FILES || '[]');
     // Don't want to commit if there aren't any files changed!
-    if (!files.length) {
+    if (files.length === 0) {
         core.info('No changes to commit');
         core.endGroup();
         return;
@@ -46,23 +46,25 @@ const run = async () => {
     const date = new Date().toISOString();
     const meta = JSON.stringify({ date, files }, undefined, 2);
     const msg = `LDES-Action: latest data (${date})`;
-    const body = files.map((f) => f['name']).slice(0, 100).join('\n- ');
-    files.length > 100 ? body.concat(`${files.length - 100} files not shown`) : '';
-    // these should already be staged, in main.ts
+    const body = files.map((file) => file.name).slice(0, 100).join('\n- ');
+    if (files.length > 100) {
+        body.concat(`${files.length - 100} files not shown`);
+    }
+    // These should already be staged, in main.ts
     core.info(`Committing "${msg}"`);
     core.debug(meta);
     await (0, exec_1.exec)('git', [
         'commit',
         '-m',
-        msg + '\nCreated/changed files:\n- ' + body,
+        `${msg}\nCreated/changed files:\n- ${body}`,
     ]);
     await (0, exec_1.exec)('git', ['push']);
     core.info(`Pushed!`);
     core.exportVariable('HAS_RUN_POST_JOB', 'true');
     core.endGroup();
 };
-run().catch((error) => {
-    core.setFailed('Post script failed! ' + error.message);
+run().catch(error => {
+    core.setFailed(`Post script failed! ${error.message}`);
 });
 
 
