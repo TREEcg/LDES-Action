@@ -8,14 +8,13 @@ import type Member from './Member';
  * The Context uses this interface to call the algorithm defined by Concrete
  * Strategies.
  */
-// eslint-disable-next-line @typescript-eslint/naming-convention
 interface FragmentStrategy {
-	initBucketizer: (config: Config) => Promise<IBucketizer>;
-	fragment: (data: Member, config: Config) => Promise<void>;
-	addHypermediaControls: (
-		hypermediaControls: Map<string, string[]>,
-		config: Config
-	) => Promise<void>;
+  initBucketizer: (config: Config) => Promise<IBucketizer>;
+  fragment: (data: Member, config: Config) => Promise<void>;
+  addHypermediaControls: (
+    hypermediaControls: Map<string, string[]>,
+    config: Config
+  ) => Promise<void>;
 }
 
 export default FragmentStrategy;
