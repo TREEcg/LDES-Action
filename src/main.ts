@@ -3,28 +3,30 @@ import { execSync } from 'child_process';
 import { rmdirSync } from 'fs';
 import * as core from '@actions/core';
 import { exec } from '@actions/exec';
-import type { IConfig } from './config';
-import { getConfig } from './config';
 import { Data } from './data';
+import type { IConfig } from './utils/Config';
+import { getConfig } from './utils/Config';
 
 const run = async (): Promise<void> => {
+  // Read configuration from .yaml file
   core.startGroup('Configuration');
   const config: IConfig = getConfig();
   await exec('git', ['config', 'user.name', config.git_username]);
   await exec('git', ['config', 'user.email', `${config.git_email}`]);
   core.endGroup();
 
+  // Delete output folder to have a clean start, no symlinks and no old data
   core.startGroup('Delete output folder');
-  // Delete output folder to have a clean start, no symlinks, no old data
   rmdirSync(config.storage, { recursive: true });
   core.endGroup();
 
+  // Fetches the LDES and applies a fragmentation strategy
   core.startGroup('Fetch and write data');
   const data_fetcher = new Data(config);
-  await data_fetcher.fetchData();
-  await data_fetcher.writeData();
+  await data_fetcher.processData();
   core.endGroup();
 
+  // List all changed files
   core.startGroup('File changes');
   const newUnstagedFiles = execSync(
     'git ls-files --others --exclude-standard',
@@ -34,7 +36,6 @@ const run = async (): Promise<void> => {
     ...newUnstagedFiles.split('\n'),
     ...modifiedUnstagedFiles.split('\n'),
   ].filter(Boolean);
-
   core.info('newUnstagedFiles');
   core.info(`${newUnstagedFiles}`);
   core.info('modifiedUnstagedFiles');
@@ -43,20 +44,19 @@ const run = async (): Promise<void> => {
   core.info(JSON.stringify(editedFilenames));
   core.endGroup();
 
+  // Calculate the differences with the previous result
   core.startGroup('Calculating diffstat');
   const editedFiles = [];
   for (const filename of editedFilenames) {
     core.debug(`git adding ${filename}…`);
     await exec('git', ['add', filename]);
-    // Const bytes = await diff(filename);
     editedFiles.push({
       name: filename,
-      // DeltaBytes: bytes,
-      // source: config.url,
     });
   }
   core.endGroup();
 
+  // Commit new data to the repository
   core.startGroup('Committing new data');
   const alreadyEditedFiles = JSON.parse(process.env.FILES || '[]');
   core.info('alreadyEditedFiles');
