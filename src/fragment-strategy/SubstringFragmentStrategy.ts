@@ -114,7 +114,7 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
     const quad = this.factory.quad(
       this.factory.namedNode(collectionUri),
       this.factory.namedNode(predicate),
-      this.factory.namedNode(bucketFilePath),
+      this.factory.namedNode(`${outputDirPath}/${bucket}.ttl`),
     );
 
     return this.writeToBucket(bucketFilePath, [quad]);
