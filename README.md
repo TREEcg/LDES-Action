@@ -81,3 +81,26 @@ Default: `ldes-client` (only one implemented at this point)
 ### `delta_bytes`
 
 A signed number describing the number of bytes that changed in this run.
+
+# Development
+## Test
+Create a private `.env` file following this structure, with your wanted environemt variables:
+
+```
+INPUT_URL="https://smartdata.dev-vlaanderen.be/base/gemeente"
+INPUT_STORAGE="output"
+INPUT_GIT_USERNAME="<YOUR_GIT_USERNAME>"
+INPUT_GIT_EMAIL="<YOUR_GIT_EMAIL>"
+INPUT_FRAGMENTATION_STRATEGY="alphabetical"
+INPUT_FRAGMENTATION_PAGE_SIZE="100"
+INPUT_DATASOURCE_STRATEGY="ldes-client"
+```
+
+Run the code to test it and check the output folder.
+
+`npm run test`
+
+## Compile
+Compile this Node.js project into a single file (see [ncc](https://github.com/vercel/ncc)), this is needed if you want to use this as a GitHub Action:
+
+`npm run dist`
