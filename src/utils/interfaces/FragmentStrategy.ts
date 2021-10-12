@@ -9,12 +9,12 @@ import type Member from './Member';
  * Strategies.
  */
 interface FragmentStrategy {
-  initBucketizer: (config: Config) => Promise<IBucketizer>;
-  fragment: (data: Member, config: Config) => Promise<void>;
-  addHypermediaControls: (
-    hypermediaControls: Map<string, string[]>,
-    config: Config
-  ) => Promise<void>;
+	initBucketizer: (config: Config) => Promise<IBucketizer>;
+	fragment: (data: Member, config: Config) => Promise<void>;
+	addHypermediaControls: (
+		hypermediaControls: Map<string, string[]>,
+		config: Config
+	) => Promise<void>;
 }
 
 export default FragmentStrategy;
