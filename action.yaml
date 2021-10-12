@@ -33,9 +33,11 @@ inputs:
     default: 'ldes-client'
   property_path:
     description: 'Property path to be used by bucketizers'
+    required: false
   stream_data:
     description: 'Boolean whether to stream the LDES members or the load them in memory'
-    default: false
+    required: false
+    default: 'false'
 outputs:
   delta_bytes: # size of changed data
     description: 'The overall number of bytes changed in the output data this run (current size - previous size)'
