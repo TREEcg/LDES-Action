@@ -1,4 +1,5 @@
-import type { Config } from './Config';
+import type { IBucketizer } from '@treecg/ldes-types';
+import type { Config } from '../Config';
 import type Member from './Member';
 /**
  * The FragmentStrategy interface declares operations common to all supported versions
@@ -9,7 +10,12 @@ import type Member from './Member';
  */
 // eslint-disable-next-line @typescript-eslint/naming-convention
 interface FragmentStrategy {
-  fragment: (data: Member[], config: Config) => void;
+	initBucketizer: (config: Config) => Promise<IBucketizer>;
+	fragment: (data: Member, config: Config) => Promise<void>;
+	addHypermediaControls: (
+		hypermediaControls: Map<string, string[]>,
+		config: Config
+	) => Promise<void>;
 }
 
 export default FragmentStrategy;
