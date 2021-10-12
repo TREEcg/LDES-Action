@@ -109,12 +109,12 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
     storage: string,
   ): Promise<void> {
     const predicate = bucket === 'root' ? 'https://w3id.org/tree#view' : 'http://rdfs.org/ns/void#subset';
-    const bucketFilePath = `${bucket}.ttl`;
+    const bucketFilePath = `${storage}/${bucket}.ttl`;
 
     const quad = this.factory.quad(
       this.factory.namedNode(collectionUri),
       this.factory.namedNode(predicate),
-      this.factory.namedNode(bucketFilePath),
+      this.factory.namedNode(`${outputDirPath}/${bucket}.ttl`),
     );
 
     return this.writeToBucket(bucketFilePath, [quad]);
