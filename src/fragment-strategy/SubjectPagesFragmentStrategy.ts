@@ -1,12 +1,12 @@
 import { appendFileSync } from 'fs';
 import { SubjectPageBucketizer } from '@treecg/ldes-subject-page-bucketizer';
 import type { IBucketizer } from '@treecg/ldes-types';
+import type { Member } from '@treecg/types';
 import * as N3 from 'n3';
 import type * as RDF from 'rdf-js';
 import sanitize from 'sanitize-filename';
 import type { Config } from '../utils/Config';
 import type FragmentStrategy from '../utils/interfaces/FragmentStrategy';
-import type Member from '../utils/interfaces/Member';
 
 /**
  * Concrete Strategies implement the algorithm while following the base Strategy

@@ -1,6 +1,6 @@
 import type { IBucketizer } from '@treecg/ldes-types';
+import type { Member } from '@treecg/types';
 import type { Config } from '../Config';
-import type Member from './Member';
 /**
  * The FragmentStrategy interface declares operations common to all supported versions
  * of some algorithm.
