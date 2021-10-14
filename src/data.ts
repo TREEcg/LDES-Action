@@ -85,15 +85,15 @@ export class Data {
   }
 
   /**
-	 * Set the datasource strategy
-	 */
+   * Set the datasource strategy
+   */
   private setDatasource(): void {
     this.datasourceContext.setDatasource(new LDESClientDatasource());
   }
 
   /**
-	 * Set the fragmentation strategy
-	 */
+   * Set the fragmentation strategy
+   */
   private setFragmentationStrategy(): void {
     let strategy: FragmentStrategy;
     switch (this.config.fragmentation_strategy) {
@@ -116,8 +116,8 @@ export class Data {
   }
 
   /**
-	 * Fetch data using Datasource
-	 */
+   * Fetch data using Datasource
+   */
   public async fetchData(bucketizer: IBucketizer): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
       try {
@@ -134,8 +134,8 @@ export class Data {
   }
 
   /**
-	 * Write fetched data to the output directory supplied in the config file
-	 */
+   * Write fetched data to the output directory supplied in the config file
+   */
   public writeData(hypermediaControls: Map<string, string[]>): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
       try {
