@@ -66,7 +66,7 @@ export class Data {
     return new Promise(resolve => {
       const tasks: any[] = [];
       ldes.on('data', (member: Member) => {
-        bucketizer.bucketize(member.quads, member.id);
+        bucketizer.bucketize(member.quads, member.id.value);
         tasks.push(this.fragmentContext.fragment(member, this.config));
       });
 

@@ -30,7 +30,7 @@ class BasicFragmentStrategy implements FragmentStrategy {
       this.factory.quad(
         this.factory.namedNode(config.url),
         this.factory.namedNode('https://w3id.org/tree#member'),
-        this.factory.namedNode(data.id),
+        this.factory.namedNode(data.id.value),
       ),
     );
 

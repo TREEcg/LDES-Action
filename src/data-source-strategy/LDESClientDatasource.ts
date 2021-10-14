@@ -17,7 +17,7 @@ class LDESClientDatasource implements Datasource {
         const data: Member[] = [];
 
         ldes.on('data', (member: Member) => {
-          bucketizer.bucketize(member.quads, member.id);
+          bucketizer.bucketize(member.quads, member.id.value);
           data.push(member);
         });
 
