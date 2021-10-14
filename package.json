@@ -48,7 +48,8 @@
     "eslint-plugin-tsdoc": "^0.2.14",
     "eslint-plugin-unused-imports": "^1.1.5",
     "n3": "^1.11.1",
-    "rdf-data-factory": "^1.1.0"
+    "rdf-data-factory": "^1.1.0",
+    "sanitize-filename": "^1.6.3"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.29.2",

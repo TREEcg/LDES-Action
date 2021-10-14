@@ -4,6 +4,7 @@ import { BasicBucketizer } from '@treecg/ldes-basic-bucketizer';
 import type { IBucketizer } from '@treecg/ldes-types';
 import * as N3 from 'n3';
 import { DataFactory } from 'rdf-data-factory';
+import sanitize from 'sanitize-filename';
 import type { IConfig } from '../utils/Config';
 import type IData from '../utils/interfaces/IData';
 import type IFragmentStrategy from '../utils/interfaces/IFragmentStrategy';
@@ -33,7 +34,7 @@ class BasicFragmentStrategy implements IFragmentStrategy {
 
     bucketTriples.forEach(async triple => {
       const bucket = triple.object.value;
-      const bucketPath = `${config.storage}/${bucket}.ttl`;
+      const bucketPath = `${config.storage}/${sanitize(bucket)}.ttl`;
       await this.writeToBucket(bucketPath, data.quads);
     });
   }
@@ -46,7 +47,7 @@ class BasicFragmentStrategy implements IFragmentStrategy {
     hypermediaControls.forEach((relations: string[], node: string) => {
       // In this fragment strategy, each node has only one relation
       const nextPage = relations[0];
-      const bucketPath = `${config.storage}/${node}.ttl`;
+      const bucketPath = `${config.storage}/${sanitize(node)}.ttl`;
 
       const hypermediaControlTriples = this.createHypermediaControlTriples(nextPage, outputDirPath, node, config.url);
       tasks.push(this.writeToBucket(bucketPath, hypermediaControlTriples));
@@ -63,8 +64,8 @@ class BasicFragmentStrategy implements IFragmentStrategy {
   ): RDF.Quad[] {
     const result: RDF.Quad[] = [];
 
-    const bucketPath = `${outputDirPath}/${bucket}.ttl`;
-    const nextPagePath = `${outputDirPath}/${nextPage}.ttl`;
+    const bucketPath = `${outputDirPath}/${sanitize(bucket)}.ttl`;
+    const nextPagePath = `${outputDirPath}/${sanitize(nextPage)}.ttl`;
     const blankNode = this.factory.blankNode();
 
     result.push(
