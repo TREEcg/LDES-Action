@@ -46,7 +46,10 @@ const run = async () => {
     const date = new Date().toISOString();
     const meta = JSON.stringify({ date, files }, undefined, 2);
     const msg = `LDES-Action: latest data (${date})`;
-    const body = files.map((file) => file.name).slice(0, 100).join('\n- ');
+    const body = files
+        .map((file) => file.name)
+        .slice(0, 100)
+        .join('\n- ');
     if (files.length > 100) {
         body.concat(`${files.length - 100} files not shown`);
     }
