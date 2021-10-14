@@ -2,12 +2,12 @@ import { appendFileSync } from 'fs';
 import type * as RDF from '@rdfjs/types';
 import { BasicBucketizer } from '@treecg/ldes-basic-bucketizer';
 import type { IBucketizer } from '@treecg/ldes-types';
+import type { Member } from '@treecg/types';
 import * as N3 from 'n3';
 import { DataFactory } from 'rdf-data-factory';
 import sanitize from 'sanitize-filename';
 import type { Config } from '../utils/Config';
 import type FragmentStrategy from '../utils/interfaces/FragmentStrategy';
-import type Member from '../utils/interfaces/Member';
 
 class BasicFragmentStrategy implements FragmentStrategy {
   public factory: RDF.DataFactory;

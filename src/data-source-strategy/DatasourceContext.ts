@@ -1,8 +1,8 @@
 import type { Readable } from 'stream';
 import type { IBucketizer } from '@treecg/ldes-types';
+import type { Member } from '@treecg/types';
 import type { Config } from '../utils/Config';
 import type Datasource from '../utils/interfaces/Datasource';
-import type Member from '../utils/interfaces/Member';
 
 class DatasourceContext {
   private datasource: Datasource;

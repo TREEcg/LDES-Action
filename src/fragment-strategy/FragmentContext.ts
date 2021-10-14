@@ -1,7 +1,7 @@
 import type { IBucketizer } from '@treecg/ldes-types';
+import type { Member } from '@treecg/types';
 import type { Config } from '../utils/Config';
 import type FragmentStrategy from '../utils/interfaces/FragmentStrategy';
-import type Member from '../utils/interfaces/Member';
 
 /**
  * The FragmentContext defines the interface of interest to clients.

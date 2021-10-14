@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync } from 'fs';
 
 import type { IBucketizer } from '@treecg/ldes-types';
+import type { Member } from '@treecg/types';
 import DatasourceContext from './data-source-strategy/DatasourceContext';
 import LDESClientDatasource from './data-source-strategy/LDESClientDatasource';
 import BasicFragmentStrategy from './fragment-strategy/BasicFragmentStrategy';
@@ -9,7 +10,6 @@ import SubjectPagesFragmentStrategy from './fragment-strategy/SubjectPagesFragme
 import SubstringFragmentStrategy from './fragment-strategy/SubstringFragmentStrategy';
 import type { Config } from './utils/Config';
 import type FragmentStrategy from './utils/interfaces/FragmentStrategy';
-import type Member from './utils/interfaces/Member';
 
 export class Data {
   private readonly config: Config;
