@@ -4,13 +4,13 @@ import { rmdirSync } from 'fs';
 import * as core from '@actions/core';
 import { exec } from '@actions/exec';
 import { Data } from './data';
-import type { IConfig } from './utils/Config';
+import type { Config } from './utils/Config';
 import { getConfig } from './utils/Config';
 
 const run = async (): Promise<void> => {
   // Read configuration from .yaml file
   core.startGroup('Configuration');
-  const config: IConfig = getConfig();
+  const config: Config = getConfig();
   await exec('git', ['config', 'user.name', config.git_username]);
   await exec('git', ['config', 'user.email', `${config.git_email}`]);
   core.endGroup();
@@ -63,7 +63,10 @@ const run = async (): Promise<void> => {
   core.info(JSON.stringify(alreadyEditedFiles.slice(0, 100)));
   core.info('editedFiles');
   core.info(JSON.stringify(editedFiles.slice(0, 100)));
-  const files = [...alreadyEditedFiles.slice(0, 100), ...editedFiles.slice(0, 100)];
+  const files = [
+    ...alreadyEditedFiles.slice(0, 100),
+    ...editedFiles.slice(0, 100),
+  ];
   core.exportVariable('FILES', files);
   core.info('process.env.FILES');
   core.info(JSON.stringify(process.env.FILES));

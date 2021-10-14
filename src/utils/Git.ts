@@ -4,7 +4,6 @@ import path from 'path';
 import * as core from '@actions/core';
 import { exec } from '@actions/exec';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export interface GitStatus {
   flag: string;
   path: string;
@@ -97,10 +96,14 @@ async function diffSize(file: GitStatus): Promise<number> {
 export async function diff(filename: string): Promise<number> {
   const statuses = await gitStatus();
   core.debug(
-    `Parsed statuses: ${statuses.map(status => JSON.stringify(status)).join(', ')}`,
+    `Parsed statuses: ${statuses
+      .map(status => JSON.stringify(status))
+      .join(', ')}`,
   );
 
-  const status = statuses.find(_status => path.relative(_status.path, filename) === '');
+  const status = statuses.find(
+    _status => path.relative(_status.path, filename) === '',
+  );
 
   if (typeof status === 'undefined') {
     core.info(`No status found for ${filename}, aborting.`);

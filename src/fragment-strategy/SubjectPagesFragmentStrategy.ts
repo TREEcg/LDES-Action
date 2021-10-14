@@ -4,20 +4,21 @@ import type { IBucketizer } from '@treecg/ldes-types';
 import * as N3 from 'n3';
 import type * as RDF from 'rdf-js';
 import sanitize from 'sanitize-filename';
-import type { IConfig } from '../utils/Config';
-import type IData from '../utils/interfaces/IData';
-import type IFragmentStrategy from '../utils/interfaces/IFragmentStrategy';
+import type { Config } from '../utils/Config';
+import type FragmentStrategy from '../utils/interfaces/FragmentStrategy';
+import type Member from '../utils/interfaces/Member';
 
 /**
  * Concrete Strategies implement the algorithm while following the base Strategy
  * interface. The interface makes them interchangeable in the Context.
  */
-class SubjectPagesFragmentStrategy implements IFragmentStrategy {
-  public initBucketizer(config: IConfig): Promise<IBucketizer> {
-    return new Promise(resolve => resolve(SubjectPageBucketizer.build(config.property_path)));
+class SubjectPagesFragmentStrategy implements FragmentStrategy {
+  public initBucketizer(config: Config): Promise<IBucketizer> {
+    return new Promise(resolve =>
+      resolve(SubjectPageBucketizer.build(config.property_path)));
   }
 
-  public async fragment(_data: IData, config: IConfig): Promise<void> {
+  public async fragment(_data: Member, config: Config): Promise<void> {
     const tasks: any[] = [];
     const bucketTriples = this.findBucketTriples(_data.quads);
 
@@ -30,16 +31,26 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
     await Promise.all(tasks);
   }
 
-  public async addHypermediaControls(hypermediaControls: Map<string, string[]>, config: IConfig): Promise<void> {
-    console.log(`[SubjectPagesFragmentStrategy]: Hypermedia controls are not necessary for this strategy`);
+  public async addHypermediaControls(
+    hypermediaControls: Map<string, string[]>,
+    config: Config,
+  ): Promise<void> {
+    console.log(
+      `[SubjectPagesFragmentStrategy]: Hypermedia controls are not necessary for this strategy`,
+    );
     return new Promise(resolve => resolve());
   }
 
   private findBucketTriples(quads: RDF.Quad[]): RDF.Quad[] {
-    return quads.filter(quad => quad.predicate.value === 'https://w3id.org/ldes#bucket');
+    return quads.filter(
+      quad => quad.predicate.value === 'https://w3id.org/ldes#bucket',
+    );
   }
 
-  private async writeToBucket(bucketPath: string, quads: RDF.Quad[]): Promise<void> {
+  private async writeToBucket(
+    bucketPath: string,
+    quads: RDF.Quad[],
+  ): Promise<void> {
     const writer = new N3.Writer();
     writer.addQuads(quads);
     await new Promise<void>((resolve, reject) => {
@@ -55,7 +66,9 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
   }
 
   private find(data: any, predicate: string): any {
-    const found = data.find((element: RDF.Quad) => element.predicate.value === predicate);
+    const found = data.find(
+      (element: RDF.Quad) => element.predicate.value === predicate,
+    );
     return found === undefined ? null : found.object.value;
   }
 }
