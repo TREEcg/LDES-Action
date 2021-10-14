@@ -4,6 +4,7 @@ import { SubstringBucketizer } from '@treecg/ldes-substring-bucketizer';
 import type { IBucketizer } from '@treecg/ldes-types';
 import * as N3 from 'n3';
 import { DataFactory } from 'rdf-data-factory';
+import sanitize from 'sanitize-filename';
 import type { Config } from '../utils/Config';
 import type FragmentStrategy from '../utils/interfaces/FragmentStrategy';
 import type Member from '../utils/interfaces/Member';
@@ -40,7 +41,7 @@ class SubstringFragmentStrategy implements FragmentStrategy {
 
     bucketTriples.forEach(async triple => {
       const bucket = triple.object.value;
-      const bucketPath = `${config.storage}/${bucket}.ttl`;
+      const bucketPath = `${config.storage}/${sanitize(bucket)}.ttl`;
       await this.writeToBucket(bucketPath, _data.quads);
     });
     await Promise.all(tasks);
@@ -58,7 +59,7 @@ class SubstringFragmentStrategy implements FragmentStrategy {
     const outputDirPath = `${githubPagesUrl}/${config.storage}`;
 
     hypermediaControls.forEach((relations: string[], node: string) => {
-      const bucketPath = `${config.storage}/${node}.ttl`;
+      const bucketPath = `${config.storage}/${sanitize(node)}.ttl`;
 
       pages = [...new Set([...pages, ...relations, node])];
 
@@ -83,10 +84,10 @@ class SubstringFragmentStrategy implements FragmentStrategy {
     bucket: string,
   ): RDF.Quad[] {
     const result: RDF.Quad[] = [];
-    const bucketPath = `${outputDirPath}/${bucket}.ttl`;
+    const bucketPath = `${outputDirPath}/${sanitize(bucket)}.ttl`;
 
     controls.forEach(control => {
-      const nodePath = `${outputDirPath}/${control}.ttl`;
+      const nodePath = `${outputDirPath}/${sanitize(control)}.ttl`;
       const blankNode = this.factory.blankNode();
       result.push(
         this.factory.quad(
@@ -137,16 +138,13 @@ class SubstringFragmentStrategy implements FragmentStrategy {
     collectionUri: string,
     storage: string,
   ): Promise<void> {
-    const predicate =
-			bucket === 'root' ?
-			  'https://w3id.org/tree#view' :
-			  'http://rdfs.org/ns/void#subset';
-    const bucketFilePath = `${storage}/${bucket}.ttl`;
+    const predicate = bucket === 'root' ? 'https://w3id.org/tree#view' : 'http://rdfs.org/ns/void#subset';
+    const bucketFilePath = `${storage}/${sanitize(bucket)}.ttl`;
 
     const quad = this.factory.quad(
       this.factory.namedNode(collectionUri),
       this.factory.namedNode(predicate),
-      this.factory.namedNode(bucketFilePath),
+      this.factory.namedNode(`${outputDirPath}/${sanitize(bucket)}.ttl`),
     );
 
     return this.writeToBucket(bucketFilePath, [quad]);
