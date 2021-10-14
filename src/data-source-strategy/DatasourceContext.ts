@@ -1,8 +1,8 @@
 import type { Readable } from 'stream';
 import type { IBucketizer } from '@treecg/ldes-types';
 import type { IConfig } from '../utils/Config';
-import type IData from '../utils/interfaces/IData';
 import type IDatasource from '../utils/interfaces/IDatasource';
+import type Member from '../utils/interfaces/Member';
 
 class DatasourceContext {
   private datasource: IDatasource;
@@ -15,7 +15,7 @@ class DatasourceContext {
     this.datasource = datasource;
   }
 
-  public getData(config: IConfig, bucketizer: IBucketizer): Promise<IData[]> {
+  public getData(config: IConfig, bucketizer: IBucketizer): Promise<Member[]> {
     return this.datasource.getData(config, bucketizer);
   }
 

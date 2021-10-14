@@ -6,8 +6,8 @@ import * as N3 from 'n3';
 import { DataFactory } from 'rdf-data-factory';
 import sanitize from 'sanitize-filename';
 import type { IConfig } from '../utils/Config';
-import type IData from '../utils/interfaces/IData';
 import type IFragmentStrategy from '../utils/interfaces/IFragmentStrategy';
+import type Member from '../utils/interfaces/Member';
 
 class SubstringFragmentStrategy implements IFragmentStrategy {
   public factory: RDF.DataFactory;
@@ -21,7 +21,7 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
       resolve(SubstringBucketizer.build(config.property_path, config.fragmentation_page_size)));
   }
 
-  public async fragment(_data: IData, config: IConfig): Promise<void> {
+  public async fragment(_data: Member, config: IConfig): Promise<void> {
     const tasks: any[] = [];
     const bucketTriples = this.findBucketTriples(_data.quads);
 

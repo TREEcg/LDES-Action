@@ -8,15 +8,15 @@ import FragmentContext from './fragment-strategy/FragmentContext';
 import SubjectPagesFragmentStrategy from './fragment-strategy/SubjectPagesFragmentStrategy';
 import SubstringFragmentStrategy from './fragment-strategy/SubstringFragmentStrategy';
 import type { IConfig } from './utils/Config';
-import type IData from './utils/interfaces/IData';
 import type IFragmentStrategy from './utils/interfaces/IFragmentStrategy';
+import type Member from './utils/interfaces/Member';
 
 export class Data {
   private readonly config: IConfig;
   private readonly datasourceContext: DatasourceContext;
   private readonly fragmentContext: FragmentContext;
 
-  private RDFData: IData[];
+  private RDFData: Member[];
 
   public constructor(config: IConfig) {
     this.config = config;
@@ -55,7 +55,7 @@ export class Data {
 
     return new Promise(resolve => {
       const tasks: any[] = [];
-      ldes.on('data', (member: IData) => {
+      ldes.on('data', (member: Member) => {
         bucketizer.bucketize(member.quads, member.id);
         tasks.push(this.fragmentContext.fragment(member, this.config));
       });

@@ -2,18 +2,18 @@ import type { Readable } from 'stream';
 import { newEngine } from '@treecg/actor-init-ldes-client';
 import type { IBucketizer } from '@treecg/ldes-types';
 import type { IConfig } from '../utils/Config';
-import type IData from '../utils/interfaces/IData';
 import type IDatasource from '../utils/interfaces/IDatasource';
+import type Member from '../utils/interfaces/Member';
 
 class LDESClientDatasource implements IDatasource {
-  public async getData(config: IConfig, bucketizer: IBucketizer): Promise<IData[]> {
-    return new Promise<IData[]>((resolve, reject) => {
+  public async getData(config: IConfig, bucketizer: IBucketizer): Promise<Member[]> {
+    return new Promise<Member[]>((resolve, reject) => {
       try {
         const ldes = this.getLinkedDataEventStream(config.url);
 
-        const data: IData[] = [];
+        const data: Member[] = [];
 
-        ldes.on('data', (member: IData) => {
+        ldes.on('data', (member: Member) => {
           bucketizer.bucketize(member.quads, member.id);
           data.push(member);
         });

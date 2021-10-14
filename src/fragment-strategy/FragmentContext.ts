@@ -1,7 +1,7 @@
 import type { IBucketizer } from '@treecg/ldes-types';
 import type { IConfig } from '../utils/Config';
-import type IData from '../utils/interfaces/IData';
 import type IFragmentStrategy from '../utils/interfaces/IFragmentStrategy';
+import type Member from '../utils/interfaces/Member';
 
 /**
  * The FragmentContext defines the interface of interest to clients.
@@ -33,7 +33,7 @@ class FragmentContext {
      * The Context delegates some work to the Strategy object instead of
      * implementing multiple versions of the algorithm on its own.
      */
-  public async fragment(data: IData, config: IConfig): Promise<void> {
+  public async fragment(data: Member, config: IConfig): Promise<void> {
     return this.strategy.fragment(data, config);
   }
 

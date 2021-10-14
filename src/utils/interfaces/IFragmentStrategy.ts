@@ -1,6 +1,6 @@
 import type { IBucketizer } from '@treecg/ldes-types';
 import type { IConfig } from '../Config';
-import type IData from './IData';
+import type Member from './Member';
 /**
  * The FragmentStrategy interface declares operations common to all supported versions
  * of some algorithm.
@@ -10,7 +10,7 @@ import type IData from './IData';
  */
 interface IFragmentStrategy {
   initBucketizer: (config: IConfig) => Promise<IBucketizer>;
-  fragment: (data: IData, config: IConfig) => Promise<void>;
+  fragment: (data: Member, config: IConfig) => Promise<void>;
   addHypermediaControls: (hypermediaControls: Map<string, string[]>, config: IConfig) => Promise<void>;
 }
 
