@@ -40,6 +40,7 @@
     "@treecg/ldes-subject-page-bucketizer": "0.0.4-alpha.0",
     "@treecg/ldes-substring-bucketizer": "0.0.8-alpha.0",
     "@treecg/ldes-types": "0.0.4-alpha.0",
+    "@treecg/types": "0.0.2",
     "date-fns": "^2.23.0",
     "eslint": "^7.32.0",
     "eslint-config-es": "^3.30.15",
