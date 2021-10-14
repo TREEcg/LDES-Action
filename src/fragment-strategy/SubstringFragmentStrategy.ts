@@ -5,32 +5,39 @@ import type { IBucketizer } from '@treecg/ldes-types';
 import * as N3 from 'n3';
 import { DataFactory } from 'rdf-data-factory';
 import sanitize from 'sanitize-filename';
-import type { IConfig } from '../utils/Config';
-import type IData from '../utils/interfaces/IData';
-import type IFragmentStrategy from '../utils/interfaces/IFragmentStrategy';
+import type { Config } from '../utils/Config';
+import type FragmentStrategy from '../utils/interfaces/FragmentStrategy';
+import type Member from '../utils/interfaces/Member';
 
-class SubstringFragmentStrategy implements IFragmentStrategy {
+class SubstringFragmentStrategy implements FragmentStrategy {
   public factory: RDF.DataFactory;
 
   public constructor() {
     this.factory = new DataFactory();
   }
 
-  public initBucketizer(config: IConfig): Promise<IBucketizer> {
+  public initBucketizer(config: Config): Promise<IBucketizer> {
     return new Promise(resolve =>
-      resolve(SubstringBucketizer.build(config.property_path, config.fragmentation_page_size)));
+      resolve(
+        SubstringBucketizer.build(
+          config.property_path,
+          config.fragmentation_page_size,
+        ),
+      ));
   }
 
-  public async fragment(_data: IData, config: IConfig): Promise<void> {
+  public async fragment(_data: Member, config: Config): Promise<void> {
     const tasks: any[] = [];
     const bucketTriples = this.findBucketTriples(_data.quads);
 
     _data.quads = _data.quads.filter(quad => !bucketTriples.includes(quad));
-    _data.quads.push(this.factory.quad(
-      this.factory.namedNode(config.url),
-      this.factory.namedNode('https://w3id.org/tree#member'),
-      this.factory.namedNode(_data.id),
-    ));
+    _data.quads.push(
+      this.factory.quad(
+        this.factory.namedNode(config.url),
+        this.factory.namedNode('https://w3id.org/tree#member'),
+        this.factory.namedNode(_data.id),
+      ),
+    );
 
     bucketTriples.forEach(async triple => {
       const bucket = triple.object.value;
@@ -40,10 +47,15 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
     await Promise.all(tasks);
   }
 
-  public async addHypermediaControls(hypermediaControls: Map<string, string[]>, config: IConfig): Promise<void> {
+  public async addHypermediaControls(
+    hypermediaControls: Map<string, string[]>,
+    config: Config,
+  ): Promise<void> {
     const tasks: any[] = [];
     let pages: string[] = [];
-    const githubPagesUrl = config.gh_pages_url.includes('https') ? config.gh_pages_url : `https://${config.gh_pages_url}`;
+    const githubPagesUrl = config.gh_pages_url.includes('https') ?
+      config.gh_pages_url :
+      `https://${config.gh_pages_url}`;
     const outputDirPath = `${githubPagesUrl}/${config.storage}`;
 
     hypermediaControls.forEach((relations: string[], node: string) => {
@@ -51,15 +63,26 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
 
       pages = [...new Set([...pages, ...relations, node])];
 
-      const triples = this.createHypermediaControlTriples(relations, outputDirPath, node);
+      const triples = this.createHypermediaControlTriples(
+        relations,
+        outputDirPath,
+        node,
+      );
       tasks.push(this.writeToBucket(bucketPath, triples));
     });
 
-    pages.map(async page => tasks.push(this.addCollectionLink(page, outputDirPath, config.url, config.storage)));
+    pages.map(async page =>
+      tasks.push(
+        this.addCollectionLink(page, outputDirPath, config.url, config.storage),
+      ));
     await Promise.all(tasks);
   }
 
-  private createHypermediaControlTriples(controls: string[], outputDirPath: string, bucket: string): RDF.Quad[] {
+  private createHypermediaControlTriples(
+    controls: string[],
+    outputDirPath: string,
+    bucket: string,
+  ): RDF.Quad[] {
     const result: RDF.Quad[] = [];
     const bucketPath = `${outputDirPath}/${sanitize(bucket)}.ttl`;
 
@@ -74,7 +97,9 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
         ),
         this.factory.quad(
           blankNode,
-          this.factory.namedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+          this.factory.namedNode(
+            'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+          ),
           this.factory.namedNode('https://w3id.org/tree#SubstringRelation'),
         ),
         this.factory.quad(
@@ -91,11 +116,15 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
         values.push(control);
       }
 
-      const treeValueTriples: RDF.Quad[] = values.map(treeValue => this.factory.quad(
-        blankNode,
-        this.factory.namedNode('https://w3id.org/tree#value'),
-        this.factory.literal(treeValue, this.factory.namedNode('http://www.w3.org/2001/XMLSchema#string')),
-      ));
+      const treeValueTriples: RDF.Quad[] = values.map(treeValue =>
+        this.factory.quad(
+          blankNode,
+          this.factory.namedNode('https://w3id.org/tree#value'),
+          this.factory.literal(
+            treeValue,
+            this.factory.namedNode('http://www.w3.org/2001/XMLSchema#string'),
+          ),
+        ));
 
       result.push(...treeValueTriples);
     });
@@ -122,10 +151,15 @@ class SubstringFragmentStrategy implements IFragmentStrategy {
   }
 
   private findBucketTriples(quads: RDF.Quad[]): RDF.Quad[] {
-    return quads.filter(quad => quad.predicate.value === 'https://w3id.org/ldes#bucket');
+    return quads.filter(
+      quad => quad.predicate.value === 'https://w3id.org/ldes#bucket',
+    );
   }
 
-  private async writeToBucket(bucketPath: string, quads: RDF.Quad[]): Promise<void> {
+  private async writeToBucket(
+    bucketPath: string,
+    quads: RDF.Quad[],
+  ): Promise<void> {
     const writer = new N3.Writer();
     writer.addQuads(quads);
     await new Promise<void>((resolve, reject) => {

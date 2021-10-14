@@ -7,18 +7,18 @@ import BasicFragmentStrategy from './fragment-strategy/BasicFragmentStrategy';
 import FragmentContext from './fragment-strategy/FragmentContext';
 import SubjectPagesFragmentStrategy from './fragment-strategy/SubjectPagesFragmentStrategy';
 import SubstringFragmentStrategy from './fragment-strategy/SubstringFragmentStrategy';
-import type { IConfig } from './utils/Config';
-import type IData from './utils/interfaces/IData';
-import type IFragmentStrategy from './utils/interfaces/IFragmentStrategy';
+import type { Config } from './utils/Config';
+import type FragmentStrategy from './utils/interfaces/FragmentStrategy';
+import type Member from './utils/interfaces/Member';
 
 export class Data {
-  private readonly config: IConfig;
+  private readonly config: Config;
   private readonly datasourceContext: DatasourceContext;
   private readonly fragmentContext: FragmentContext;
 
-  private RDFData: IData[];
+  private RDFData: Member[];
 
-  public constructor(config: IConfig) {
+  public constructor(config: Config) {
     this.config = config;
     this.RDFData = [];
 
@@ -32,16 +32,22 @@ export class Data {
     this.datasourceContext = new DatasourceContext(new LDESClientDatasource());
     this.setDatasource();
 
-    this.fragmentContext = new FragmentContext(new SubjectPagesFragmentStrategy());
+    this.fragmentContext = new FragmentContext(
+      new SubjectPagesFragmentStrategy(),
+    );
     this.setFragmentationStrategy();
   }
 
   public processData(): Promise<void> {
-    return this.config.stream_data ? this.processDataStreamingly() : this.processDataMemory();
+    return this.config.stream_data ?
+      this.processDataStreamingly() :
+      this.processDataMemory();
   }
 
   private async processDataMemory(): Promise<void> {
-    const bucketizer = await this.fragmentContext.getStrategyBucketizer(this.config);
+    const bucketizer = await this.fragmentContext.getStrategyBucketizer(
+      this.config,
+    );
 
     await this.fetchData(bucketizer);
 
@@ -50,12 +56,16 @@ export class Data {
   }
 
   private async processDataStreamingly(): Promise<void> {
-    const ldes = this.datasourceContext.getLinkedDataEventStream(this.config.url);
-    const bucketizer = await this.fragmentContext.getStrategyBucketizer(this.config);
+    const ldes = this.datasourceContext.getLinkedDataEventStream(
+      this.config.url,
+    );
+    const bucketizer = await this.fragmentContext.getStrategyBucketizer(
+      this.config,
+    );
 
     return new Promise(resolve => {
       const tasks: any[] = [];
-      ldes.on('data', (member: IData) => {
+      ldes.on('data', (member: Member) => {
         bucketizer.bucketize(member.quads, member.id);
         tasks.push(this.fragmentContext.fragment(member, this.config));
       });
@@ -64,7 +74,12 @@ export class Data {
         await Promise.all(tasks);
 
         const hypermediaControls = bucketizer.getBucketHypermediaControlsMap();
-        resolve(this.fragmentContext.addHypermediaControls(hypermediaControls, this.config));
+        resolve(
+          this.fragmentContext.addHypermediaControls(
+            hypermediaControls,
+            this.config,
+          ),
+        );
       });
     });
   }
@@ -80,7 +95,7 @@ export class Data {
    * Set the fragmentation strategy
    */
   private setFragmentationStrategy(): void {
-    let strategy: IFragmentStrategy;
+    let strategy: FragmentStrategy;
     switch (this.config.fragmentation_strategy) {
       case 'subject-pages': {
         strategy = new SubjectPagesFragmentStrategy();
@@ -106,7 +121,10 @@ export class Data {
   public async fetchData(bucketizer: IBucketizer): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
       try {
-        this.RDFData = await this.datasourceContext.getData(this.config, bucketizer);
+        this.RDFData = await this.datasourceContext.getData(
+          this.config,
+          bucketizer,
+        );
         return resolve();
       } catch (error: unknown) {
         console.error(error);
@@ -122,10 +140,14 @@ export class Data {
     return new Promise<void>(async (resolve, reject) => {
       try {
         const tasks: any[] = [];
-        this.RDFData.forEach(member => tasks.push(this.fragmentContext.fragment(member, this.config)));
+        this.RDFData.forEach(member =>
+          tasks.push(this.fragmentContext.fragment(member, this.config)));
 
         await Promise.all(tasks);
-        await this.fragmentContext.addHypermediaControls(hypermediaControls, this.config);
+        await this.fragmentContext.addHypermediaControls(
+          hypermediaControls,
+          this.config,
+        );
 
         return resolve();
       } catch (error: unknown) {
