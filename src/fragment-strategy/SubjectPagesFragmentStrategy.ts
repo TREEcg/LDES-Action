@@ -3,6 +3,7 @@ import { SubjectPageBucketizer } from '@treecg/ldes-subject-page-bucketizer';
 import type { IBucketizer } from '@treecg/ldes-types';
 import * as N3 from 'n3';
 import type * as RDF from 'rdf-js';
+import sanitize from 'sanitize-filename';
 import type { IConfig } from '../utils/Config';
 import type IData from '../utils/interfaces/IData';
 import type IFragmentStrategy from '../utils/interfaces/IFragmentStrategy';
@@ -22,7 +23,7 @@ class SubjectPagesFragmentStrategy implements IFragmentStrategy {
 
     bucketTriples.forEach(triple => {
       const bucket = triple.object.value;
-      const bucketPath = `${config.storage}/${bucket}.ttl`;
+      const bucketPath = `${config.storage}/${sanitize(bucket)}.ttl`;
       _data.quads = _data.quads.filter(quad => !bucketTriples.includes(quad));
       tasks.push(this.writeToBucket(bucketPath, _data.quads));
     });
