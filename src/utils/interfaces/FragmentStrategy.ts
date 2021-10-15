@@ -1,4 +1,4 @@
-import type { IBucketizer } from '@treecg/ldes-types';
+import type { IBucketizer as Bucketizer } from '@treecg/ldes-types';
 import type { Member } from '@treecg/types';
 import type { Config } from '../Config';
 /**
@@ -9,7 +9,7 @@ import type { Config } from '../Config';
  * Strategies.
  */
 interface FragmentStrategy {
-  initBucketizer: (config: Config) => Promise<IBucketizer>;
+  initBucketizer: (config: Config) => Promise<Bucketizer>;
   fragment: (data: Member, config: Config) => Promise<void>;
   addHypermediaControls: (
     hypermediaControls: Map<string, string[]>,

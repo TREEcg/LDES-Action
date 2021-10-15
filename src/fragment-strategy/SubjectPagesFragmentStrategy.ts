@@ -1,6 +1,6 @@
 import { appendFileSync } from 'fs';
 import { SubjectPageBucketizer } from '@treecg/ldes-subject-page-bucketizer';
-import type { IBucketizer } from '@treecg/ldes-types';
+import type { IBucketizer as Bucketizer } from '@treecg/ldes-types';
 import type { Member } from '@treecg/types';
 import * as N3 from 'n3';
 import type * as RDF from 'rdf-js';
@@ -13,7 +13,7 @@ import type FragmentStrategy from '../utils/interfaces/FragmentStrategy';
  * interface. The interface makes them interchangeable in the Context.
  */
 class SubjectPagesFragmentStrategy implements FragmentStrategy {
-  public initBucketizer(config: Config): Promise<IBucketizer> {
+  public initBucketizer(config: Config): Promise<Bucketizer> {
     return new Promise(resolve =>
       resolve(SubjectPageBucketizer.build(config.property_path)));
   }

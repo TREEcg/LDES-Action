@@ -1,6 +1,6 @@
 import type { Readable } from 'stream';
 import { newEngine } from '@treecg/actor-init-ldes-client';
-import type { IBucketizer } from '@treecg/ldes-types';
+import type { IBucketizer as Bucketizer } from '@treecg/ldes-types';
 import type { Member } from '@treecg/types';
 import type { Config } from '../utils/Config';
 import type Datasource from '../utils/interfaces/Datasource';
@@ -8,7 +8,7 @@ import type Datasource from '../utils/interfaces/Datasource';
 class LDESClientDatasource implements Datasource {
   public async getData(
     config: Config,
-    bucketizer: IBucketizer,
+    bucketizer: Bucketizer,
   ): Promise<Member[]> {
     return new Promise<Member[]>((resolve, reject) => {
       try {

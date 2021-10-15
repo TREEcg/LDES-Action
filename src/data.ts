@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync } from 'fs';
 
-import type { IBucketizer } from '@treecg/ldes-types';
+import type { IBucketizer as Bucketizer } from '@treecg/ldes-types';
 import type { Member } from '@treecg/types';
 import DatasourceContext from './data-source-strategy/DatasourceContext';
 import LDESClientDatasource from './data-source-strategy/LDESClientDatasource';
@@ -118,7 +118,7 @@ export class Data {
   /**
 	 * Fetch data using Datasource
 	 */
-  public async fetchData(bucketizer: IBucketizer): Promise<void> {
+  public async fetchData(bucketizer: Bucketizer): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
       try {
         this.RDFData = await this.datasourceContext.getData(

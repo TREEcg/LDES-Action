@@ -1,7 +1,7 @@
 import { appendFileSync } from 'fs';
 import type * as RDF from '@rdfjs/types';
 import { SubstringBucketizer } from '@treecg/ldes-substring-bucketizer';
-import type { IBucketizer } from '@treecg/ldes-types';
+import type { IBucketizer as Bucketizer } from '@treecg/ldes-types';
 import type { Member } from '@treecg/types';
 import * as N3 from 'n3';
 import { DataFactory } from 'rdf-data-factory';
@@ -16,7 +16,7 @@ class SubstringFragmentStrategy implements FragmentStrategy {
     this.factory = new DataFactory();
   }
 
-  public initBucketizer(config: Config): Promise<IBucketizer> {
+  public initBucketizer(config: Config): Promise<Bucketizer> {
     return new Promise(resolve =>
       resolve(
         SubstringBucketizer.build(
