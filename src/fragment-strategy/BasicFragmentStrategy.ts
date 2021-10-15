@@ -1,8 +1,7 @@
 import { appendFileSync } from 'fs';
 import type * as RDF from '@rdfjs/types';
 import { BasicBucketizer } from '@treecg/ldes-basic-bucketizer';
-import type { IBucketizer as Bucketizer } from '@treecg/ldes-types';
-import type { Member } from '@treecg/types';
+import type { Bucketizer, Member } from '@treecg/types';
 import * as N3 from 'n3';
 import { DataFactory } from 'rdf-data-factory';
 import sanitize from 'sanitize-filename';

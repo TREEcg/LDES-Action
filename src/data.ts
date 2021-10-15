@@ -1,7 +1,6 @@
 import { existsSync, mkdirSync } from 'fs';
 
-import type { IBucketizer as Bucketizer } from '@treecg/ldes-types';
-import type { Member } from '@treecg/types';
+import type { Bucketizer, Member } from '@treecg/types';
 import DatasourceContext from './data-source-strategy/DatasourceContext';
 import LDESClientDatasource from './data-source-strategy/LDESClientDatasource';
 import BasicFragmentStrategy from './fragment-strategy/BasicFragmentStrategy';

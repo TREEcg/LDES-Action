@@ -1,7 +1,6 @@
 import { appendFileSync } from 'fs';
 import { SubjectPageBucketizer } from '@treecg/ldes-subject-page-bucketizer';
-import type { IBucketizer as Bucketizer } from '@treecg/ldes-types';
-import type { Member } from '@treecg/types';
+import type { Bucketizer, Member } from '@treecg/types';
 import * as N3 from 'n3';
 import type * as RDF from 'rdf-js';
 import sanitize from 'sanitize-filename';

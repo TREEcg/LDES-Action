@@ -1,7 +1,6 @@
 import type { Readable } from 'stream';
 import { newEngine } from '@treecg/actor-init-ldes-client';
-import type { IBucketizer as Bucketizer } from '@treecg/ldes-types';
-import type { Member } from '@treecg/types';
+import type { Bucketizer, Member } from '@treecg/types';
 import type { Config } from '../utils/Config';
 import type Datasource from '../utils/interfaces/Datasource';
 
