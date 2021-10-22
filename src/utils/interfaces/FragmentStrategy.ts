@@ -1,5 +1,4 @@
-import type { IBucketizer } from '@treecg/ldes-types';
-import type { Member } from '@treecg/types';
+import type { Member, Bucketizer, RelationParameters } from '@treecg/types';
 import type { Config } from '../Config';
 /**
  * The FragmentStrategy interface declares operations common to all supported versions
@@ -9,12 +8,12 @@ import type { Config } from '../Config';
  * Strategies.
  */
 interface FragmentStrategy {
-  initBucketizer: (config: Config) => Promise<IBucketizer>;
-  fragment: (data: Member, config: Config) => Promise<void>;
+  initBucketizer: (config: Config) => Promise<Bucketizer>;
+  fragment: (data: Member, config: Config, fileExtension: string) => Promise<void>;
   addHypermediaControls: (
-    hypermediaControls: Map<string, string[]>,
-    config: Config
+    hypermediaControls: Map<string, RelationParameters[]>,
+    config: Config,
+    fileExtension: string,
   ) => Promise<void>;
 }
-
 export default FragmentStrategy;
