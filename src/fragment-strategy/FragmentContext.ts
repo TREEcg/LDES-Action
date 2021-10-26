@@ -1,6 +1,6 @@
-import type { IBucketizer } from '@treecg/ldes-types';
-import type { Member } from '@treecg/types';
+import type { Member, Bucketizer, RelationParameters } from '@treecg/types';
 import type { Config } from '../utils/Config';
+import { FileExtension } from '../utils/FileExtension';
 import type FragmentStrategy from '../utils/interfaces/FragmentStrategy';
 
 /**
@@ -8,11 +8,17 @@ import type FragmentStrategy from '../utils/interfaces/FragmentStrategy';
  */
 class FragmentContext {
   /**
-   * @type {Strategy} The Context maintains a reference to one of the Strategy
+   * @type {FragmentStrategy} The Context maintains a reference to one of the Strategy
    * objects. The Context does not know the concrete class of a strategy. It
    * should work with all strategies via the Strategy interface.
    */
-  private strategy: FragmentStrategy;
+  private readonly strategy: FragmentStrategy;
+
+  /**
+   * @type {FileExtension} Holds the file extension of the buckets.
+   * Default set to Turtle, but can be changed at runtime
+   */
+  private fileExtension: FileExtension;
 
   /**
    * Usually, the Context accepts a strategy through the constructor, but also
@@ -20,13 +26,7 @@ class FragmentContext {
    */
   public constructor(strategy: FragmentStrategy) {
     this.strategy = strategy;
-  }
-
-  /**
-   * Usually, the Context allows replacing a Strategy object at runtime.
-   */
-  public setStrategy(strategy: FragmentStrategy): void {
-    this.strategy = strategy;
+    this.fileExtension = FileExtension.Turtle;
   }
 
   /**
@@ -34,19 +34,27 @@ class FragmentContext {
    * implementing multiple versions of the algorithm on its own.
    */
   public async fragment(data: Member, config: Config): Promise<void> {
-    return this.strategy.fragment(data, config);
+    return this.strategy.fragment(data, config, this.fileExtension);
   }
 
   public async addHypermediaControls(
-    hypermediaControls: Map<string, string[]>,
+    hypermediaControls: Map<string, RelationParameters[]>,
     config: Config,
   ): Promise<void> {
-    return this.strategy.addHypermediaControls(hypermediaControls, config);
+    return this.strategy.addHypermediaControls(hypermediaControls, config, this.fileExtension);
   }
 
-  public getStrategyBucketizer(config: Config): Promise<IBucketizer> {
+  public getStrategyBucketizer(config: Config): Promise<Bucketizer> {
     return new Promise(resolve =>
       resolve(this.strategy.initBucketizer(config)));
+  }
+
+  public getStrategy(): FragmentStrategy {
+    return this.strategy;
+  }
+
+  public setFileExtension(extension: FileExtension): void {
+    this.fileExtension = extension;
   }
 }
 

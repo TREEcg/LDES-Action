@@ -1,10 +1,9 @@
 import type { Readable } from 'stream';
-import type { IBucketizer } from '@treecg/ldes-types';
-import type { Member } from '@treecg/types';
+import type { Member, Bucketizer } from '@treecg/types';
 import type { Config } from '../Config';
 
 interface Datasource {
-  getData: (config: Config, bucketizer: IBucketizer) => Promise<Member[]>;
+  getData: (config: Config, bucketizer: Bucketizer) => Promise<Member[]>;
   getLinkedDataEventStream: (url: string) => Readable;
 }
 
