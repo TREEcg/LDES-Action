@@ -1,15 +1,13 @@
 import { existsSync, mkdirSync } from 'fs';
 
-import type { IBucketizer } from '@treecg/ldes-types';
-import type { Member } from '@treecg/types';
+import type * as RDF from '@rdfjs/types';
+import type { Member, Bucketizer, RelationParameters } from '@treecg/types';
 import DatasourceContext from './data-source-strategy/DatasourceContext';
 import LDESClientDatasource from './data-source-strategy/LDESClientDatasource';
-import BasicFragmentStrategy from './fragment-strategy/BasicFragmentStrategy';
+import BucketizerFragmentStrategy from './fragment-strategy/BucketizerFragmentStrategy';
 import FragmentContext from './fragment-strategy/FragmentContext';
-import SubjectPagesFragmentStrategy from './fragment-strategy/SubjectPagesFragmentStrategy';
-import SubstringFragmentStrategy from './fragment-strategy/SubstringFragmentStrategy';
 import type { Config } from './utils/Config';
-import type FragmentStrategy from './utils/interfaces/FragmentStrategy';
+import { FileExtension } from './utils/FileExtension';
 
 export class Data {
   private readonly config: Config;
@@ -33,9 +31,8 @@ export class Data {
     this.setDatasource();
 
     this.fragmentContext = new FragmentContext(
-      new SubjectPagesFragmentStrategy(),
+      new BucketizerFragmentStrategy(),
     );
-    this.setFragmentationStrategy();
   }
 
   public processData(): Promise<void> {
@@ -45,10 +42,7 @@ export class Data {
   }
 
   private async processDataMemory(): Promise<void> {
-    const bucketizer = await this.fragmentContext.getStrategyBucketizer(
-      this.config,
-    );
-
+    const bucketizer = await this.fragmentContext.getStrategy().initBucketizer(this.config);
     await this.fetchData(bucketizer);
 
     const hypermediaControls = bucketizer.getBucketHypermediaControlsMap();
@@ -59,13 +53,15 @@ export class Data {
     const ldes = this.datasourceContext.getLinkedDataEventStream(
       this.config.url,
     );
-    const bucketizer = await this.fragmentContext.getStrategyBucketizer(
-      this.config,
-    );
+    const bucketizer = await this.fragmentContext.getStrategy().initBucketizer(this.config);
 
     return new Promise(resolve => {
       const tasks: any[] = [];
+
       ldes.on('data', (member: Member) => {
+        const extension = this.getOutputExtension(member.quads);
+        this.fragmentContext.setFileExtension(extension);
+
         bucketizer.bucketize(member.quads, member.id.value);
         tasks.push(this.fragmentContext.fragment(member, this.config));
       });
@@ -92,33 +88,9 @@ export class Data {
   }
 
   /**
-   * Set the fragmentation strategy
-   */
-  private setFragmentationStrategy(): void {
-    let strategy: FragmentStrategy;
-    switch (this.config.fragmentation_strategy) {
-      case 'subject-pages': {
-        strategy = new SubjectPagesFragmentStrategy();
-        break;
-      }
-      case 'substring': {
-        strategy = new SubstringFragmentStrategy();
-        break;
-      }
-      case 'basic':
-      default: {
-        strategy = new BasicFragmentStrategy();
-        break;
-      }
-    }
-
-    this.fragmentContext.setStrategy(strategy);
-  }
-
-  /**
    * Fetch data using Datasource
    */
-  public async fetchData(bucketizer: IBucketizer): Promise<void> {
+  public async fetchData(bucketizer: Bucketizer): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
       try {
         this.RDFData = await this.datasourceContext.getData(
@@ -134,14 +106,18 @@ export class Data {
   }
 
   /**
-   * Write fetched data to the output directory supplied in the config file
+   * Write fetched data and hypermediacontrols to the output directory supplied in the config file
    */
-  public writeData(hypermediaControls: Map<string, string[]>): Promise<void> {
+  public writeData(hypermediaControls: Map<string, RelationParameters[]>): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
       try {
         const tasks: any[] = [];
-        this.RDFData.forEach(member =>
-          tasks.push(this.fragmentContext.fragment(member, this.config)));
+        this.RDFData.forEach(member => {
+          const extension = this.getOutputExtension(member.quads);
+          this.fragmentContext.setFileExtension(extension);
+
+          tasks.push(this.fragmentContext.fragment(member, this.config));
+        });
 
         await Promise.all(tasks);
         await this.fragmentContext.addHypermediaControls(
@@ -155,5 +131,10 @@ export class Data {
         return reject(error);
       }
     });
+  }
+
+  private getOutputExtension(quads: RDF.Quad[]): FileExtension {
+    const graphlessQuads = quads.filter(quad => quad.graph.termType === 'DefaultGraph');
+    return graphlessQuads.length > 0 ? FileExtension.Turtle : FileExtension.TriG;
   }
 }

@@ -20,7 +20,7 @@ inputs:
     required: false
     default: 'LDES-action@users.noreply.github.com'
   fragmentation_strategy:
-    description: 'Fragmentation strategy to use'
+    description: 'The fragmentation strategy to be applied on LDES members'
     required: false
     default: 'basic'
   fragmentation_page_size:
