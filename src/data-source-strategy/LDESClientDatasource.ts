@@ -1,3 +1,4 @@
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import type { EventStream } from '@treecg/actor-init-ldes-client';
 import { newEngine } from '@treecg/actor-init-ldes-client';
 import type { Member, Bucketizer } from '@treecg/types';
@@ -21,6 +22,12 @@ class LDESClientDatasource implements Datasource {
         });
 
         ldes.on('end', () => {
+          const exportedState = ldes.exportState();
+          if (!existsSync('./.ldes/')) {
+            mkdirSync('./.ldes/');
+          }
+          writeFileSync('./.ldes/state.json', JSON.stringify(exportedState));
+
           console.log('No more data!');
           resolve(data);
         });

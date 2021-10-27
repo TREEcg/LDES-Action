@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
 
 import type * as RDF from '@rdfjs/types';
 import type { Member, Bucketizer, RelationParameters } from '@treecg/types';
@@ -67,6 +67,12 @@ export class Data {
       });
 
       ldes.on('end', async () => {
+        const exportedState = ldes.exportState();
+        if (!existsSync('./.ldes/')) {
+          mkdirSync('./.ldes/');
+        }
+        writeFileSync('./.ldes/state.json', JSON.stringify(exportedState));
+
         await Promise.all(tasks);
 
         const hypermediaControls = bucketizer.getBucketHypermediaControlsMap();
