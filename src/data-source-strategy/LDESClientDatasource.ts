@@ -1,4 +1,4 @@
-import type { Readable } from 'stream';
+import type { EventStream } from '@treecg/actor-init-ldes-client';
 import { newEngine } from '@treecg/actor-init-ldes-client';
 import type { Member, Bucketizer } from '@treecg/types';
 import type { Config } from '../utils/Config';
@@ -31,7 +31,7 @@ class LDESClientDatasource implements Datasource {
     });
   }
 
-  public getLinkedDataEventStream(url: string): Readable {
+  public getLinkedDataEventStream(url: string): EventStream {
     const options = {
       emitMemberOnce: true,
       disablePolling: true,
