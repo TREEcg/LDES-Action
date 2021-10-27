@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync } from 'fs';
 
 import type * as RDF from '@rdfjs/types';
 import type { Member, Bucketizer, RelationParameters } from '@treecg/types';
@@ -8,6 +8,7 @@ import BucketizerFragmentStrategy from './fragment-strategy/BucketizerFragmentSt
 import FragmentContext from './fragment-strategy/FragmentContext';
 import type { Config } from './utils/Config';
 import { FileExtension } from './utils/FileExtension';
+import { saveState } from './utils/State';
 
 export class Data {
   private readonly config: Config;
@@ -67,11 +68,7 @@ export class Data {
       });
 
       ldes.on('end', async () => {
-        const exportedState = ldes.exportState();
-        if (!existsSync('./.ldes/')) {
-          mkdirSync('./.ldes/');
-        }
-        writeFileSync('./.ldes/state.json', JSON.stringify(exportedState));
+        saveState(ldes.exportState());
 
         await Promise.all(tasks);
 
