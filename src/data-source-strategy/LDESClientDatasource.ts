@@ -1,9 +1,9 @@
-import type { EventStream } from '@treecg/actor-init-ldes-client';
+import type { EventStream, State } from '@treecg/actor-init-ldes-client';
 import { newEngine } from '@treecg/actor-init-ldes-client';
 import type { Member, Bucketizer } from '@treecg/types';
 import type { Config } from '../utils/Config';
 import type Datasource from '../utils/interfaces/Datasource';
-import { saveState } from '../utils/State';
+import { loadState, saveState } from '../utils/State';
 
 class LDESClientDatasource implements Datasource {
   public async getData(
@@ -43,7 +43,12 @@ class LDESClientDatasource implements Datasource {
     };
 
     const LDESClient = newEngine();
-    return LDESClient.createReadStream(url, options);
+    const state: State | null = loadState();
+    if (state === null) {
+      return LDESClient.createReadStream(url, options);
+    }
+
+    return LDESClient.createReadStream(url, options, state);
   }
 }
 
