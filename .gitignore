@@ -116,3 +116,6 @@ typings/
 
 # Test output
 output/
+
+# LDES state folder
+.ldes/
