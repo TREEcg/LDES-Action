@@ -1,6 +1,5 @@
 // SOURCE: https://github.com/githubocto/flat/blob/main/src/main.ts
 import { execSync } from 'child_process';
-import { rmdirSync } from 'fs';
 import * as core from '@actions/core';
 import { exec } from '@actions/exec';
 import { Data } from './data';
@@ -15,10 +14,10 @@ const run = async (): Promise<void> => {
   await exec('git', ['config', 'user.email', `${config.git_email}`]);
   core.endGroup();
 
-  // Delete output folder to have a clean start, no symlinks and no old data
-  core.startGroup('Delete output folder');
-  rmdirSync(config.storage, { recursive: true });
-  core.endGroup();
+  // // Delete output folder to have a clean start, no symlinks and no old data
+  // core.startGroup('Delete output folder');
+  // rmdirSync(config.storage, { recursive: true });
+  // core.endGroup();
 
   // Fetches the LDES and applies a fragmentation strategy
   core.startGroup('Fetch and write data');
