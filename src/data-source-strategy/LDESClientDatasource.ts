@@ -21,7 +21,12 @@ class LDESClientDatasource implements Datasource {
           data.push(member);
         });
 
-        ldes.on('end', () => {
+        ldes.on('now only syncing', () => {
+          console.log('now only syncing');
+          ldes.pause();
+        });
+
+        ldes.on('pause', () => {
           saveState(ldes.exportState());
 
           console.log('No more data!');
@@ -37,7 +42,7 @@ class LDESClientDatasource implements Datasource {
   public getLinkedDataEventStream(url: string): EventStream {
     const options = {
       emitMemberOnce: true,
-      disablePolling: true,
+      disableSynchronization: false,
       mimeType: 'text/turtle',
       representation: 'Quads',
     };

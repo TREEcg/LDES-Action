@@ -67,7 +67,12 @@ export class Data {
         tasks.push(this.fragmentContext.fragment(member, this.config));
       });
 
-      ldes.on('end', async () => {
+      ldes.on('now only syncing', () => {
+        console.log('No more data!');
+        ldes.pause();
+      });
+
+      ldes.on('pause', async () => {
         saveState(ldes.exportState());
 
         await Promise.all(tasks);
