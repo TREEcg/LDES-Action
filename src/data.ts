@@ -61,7 +61,7 @@ export class Data {
       const tasks: any[] = [];
 
       // If run takes longer than x minutes, pause the LDES Client
-      const timeout = setTimeout(() => ldes.pause(), 1_000 * 60);
+      const timeout = setTimeout(() => ldes.pause(), this.config.timeout);
 
       ldes.on('data', (member: Member) => {
         const extension = this.getOutputExtension(member.quads);

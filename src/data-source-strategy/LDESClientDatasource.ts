@@ -17,7 +17,7 @@ class LDESClientDatasource implements Datasource {
         const data: Member[] = [];
 
         // If run takes longer than x minutes, pause the LDES Client
-        const timeout = setTimeout(() => ldes.pause(), 1_000 * 60);
+        const timeout = setTimeout(() => ldes.pause(), config.timeout);
 
         ldes.on('data', (member: Member) => {
           bucketizer.bucketize(member.quads, member.id.value);
