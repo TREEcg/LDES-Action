@@ -8,6 +8,7 @@ import BucketizerFragmentStrategy from './fragment-strategy/BucketizerFragmentSt
 import FragmentContext from './fragment-strategy/FragmentContext';
 import type { Config } from './utils/Config';
 import { FileExtension } from './utils/FileExtension';
+import { saveState } from './utils/State';
 
 export class Data {
   private readonly config: Config;
@@ -52,6 +53,7 @@ export class Data {
   private async processDataStreamingly(): Promise<void> {
     const ldes = this.datasourceContext.getLinkedDataEventStream(
       this.config.url,
+      this.config.storage,
     );
     const bucketizer = await this.fragmentContext.getStrategy().initBucketizer(this.config);
 
@@ -66,7 +68,14 @@ export class Data {
         tasks.push(this.fragmentContext.fragment(member, this.config));
       });
 
-      ldes.on('end', async () => {
+      ldes.on('now only syncing', () => {
+        console.log('Now only syncing');
+        ldes.pause();
+      });
+
+      ldes.on('pause', async () => {
+        saveState(ldes.exportState(), this.config.storage);
+
         await Promise.all(tasks);
 
         const hypermediaControls = bucketizer.getBucketHypermediaControlsMap();

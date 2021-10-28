@@ -1,4 +1,4 @@
-import type { Readable } from 'stream';
+import type { EventStream } from '@treecg/actor-init-ldes-client';
 import type { Member, Bucketizer } from '@treecg/types';
 import type { Config } from '../utils/Config';
 import type Datasource from '../utils/interfaces/Datasource';
@@ -18,8 +18,8 @@ class DatasourceContext {
     return this.datasource.getData(config, bucketizer);
   }
 
-  public getLinkedDataEventStream(url: string): Readable {
-    return this.datasource.getLinkedDataEventStream(url);
+  public getLinkedDataEventStream(url: string, storage: string): EventStream {
+    return this.datasource.getLinkedDataEventStream(url, storage);
   }
 }
 
