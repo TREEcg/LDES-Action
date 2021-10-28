@@ -60,6 +60,9 @@ export class Data {
     return new Promise(resolve => {
       const tasks: any[] = [];
 
+      // If run takes longer than x minutes, pause the LDES Client
+      const timeout = setTimeout(() => ldes.pause(), 1_000 * 60);
+
       ldes.on('data', (member: Member) => {
         const extension = this.getOutputExtension(member.quads);
         this.fragmentContext.setFileExtension(extension);
@@ -69,11 +72,13 @@ export class Data {
       });
 
       ldes.on('now only syncing', () => {
+        timeout.unref();
         console.log('Now only syncing');
         ldes.pause();
       });
 
       ldes.on('pause', async () => {
+        console.log('Export LDES Client State');
         saveState(ldes.exportState(), this.config.storage);
 
         await Promise.all(tasks);
