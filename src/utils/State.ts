@@ -4,7 +4,7 @@ import type { State } from '@treecg/actor-init-ldes-client';
 export const saveState = (state: State, storage: string): void => {
   const folder = `./.ldes/${storage}`;
   if (!existsSync(folder)) {
-    mkdirSync(folder);
+    mkdirSync(folder, { recursive: true });
   }
   writeFileSync(`${folder}/state.json`, JSON.stringify(state));
 };
