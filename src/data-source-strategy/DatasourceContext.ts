@@ -18,8 +18,8 @@ class DatasourceContext {
     return this.datasource.getData(config, bucketizer);
   }
 
-  public getLinkedDataEventStream(url: string): EventStream {
-    return this.datasource.getLinkedDataEventStream(url);
+  public getLinkedDataEventStream(url: string, storage: string): EventStream {
+    return this.datasource.getLinkedDataEventStream(url, storage);
   }
 }
 

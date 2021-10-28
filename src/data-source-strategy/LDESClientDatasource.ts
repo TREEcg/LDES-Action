@@ -12,7 +12,7 @@ class LDESClientDatasource implements Datasource {
   ): Promise<Member[]> {
     return new Promise<Member[]>((resolve, reject) => {
       try {
-        const ldes = this.getLinkedDataEventStream(config.url);
+        const ldes = this.getLinkedDataEventStream(config.url, config.storage);
 
         const data: Member[] = [];
 
@@ -27,7 +27,7 @@ class LDESClientDatasource implements Datasource {
         });
 
         ldes.on('pause', () => {
-          saveState(ldes.exportState());
+          saveState(ldes.exportState(), config.storage);
 
           console.log('No more data!');
           resolve(data);
@@ -39,7 +39,7 @@ class LDESClientDatasource implements Datasource {
     });
   }
 
-  public getLinkedDataEventStream(url: string): EventStream {
+  public getLinkedDataEventStream(url: string, storage: string): EventStream {
     const options = {
       emitMemberOnce: true,
       disableSynchronization: false,
@@ -48,7 +48,7 @@ class LDESClientDatasource implements Datasource {
     };
 
     const LDESClient = newEngine();
-    const state: State | null = loadState();
+    const state: State | null = loadState(storage);
     if (state === null) {
       return LDESClient.createReadStream(url, options);
     }

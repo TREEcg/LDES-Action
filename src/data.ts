@@ -53,6 +53,7 @@ export class Data {
   private async processDataStreamingly(): Promise<void> {
     const ldes = this.datasourceContext.getLinkedDataEventStream(
       this.config.url,
+      this.config.storage,
     );
     const bucketizer = await this.fragmentContext.getStrategy().initBucketizer(this.config);
 
@@ -68,12 +69,12 @@ export class Data {
       });
 
       ldes.on('now only syncing', () => {
-        console.log('No more data!');
+        console.log('Now only syncing');
         ldes.pause();
       });
 
       ldes.on('pause', async () => {
-        saveState(ldes.exportState());
+        saveState(ldes.exportState(), this.config.storage);
 
         await Promise.all(tasks);
 
