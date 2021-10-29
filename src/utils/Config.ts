@@ -33,6 +33,9 @@ export interface Config {
 
   // Whether or not to process LDES member once received or to load all of them in memory
   stream_data: boolean;
+
+  // Whether or not there should be debug logging
+  logging: boolean;
 }
 
 export function getConfig(): Config {
@@ -51,5 +54,6 @@ export function getConfig(): Config {
     datasource_strategy: core.getInput('datasource_strategy'),
     property_path: core.getInput('property_path'),
     stream_data: core.getBooleanInput('stream_data') || false,
+    logging: core.getBooleanInput('logging') || false,
   };
 }

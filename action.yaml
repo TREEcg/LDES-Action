@@ -38,6 +38,10 @@ inputs:
     description: 'Boolean whether to stream the LDES members or the load them in memory'
     required: false
     default: 'false'
+  logging:
+    description: 'Boolean whether or not there should be debug logging'
+    required: false
+    default: 'false'
 outputs:
   delta_bytes: # size of changed data
     description: 'The overall number of bytes changed in the output data this run (current size - previous size)'
@@ -62,6 +66,7 @@ runs:
         INPUT_DATASOURCE_STRATEGY: ${{ inputs.datasource_strategy }}
         INPUT_PROPERTY_PATH: ${{ inputs.property_path }}
         INPUT_STREAM_DATA: ${{ inputs.stream_data }}
+        INPUT_LOGGING: ${{ inputs.logging}}
     - name: Run post script
       run: node ${{ github.action_path }}/dist/post/index.js
       shell: bash
