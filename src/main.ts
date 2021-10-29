@@ -35,19 +35,23 @@ const run = async (): Promise<void> => {
     ...newUnstagedFiles.split('\n'),
     ...modifiedUnstagedFiles.split('\n'),
   ].filter(Boolean);
-  core.info('newUnstagedFiles');
-  core.info(`${newUnstagedFiles}`);
-  core.info('modifiedUnstagedFiles');
-  core.info(`${modifiedUnstagedFiles}`);
-  core.info('editedFilenames');
-  core.info(JSON.stringify(editedFilenames));
+  if (config.logging) {
+    core.info('newUnstagedFiles');
+    core.info(`${newUnstagedFiles}`);
+    core.info('modifiedUnstagedFiles');
+    core.info(`${modifiedUnstagedFiles}`);
+    core.info('editedFilenames');
+    core.info(JSON.stringify(editedFilenames));
+  }
   core.endGroup();
 
   // Calculate the differences with the previous result
   core.startGroup('Calculating diffstat');
   const editedFiles = [];
   for (const filename of editedFilenames) {
-    core.debug(`git adding ${filename}…`);
+    if (config.logging) {
+      core.debug(`git adding ${filename}…`);
+    }
     await exec('git', ['add', filename]);
     editedFiles.push({
       name: filename,
@@ -55,21 +59,23 @@ const run = async (): Promise<void> => {
   }
   core.endGroup();
 
-  // Commit new data to the repository
-  core.startGroup('Committing new data');
-  const alreadyEditedFiles = JSON.parse(process.env.FILES || '[]');
-  core.info('alreadyEditedFiles');
-  core.info(JSON.stringify(alreadyEditedFiles.slice(0, 100)));
-  core.info('editedFiles');
-  core.info(JSON.stringify(editedFiles.slice(0, 100)));
-  const files = [
-    ...alreadyEditedFiles.slice(0, 100),
-    ...editedFiles.slice(0, 100),
-  ];
-  core.exportVariable('FILES', files);
-  core.info('process.env.FILES');
-  core.info(JSON.stringify(process.env.FILES));
-  core.endGroup();
+  if (config.logging) {
+    // Commit new data to the repository
+    core.startGroup('Committing new data');
+    const alreadyEditedFiles = JSON.parse(process.env.FILES || '[]');
+    core.info('alreadyEditedFiles');
+    core.info(JSON.stringify(alreadyEditedFiles.slice(0, 100)));
+    core.info('editedFiles');
+    core.info(JSON.stringify(editedFiles.slice(0, 100)));
+    const files = [
+      ...alreadyEditedFiles.slice(0, 100),
+      ...editedFiles.slice(0, 100),
+    ];
+    core.exportVariable('FILES', files);
+    core.info('process.env.FILES');
+    core.info(JSON.stringify(process.env.FILES));
+    core.endGroup();
+  }
 };
 
 run().catch(error => {
