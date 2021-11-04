@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@v2
       # Fetch dataset, write data to json, push data to the repo and setup GitHub Pages
       - name: Fetch and write data
-        uses: TREEcg/gh-action-republish-ldes@development
+        uses: TREEcg/LDES-Action@main
         with:
           # url you want to fetch
           url: 'https://smartdata.dev-vlaanderen.be/base/gemeente'
@@ -75,6 +75,20 @@ Default: `'50'`
 
 Datasource strategy to use.  
 Default: `ldes-client` (only one implemented at this point)
+
+### `property_path` (optional)
+
+Property path to be used by bucketizers.
+
+### `stream_data` (optional)
+
+Boolean whether to stream the LDES members or the load them in memory.  
+Default: `false`
+
+### `timeout` (optional)
+
+Amount of time in milliseconds to wait for the datasource to fetch data in a single run, after which the datasource (LDES Client) will be paused.
+Default: `3600000` (1 hour)
 
 ## Outputs
 
