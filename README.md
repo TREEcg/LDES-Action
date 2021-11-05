@@ -90,7 +90,7 @@ Default: `false`
 
 ### `timeout` (optional)
 
-Amount of time in milliseconds to wait for the datasource to fetch data in a single run, after which the datasource (LDES Client) will be paused.  
+Amount of time in milliseconds to wait for the datasource to fetch data in a single run, after which the datasource (LDES Client) will be paused. Take in mind that a single job execution run is limited to [6 hours](https://docs.github.com/en/actions/learn-github-actions/usage-limits-billing-and-administration). As a safety it is currently recommended to keer timeout under 5 hours.  
 Default: `3600000` (1 hour)
 
 ## Outputs
