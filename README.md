@@ -35,7 +35,7 @@ jobs:
         uses: actions/checkout@v2
       # Fetch dataset, write data to json, push data to the repo and setup GitHub Pages
       - name: Fetch and write data
-        uses: TREEcg/LDES-Action@main
+        uses: TREEcg/LDES-Action@v2
         with:
           # url you want to fetch
           url: 'https://smartdata.dev-vlaanderen.be/base/gemeente'
