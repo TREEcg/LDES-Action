@@ -47,11 +47,16 @@ const run = async (): Promise<void> => {
   core.startGroup('Calculating diffstat');
   const editedFiles = [];
   for (const filename of editedFilenames) {
-    core.debug(`git adding ${filename}…`);
-    await exec('git', ['add', filename]);
-    editedFiles.push({
-      name: filename,
-    });
+    try {
+      core.debug(`git adding ${filename}…`);
+      await exec('git', ['add', filename]);
+      editedFiles.push({
+        name: filename,
+      });
+    } catch (error: unknown) {
+      core.debug(`git adding ${filename}… failed`);
+      console.error(error);
+    }
   }
   core.endGroup();
 
