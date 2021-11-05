@@ -61,7 +61,7 @@ Name of the output directory where the fetched data will be stored.
 
 ### `gh_pages_url` (optional)
 
-URL where GitHub Pages will be deployed.
+URL where GitHub Pages will be deployed.  
 Default: `http(s)://<username>.github.io/<repository> or http(s)://<organization>.github.io/<repository>`
 
 ### `fragmentation_strategy` (optional)
