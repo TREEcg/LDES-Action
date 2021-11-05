@@ -11,6 +11,9 @@ Create a `.github/workflows/data.yaml` file in the repository where you want to 
 ```yaml
 # data.yaml
 
+# make workflow concurrent
+concurrency: ci-${{ github.ref }}
+
 # trigger workflow:
 on:
   # - on push to branch 'main'
