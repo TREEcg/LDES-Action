@@ -1,4 +1,7 @@
 name: 'Republish LDES'
+branding:
+  icon: 'fast-forward'  
+  color: 'blue'
 description: 'Replicates a Linked Data Event Stream or tree:Collection to your GitHub repository'
 inputs:
   url:
