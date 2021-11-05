@@ -67,7 +67,11 @@ Default: `http(s)://<username>.github.io/<repository> or http(s)://<organization
 ### `fragmentation_strategy` (optional)
 
 Fragmentation strategy that will be deployed.  
-Default: `subject-pages`
+Default: `basic`  
+possibele values:
+- `subject-pages`: [LDES Subject Page Bucketizer documentation](https://github.com/TREEcg/bucketizers/tree/main/packages/bucketizer-subject-page)
+- `substring`: [LDES Substring Bucketizer documentation](https://github.com/TREEcg/bucketizers/tree/main/packages/bucketizer-substring)
+- `basic`: [LDES Basic Bucketizer documentation](https://github.com/TREEcg/bucketizers/tree/main/packages/bucketizer-basic)
 
 ### `fragmentation_page_size` (optional)
 
