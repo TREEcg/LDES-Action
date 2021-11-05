@@ -98,7 +98,7 @@ A signed number describing the number of bytes that changed in this run.
 
 # Development
 ## Test
-Create a private `.env` file following this structure, with your wanted environemt variables:
+Create a private `.env` file following this structure, with your wanted environment variables:
 
 ```
 INPUT_URL="https://smartdata.dev-vlaanderen.be/base/gemeente"
