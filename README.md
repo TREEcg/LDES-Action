@@ -87,7 +87,7 @@ Default: `false`
 
 ### `timeout` (optional)
 
-Amount of time in milliseconds to wait for the datasource to fetch data in a single run, after which the datasource (LDES Client) will be paused.
+Amount of time in milliseconds to wait for the datasource to fetch data in a single run, after which the datasource (LDES Client) will be paused.  
 Default: `3600000` (1 hour)
 
 ## Outputs
