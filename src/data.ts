@@ -79,7 +79,7 @@ export class Data {
 
       ldes.on('pause', async () => {
         console.log('Export LDES Client State');
-        saveState(ldes.exportState(), this.config.storage);
+        saveState(ldes.exportState(), bucketizer.exportState(), this.config.storage);
 
         await Promise.all(tasks);
 

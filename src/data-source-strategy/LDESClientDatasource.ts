@@ -1,8 +1,9 @@
-import type { EventStream, State } from '@treecg/actor-init-ldes-client';
+import type { EventStream } from '@treecg/actor-init-ldes-client';
 import { newEngine } from '@treecg/actor-init-ldes-client';
 import type { Member, Bucketizer } from '@treecg/types';
 import type { Config } from '../utils/Config';
 import type Datasource from '../utils/interfaces/Datasource';
+import type { LDESActionState } from '../utils/State';
 import { loadState, saveState } from '../utils/State';
 
 class LDESClientDatasource implements Datasource {
@@ -31,7 +32,7 @@ class LDESClientDatasource implements Datasource {
         });
 
         ldes.on('pause', () => {
-          saveState(ldes.exportState(), config.storage);
+          saveState(ldes.exportState(), bucketizer.exportState(), config.storage);
 
           console.log('No more data!');
           resolve(data);
@@ -52,12 +53,12 @@ class LDESClientDatasource implements Datasource {
     };
 
     const LDESClient = newEngine();
-    const state: State | null = loadState(storage);
+    const state: LDESActionState | null = loadState(storage);
     if (state === null) {
       return LDESClient.createReadStream(url, options);
     }
 
-    return LDESClient.createReadStream(url, options, state);
+    return LDESClient.createReadStream(url, options, state.LDESClientState);
   }
 }
 

@@ -7,6 +7,8 @@ import { DataFactory } from 'rdf-data-factory';
 import type { Config } from '../utils/Config';
 import type FragmentStrategy from '../utils/interfaces/FragmentStrategy';
 import { sanitize } from '../utils/Sanitizer';
+import type { LDESActionState } from '../utils/State';
+import { loadState } from '../utils/State';
 
 class BucketizerFragmentStrategy implements FragmentStrategy {
   private readonly bucketNode: RDF.NamedNode;
@@ -23,20 +25,22 @@ class BucketizerFragmentStrategy implements FragmentStrategy {
       pageSize: config.fragmentation_page_size,
     };
 
+    const state: LDESActionState | null = loadState(config.storage);
+
     switch (config.fragmentation_strategy) {
       case 'substring':
         console.log(`[BucketizerFragmentStrategy]: setting strategy to substrings.`);
-        return SubstringBucketizer.build(bucketizerOptions);
+        return SubstringBucketizer.build(bucketizerOptions, state === null ? '' : state.BucketizerState);
 
       case 'subject-page':
         console.log(`[BucketizerFragmentStrategy]: setting strategy to subject pages.`);
-        return SubjectPageBucketizer.build(bucketizerOptions);
+        return SubjectPageBucketizer.build(bucketizerOptions, state === null ? '' : state.BucketizerState);
 
       case 'basic':
       default:
 
         console.log(`[BucketizerFragmentStrategy]: setting strategy to basic.`);
-        return BasicBucketizer.build(bucketizerOptions);
+        return BasicBucketizer.build(bucketizerOptions, state === null ? '' : state.BucketizerState);
     }
   }
 
