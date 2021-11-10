@@ -30,17 +30,17 @@ class BucketizerFragmentStrategy implements FragmentStrategy {
     switch (config.fragmentation_strategy) {
       case 'substring':
         console.log(`[BucketizerFragmentStrategy]: setting strategy to substrings.`);
-        return SubstringBucketizer.build(bucketizerOptions, state === null ? '' : state.BucketizerState);
+        return SubstringBucketizer.build(bucketizerOptions, state === null ? null : state.BucketizerState);
 
       case 'subject-page':
         console.log(`[BucketizerFragmentStrategy]: setting strategy to subject pages.`);
-        return SubjectPageBucketizer.build(bucketizerOptions, state === null ? '' : state.BucketizerState);
+        return SubjectPageBucketizer.build(bucketizerOptions, state === null ? null : state.BucketizerState);
 
       case 'basic':
       default:
 
         console.log(`[BucketizerFragmentStrategy]: setting strategy to basic.`);
-        return BasicBucketizer.build(bucketizerOptions, state === null ? '' : state.BucketizerState);
+        return BasicBucketizer.build(bucketizerOptions, state === null ? null : state.BucketizerState);
     }
   }
 
