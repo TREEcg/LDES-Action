@@ -1,3 +1,4 @@
+import type * as RDF from '@rdfjs/types';
 import type { Member, Bucketizer, RelationParameters } from '@treecg/types';
 import type { Config } from '../Config';
 /**
@@ -12,6 +13,7 @@ interface FragmentStrategy {
   fragment: (data: Member, config: Config, fileExtension: string) => Promise<void>;
   addHypermediaControls: (
     hypermediaControls: Map<string, RelationParameters[]>,
+    propertyPathQuads: RDF.Quad[],
     config: Config,
     fileExtension: string,
   ) => Promise<void>;

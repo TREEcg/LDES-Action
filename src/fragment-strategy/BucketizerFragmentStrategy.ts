@@ -62,6 +62,7 @@ class BucketizerFragmentStrategy implements FragmentStrategy {
 
   public async addHypermediaControls(
     hypermediaControls: Map<string, RelationParameters[]>,
+    propertyPathQuads: RDF.Quad[],
     config: Config,
     fileExtension: string,
   ): Promise<void> {
@@ -73,25 +74,41 @@ class BucketizerFragmentStrategy implements FragmentStrategy {
 
     // Array containing all pages with data, extracted from the map with hypermediacontrols
     let pages: string[] = [];
+    let treePathQuad: RDF.Quad;
+
+    if (propertyPathQuads.length > 0) {
+      const index = propertyPathQuads.findIndex(quad =>
+        quad.predicate.equals(this.factory.namedNode('https://w3id.org/tree#path')));
+      treePathQuad = propertyPathQuads.splice(index, 1)[0];
+    }
 
     hypermediaControls.forEach((relations: RelationParameters[], node: string) => {
       const bucketPath = `${config.storage}/${sanitize(node)}.${fileExtension}`;
       const otherPages = relations.map(relation => relation.nodeId);
       pages = [...new Set([...pages, ...otherPages, node])];
 
-      const controlQuads = this.createHypermediaControlQuads(
+      const quads = this.createHypermediaControlQuads(
         relations,
         node,
         outputDirPath,
         fileExtension,
+        treePathQuad,
+        propertyPathQuads,
       );
-      tasks.push(this.writeToBucket(bucketPath, controlQuads));
+      tasks.push(this.writeToBucket(bucketPath, quads));
     });
 
-    pages.map(async page =>
+    pages.forEach(async page =>
       tasks.push(
-        this.addCollectionLink(page, outputDirPath, config.url, config.storage, fileExtension),
+        this.addCollectionInformation(
+          page,
+          outputDirPath,
+          config.url,
+          config.storage,
+          fileExtension,
+        ),
       ));
+
     await Promise.all(tasks);
   }
 
@@ -119,15 +136,22 @@ class BucketizerFragmentStrategy implements FragmentStrategy {
     node: string,
     outputDirPath: string,
     fileExtension: string,
+    treePathQuad: RDF.Quad,
+    propertyPathQuads: RDF.Quad[],
   ): RDF.Quad[] {
-    const hypermediaControls: RDF.Quad[] = [];
+    const quads: RDF.Quad[] = [];
     const bucketPath = `${outputDirPath}/${sanitize(node)}.${fileExtension}`;
+
+    // This indicates that the property path is a list of predicates instead of just one predicate
+    if (treePathQuad && treePathQuad.object.termType === 'BlankNode') {
+      quads.push(...propertyPathQuads);
+    }
 
     relations.forEach(relation => {
       const relationPath = `${outputDirPath}/${sanitize(relation.nodeId)}.${fileExtension}`;
       const blankNode = this.factory.blankNode();
 
-      hypermediaControls.push(
+      quads.push(
         this.factory.quad(
           this.factory.namedNode(bucketPath),
           this.factory.namedNode('https://w3id.org/tree#relation'),
@@ -147,9 +171,19 @@ class BucketizerFragmentStrategy implements FragmentStrategy {
         ),
       );
 
+      if (treePathQuad) {
+        quads.push(
+          this.factory.quad(
+            blankNode,
+            treePathQuad.predicate,
+            treePathQuad.object,
+          ),
+        );
+      }
+
       if (relation.value && relation.value.length > 0) {
         relation.value.forEach(treeValue => {
-          hypermediaControls.push(
+          quads.push(
             this.factory.quad(
               blankNode,
               this.factory.namedNode('https://w3id.org/tree#value'),
@@ -160,10 +194,10 @@ class BucketizerFragmentStrategy implements FragmentStrategy {
       }
     });
 
-    return hypermediaControls;
+    return quads;
   }
 
-  private addCollectionLink(
+  private addCollectionInformation(
     bucket: string,
     outputDirPath: string,
     collectionUri: string,
@@ -173,13 +207,22 @@ class BucketizerFragmentStrategy implements FragmentStrategy {
     const predicate = bucket === 'root' ? 'https://w3id.org/tree#view' : 'http://rdfs.org/ns/void#subset';
     const bucketFilePath = `${storage}/${sanitize(bucket)}.${fileExtension}`;
 
-    const quad = this.factory.quad(
-      this.factory.namedNode(collectionUri),
-      this.factory.namedNode(predicate),
-      this.factory.namedNode(`${outputDirPath}/${sanitize(bucket)}.${fileExtension}`),
-    );
+    const quads = [
+      // Type
+      this.factory.quad(
+        this.factory.namedNode(`${outputDirPath}/${sanitize(bucket)}.${fileExtension}`),
+        this.factory.namedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+        this.factory.namedNode('https://w3id.org/tree#Node'),
+      ),
+      // Link with original collection
+      this.factory.quad(
+        this.factory.namedNode(collectionUri),
+        this.factory.namedNode(predicate),
+        this.factory.namedNode(`${outputDirPath}/${sanitize(bucket)}.${fileExtension}`),
+      ),
+    ];
 
-    return this.writeToBucket(bucketFilePath, [quad]);
+    return this.writeToBucket(bucketFilePath, quads);
   }
 
   private getTreeMemberQuad(ldesUri: string, memberId: string): RDF.Quad {
