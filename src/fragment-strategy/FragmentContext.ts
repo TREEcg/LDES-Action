@@ -1,3 +1,4 @@
+import type * as RDF from '@rdfjs/types';
 import type { Member, Bucketizer, RelationParameters } from '@treecg/types';
 import type { Config } from '../utils/Config';
 import { FileExtension } from '../utils/FileExtension';
@@ -39,9 +40,10 @@ class FragmentContext {
 
   public async addHypermediaControls(
     hypermediaControls: Map<string, RelationParameters[]>,
+    propertyPathQuads: RDF.Quad[],
     config: Config,
   ): Promise<void> {
-    return this.strategy.addHypermediaControls(hypermediaControls, config, this.fileExtension);
+    return this.strategy.addHypermediaControls(hypermediaControls, propertyPathQuads, config, this.fileExtension);
   }
 
   public getStrategyBucketizer(config: Config): Promise<Bucketizer> {

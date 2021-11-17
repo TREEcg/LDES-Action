@@ -47,7 +47,8 @@ export class Data {
     await this.fetchData(bucketizer);
 
     const hypermediaControls = bucketizer.getBucketHypermediaControlsMap();
-    await this.writeData(hypermediaControls);
+    const propertyPathQuads = bucketizer.getPropertyPathQuads();
+    await this.writeData(hypermediaControls, propertyPathQuads);
   }
 
   private async processDataStreamingly(): Promise<void> {
@@ -84,9 +85,12 @@ export class Data {
         await Promise.all(tasks);
 
         const hypermediaControls = bucketizer.getBucketHypermediaControlsMap();
+        const propertyPathQuads = bucketizer.getPropertyPathQuads();
+
         resolve(
           this.fragmentContext.addHypermediaControls(
             hypermediaControls,
+            propertyPathQuads,
             this.config,
           ),
         );
@@ -122,7 +126,10 @@ export class Data {
   /**
    * Write fetched data and hypermediacontrols to the output directory supplied in the config file
    */
-  public writeData(hypermediaControls: Map<string, RelationParameters[]>): Promise<void> {
+  public writeData(
+    hypermediaControls: Map<string, RelationParameters[]>,
+    propertyPathQuads: RDF.Quad[],
+  ): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
       try {
         const tasks: any[] = [];
@@ -136,6 +143,7 @@ export class Data {
         await Promise.all(tasks);
         await this.fragmentContext.addHypermediaControls(
           hypermediaControls,
+          propertyPathQuads,
           this.config,
         );
 
