@@ -143,7 +143,8 @@ class BucketizerFragmentStrategy implements FragmentStrategy {
     const bucketPath = `${outputDirPath}/${sanitize(node)}.${fileExtension}`;
 
     // This indicates that the property path is a list of predicates instead of just one predicate
-    if (treePathQuad && treePathQuad.object.termType === 'BlankNode') {
+    // And only add property path quads if page contains actual relations
+    if (relations.length > 0 && treePathQuad && treePathQuad.object.termType === 'BlankNode') {
       quads.push(...propertyPathQuads);
     }
 
