@@ -1,4 +1,5 @@
 # LDES-Action
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/TREEcg/LDES-Action)
 
 `LDES-Action` is a GitHub Action that replicates a
 [Linked Data Event Stream](https://w3id.org/ldes/specification)
