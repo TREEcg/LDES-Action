@@ -2,6 +2,7 @@
 import { execSync } from 'child_process';
 import * as core from '@actions/core';
 import { exec } from '@actions/exec';
+import { sendAnnouncement } from './announcement/Announcement';
 import { Data } from './data';
 import type { Config } from './utils/Config';
 import { getConfig } from './utils/Config';
@@ -23,6 +24,17 @@ const run = async (): Promise<void> => {
   core.startGroup('Fetch and write data');
   const data_fetcher = new Data(config);
   await data_fetcher.processData();
+  core.endGroup();
+
+  // Send announcement to https://tree.linkeddatafragments.org/announcements/ that a view is created
+  core.startGroup('Announce that new View is created');
+  try {
+    const response = await sendAnnouncement(config);
+    core.info(`Announcement sent | HTTP code: ${response.status}`);
+    core.info(`Announcement location: ${response.headers.get('location')}`);
+  } catch (error: unknown) {
+    core.error(`Announcement could not be sent: ${(<Error> error).message}`);
+  }
   core.endGroup();
 
   // List all changed files

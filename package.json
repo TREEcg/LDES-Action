@@ -39,6 +39,7 @@
     "@treecg/actor-init-ldes-client": "^2.5.7",
     "@treecg/bucketizers": "^1.0.5",
     "@treecg/types": "0.0.16",
+    "@treecg/ldes-announcements": "^0.0.3",
     "date-fns": "^2.23.0",
     "eslint": "^7.32.0",
     "eslint-config-es": "^3.30.15",
@@ -48,7 +49,9 @@
     "eslint-plugin-unused-imports": "^1.1.5",
     "n3": "^1.11.1",
     "rdf-data-factory": "^1.1.0",
-    "truncate-utf8-bytes": "^1.0.2"
+    "truncate-utf8-bytes": "^1.0.2",
+    "@dexagod/rdf-retrieval": "^1.0.2",
+    "jsonld-streaming-parser": "^2.4.2"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.29.2",
