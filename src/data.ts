@@ -37,18 +37,7 @@ export class Data {
   }
 
   public processData(): Promise<void> {
-    return this.config.stream_data ?
-      this.processDataStreamingly() :
-      this.processDataMemory();
-  }
-
-  private async processDataMemory(): Promise<void> {
-    const bucketizer = await this.fragmentContext.getStrategy().initBucketizer(this.config);
-    await this.fetchData(bucketizer);
-
-    const hypermediaControls = bucketizer.getBucketHypermediaControlsMap();
-    const propertyPathQuads = bucketizer.getPropertyPathQuads();
-    await this.writeData(hypermediaControls, propertyPathQuads);
+    return this.processDataStreamingly();
   }
 
   private async processDataStreamingly(): Promise<void> {
