@@ -39,7 +39,7 @@
     "@treecg/actor-init-ldes-client": "^2.5.7",
     "@treecg/bucketizers": "^1.0.5",
     "@treecg/types": "0.0.16",
-    "date-fns": "^2.23.0",
+    "date-fns": "^2.27.0",
     "eslint": "^7.32.0",
     "eslint-config-es": "^4.0.1",
     "eslint-import-resolver-typescript": "^2.5.0",
