@@ -11,6 +11,7 @@
     "dist": "npm run build && npm run package && npm run package-post",
     "format": "prettier --write **/*.ts",
     "test": "npm run build && env-cmd npm run start",
+    "test-jest": "jest --",
     "prepare": "husky install",
     "eslint": "eslint . --ext ts",
     "eslint:cache": "npm run eslint -- --cache",
@@ -48,9 +49,11 @@
     "eslint-plugin-unused-imports": "^1.1.5",
     "n3": "^1.11.1",
     "rdf-data-factory": "^1.1.0",
-    "truncate-utf8-bytes": "^1.0.2"
+    "truncate-utf8-bytes": "^1.0.2",
+    "ts-jest": "^27.0.7"
   },
   "devDependencies": {
+    "@types/jest": "^27.0.3",
     "@vercel/ncc": "^0.29.2",
     "env-cmd": "^10.1.0",
     "husky": "^7.0.4",
