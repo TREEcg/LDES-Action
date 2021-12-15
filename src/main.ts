@@ -28,14 +28,16 @@ const run = async (): Promise<void> => {
 
   // Send announcement to https://tree.linkeddatafragments.org/announcements/ that a view is created
   core.startGroup('Announce that new View is created');
-  try {
-    const response = await sendAnnouncement(config);
-    core.info(`Announcement sent | HTTP code: ${response.status}`);
-    core.info(`Announcement location: ${response.headers.get('location')}`);
-  } catch (error: unknown) {
-    core.error(`Announcement could not be sent: ${(<Error> error).message}`);
+  if (config.announce) {
+    try {
+      const response = await sendAnnouncement(config);
+      core.info(`Announcement sent | HTTP code: ${response.status}`);
+      core.info(`Announcement location: ${response.headers.get('location')}`);
+    } catch (error: unknown) {
+      core.error(`Announcement could not be sent: ${(<Error> error).message}`);
+    }
+    core.endGroup();
   }
-  core.endGroup();
 
   // List all changed files
   core.startGroup('File changes');
