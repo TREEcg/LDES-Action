@@ -1,6 +1,6 @@
 name: 'Republish LDES'
 branding:
-  icon: 'fast-forward'  
+  icon: 'fast-forward'
   color: 'blue'
 description: 'Replicates a Linked Data Event Stream or tree:Collection to your GitHub repository'
 inputs:
@@ -45,6 +45,10 @@ inputs:
     description: 'Amount of time in milliseconds to wait for the datasource to fetch data in a single run'
     required: false
     default: '3600000'
+  announce:
+    description: 'Announce the published LDES view to https://tree.linkeddatafragments.org/announcements/'
+    required: false
+    default: true
 outputs:
   delta_bytes: # size of changed data
     description: 'The overall number of bytes changed in the output data this run (current size - previous size)'
@@ -70,6 +74,7 @@ runs:
         INPUT_PROPERTY_PATH: ${{ inputs.property_path }}
         INPUT_STREAM_DATA: ${{ inputs.stream_data }}
         INPUT_TIMEOUT: ${{ inputs.timeout }}
+        INPUT_ANNOUNCE: ${{ inputs.announce }}
     - name: Run post script
       run: node ${{ github.action_path }}/dist/post/index.js
       shell: bash
