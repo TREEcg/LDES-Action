@@ -36,6 +36,9 @@ export interface Config {
 
   // Amount of time to wait for the datasource to fetch data in a single run
   timeout: number;
+
+  // Announce the published LDES view to https://tree.linkeddatafragments.org/announcements/
+  announce: boolean;
 }
 
 export function getConfig(): Config {
@@ -55,5 +58,6 @@ export function getConfig(): Config {
     property_path: core.getInput('property_path'),
     stream_data: core.getBooleanInput('stream_data') || false,
     timeout: Number.parseInt(core.getInput('timeout'), 10) || 1_000 * 60 * 60 * 1,
+    announce: core.getBooleanInput('announce') || false,
   };
 }
