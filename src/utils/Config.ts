@@ -31,9 +31,6 @@ export interface Config {
   // Property path that will be resolved by bucketizer
   property_path: string;
 
-  // Whether or not to process LDES member once received or to load all of them in memory
-  stream_data: boolean;
-
   // Amount of time to wait for the datasource to fetch data in a single run
   timeout: number;
 
@@ -56,7 +53,6 @@ export function getConfig(): Config {
     ),
     datasource_strategy: core.getInput('datasource_strategy'),
     property_path: core.getInput('property_path'),
-    stream_data: core.getBooleanInput('stream_data') || false,
     timeout: Number.parseInt(core.getInput('timeout'), 10) || 1_000 * 60 * 60 * 1,
     announce: core.getBooleanInput('announce') || false,
   };

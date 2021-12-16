@@ -37,10 +37,6 @@ inputs:
   property_path:
     description: 'Property path to be used by bucketizers'
     required: false
-  stream_data:
-    description: 'Boolean whether to stream the LDES members or the load them in memory'
-    required: false
-    default: 'false'
   timeout:
     description: 'Amount of time in milliseconds to wait for the datasource to fetch data in a single run'
     required: false
@@ -72,7 +68,6 @@ runs:
         INPUT_FRAGMENTATION_PAGE_SIZE: ${{ inputs.fragmentation_page_size }}
         INPUT_DATASOURCE_STRATEGY: ${{ inputs.datasource_strategy }}
         INPUT_PROPERTY_PATH: ${{ inputs.property_path }}
-        INPUT_STREAM_DATA: ${{ inputs.stream_data }}
         INPUT_TIMEOUT: ${{ inputs.timeout }}
         INPUT_ANNOUNCE: ${{ inputs.announce }}
     - name: Run post script
