@@ -36,8 +36,8 @@ const run = async (): Promise<void> => {
     } catch (error: unknown) {
       core.error(`Announcement could not be sent: ${(<Error> error).message}`);
     }
-    core.endGroup();
   }
+  core.endGroup();
 
   // List all changed files
   core.startGroup('File changes');
