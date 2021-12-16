@@ -41,7 +41,7 @@
     "@treecg/types": "0.0.16",
     "@treecg/ldes-announcements": "^0.0.3",
     "eslint": "^7.32.0",
-    "eslint-config-es": "^4.0.1",
+    "eslint-config-es": "^4.1.0",
     "eslint-import-resolver-typescript": "^2.5.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-tsdoc": "^0.2.14",
