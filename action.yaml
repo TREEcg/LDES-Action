@@ -48,7 +48,7 @@ inputs:
   announce:
     description: 'Announce the published LDES view to https://tree.linkeddatafragments.org/announcements/'
     required: false
-    default: true
+    default: 'true'
 outputs:
   delta_bytes: # size of changed data
     description: 'The overall number of bytes changed in the output data this run (current size - previous size)'
