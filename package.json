@@ -38,7 +38,7 @@
     "@rdfjs/types": "^1.0.1",
     "@treecg/actor-init-ldes-client": "^2.5.8",
     "@treecg/bucketizers": "^1.0.5",
-    "@treecg/types": "0.0.16",
+    "@treecg/types": "0.4.0",
     "@treecg/ldes-announcements": "^0.0.3",
     "eslint": "^7.32.0",
     "eslint-config-es": "^4.0.1",
