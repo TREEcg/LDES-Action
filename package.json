@@ -43,7 +43,7 @@
     "eslint": "^7.32.0",
     "eslint-config-es": "^4.0.1",
     "eslint-import-resolver-typescript": "^2.5.0",
-    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-import": "^2.27.4",
     "eslint-plugin-tsdoc": "^0.2.14",
     "eslint-plugin-unused-imports": "^1.1.5",
     "n3": "^1.12.2",
